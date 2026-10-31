@@ -60,7 +60,7 @@ def charge_rent(shop, plan, tapped=False):
         why = "You chose this in WhatsApp."
     else:
         yes = log.last_answer(shop.id)
-        why = f"Your yes on our call{' at ' + _clock(yes['at']) if yes else ''} is recorded."
+        why = f"Your yes on our call{' at ' + _clock(yes['at']) if yes else ''} is noted."
     _sms(shop, f"Your Soundbox rent for {shop.name} is ₹{plan.price}/month ({plan.name}) from {_starts(shop)}. "
                f"{why} Not right? Reply NO to this SMS and we will stop it.")
     return _act(shop, "charge rent", outcome="charged", rule=f"₹{plan.price} a month, {plan.name}")

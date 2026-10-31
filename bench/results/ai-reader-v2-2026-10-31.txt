@@ -1,0 +1,28 @@
+case                      shop    expected        got             identity                
+yes-yes-1                 gupta   charged:plan-a  charged:plan-a  verified                
+but-1                     gupta   held            held            verified                
+someone-else-3            gupta   held            held            failed: someone else    
+salesman-twice            sharma  held            held            failed: someone else    
+wrong-person              sharma  held            held            failed: someone else    
+family-son                sharma  held            held            failed: someone else    
+family-wife-haan          gupta   held            held            failed: not confirmed   MISMATCH
+owner-asks-who            gupta   held            held            failed: not confirmed   
+consent-no                sharma  charged:plan-a  charged:plan-a  verified                
+consent-question          gupta   held            held            verified                
+angry-na                  sharma  held            held            verified                
+box-wapas-at-ask          gupta   held            held            verified                
+box-wapas-at-readback     sharma  held            held            verified                
+hmm-at-ask                gupta   held            held            verified                
+stopped: ₹5.8165 spent, cap ₹5.8
+
+charged after na or unsure: 0
+charged without verified identity: 0
+negative actions from the AI: 0
+honest yeses charged: 2/2
+consent taps through the endpoint: 0
+cases matching expected outcome: 13/16
+  family-wife-haan: identity failed: not confirmed
+lines read differently from their label: 1
+  family-wife-haan: 'haan bolo, main unki wife hoon' labelled unsure/someone else, read unsure/shopkeeper
+ai calls: 39, errors: 1, average 0.29s per reply
+cost this run: ₹0.8452 (incl. GST), all runs: ₹5.8165
