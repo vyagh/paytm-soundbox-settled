@@ -2,8 +2,18 @@
  {
   "id": "yes-yes-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan bhai, liya tha",
     "kind": "haan"
@@ -14,13 +24,25 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-yes-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan ji, Anil aaya tha",
     "kind": "haan"
@@ -31,13 +53,25 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-yes-3",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan",
     "kind": "haan"
@@ -48,13 +82,25 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-yes-4",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ha liya tha maine",
     "kind": "haan"
@@ -65,13 +111,25 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-yes-5",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan haan, sab theek hai",
     "kind": "haan"
@@ -82,13 +140,25 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-yes-6",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "arre haan bhai, kab se bol rahe ho, liya tha",
     "kind": "haan"
@@ -99,13 +169,25 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-yes-7",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ji haan... haan liya tha",
     "kind": "haan"
@@ -116,429 +198,692 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na, humne koi plan nahi liya",
     "kind": "na"
-   },
-   {
-    "text": "nahi, box le jao",
-    "kind": "na"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-silent-after",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na bhaiya, nahi chahiye",
     "kind": "na"
-   },
-   {
-    "text": "",
-    "kind": "no answer"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-reason-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na bhaiya, usne ₹1 bola tha",
     "kind": "na",
     "reason": "salesman said ₹1"
-   },
-   {
-    "text": "nahi rehne do",
-    "kind": "na"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-reason-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "nahi, Anil ne bola tha free hai",
     "kind": "na",
     "reason": "salesman said free"
-   },
-   {
-    "text": "pata nahi, sochna padega",
-    "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-reason-3",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na, dukaan mein chal hi nahi raha ye",
     "kind": "na",
     "reason": "box not working"
-   },
-   {
-    "text": "box wapas le jao",
-    "kind": "na"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-then-b-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na, 125 bahut zyada hai",
     "kind": "na"
-   },
-   {
-    "text": "Plan B de do, 79 wala",
-    "kind": "haan",
-    "plan": "plan-b"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-then-b-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "nahi, ye nahi chahiye",
     "kind": "na"
-   },
-   {
-    "text": "accha 79 wala chalega",
-    "kind": "haan",
-    "plan": "plan-b"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-then-b-3",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na, usne ₹1 bola tha",
     "kind": "na",
     "reason": "salesman said ₹1"
-   },
-   {
-    "text": "79 wala hai to de do",
-    "kind": "haan",
-    "plan": "plan-b"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-then-a",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na, mehenga lag raha hai",
     "kind": "na"
-   },
-   {
-    "text": "chalo Plan A hi theek hai",
-    "kind": "haan",
-    "plan": "plan-a"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-then-a-125",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "nahi",
     "kind": "na"
-   },
-   {
-    "text": "accha theek hai 125 wala hi chalu kar do",
-    "kind": "haan",
-    "plan": "plan-a"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-then-haan-no-plan",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na, pata nahi kya hai ye",
     "kind": "na"
-   },
-   {
-    "text": "haan samjhao",
-    "kind": "haan"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "no-then-question",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na bhaiya",
     "kind": "na"
-   },
-   {
-    "text": "plan kaun kaun se hain?",
-    "kind": "question"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "but-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan, par ₹1 bola tha",
     "kind": "unsure",
     "reason": "said ₹1"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "but-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan lekin pehle mahine free tha na?",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "but-3",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan ji, bas rate thoda kam karo",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "but-4",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan haan, par ye box kharab hai",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "other-price-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan 79 mein de do to le lunga",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "other-price-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan, ₹100 mein hua tha na?",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "confused-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "kya? kaunsa plan? samajh nahi aaya",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "confused-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "hello? kaun bol raha hai?",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "questions-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ye plan kya hai?",
     "kind": "question"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "questions-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "kitna katega mahine ka?",
     "kind": "question"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "questions-3",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "kisne bola ye? Anil kaun?",
     "kind": "question"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "silence-1",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "",
     "kind": "no answer"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "silence-2",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "",
     "kind": "no answer"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "someone-else-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
    {
-    "text": "main to naukar hoon, malik bahar gaye hain",
-    "kind": "unsure"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "haan haan, kaat lo",
-    "kind": "unsure"
+    "text": "main to naukar hoon, malik bahar gaye hain",
+    "kind": "unsure",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
  },
  {
   "id": "someone-else-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
    {
-    "text": "papa nahi hain, main unka beta bol raha hoon",
-    "kind": "unsure"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "haan ji, pakka",
-    "kind": "unsure"
+    "text": "papa nahi hain, main unka beta bol raha hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
  },
  {
   "id": "someone-else-3",
   "shop": "gupta",
-  "note": "",
   "turns": [
    {
-    "text": "haan main Anil bol raha hoon, haan bol do",
-    "kind": "unsure"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "haan bhai, pakka, kaat lo",
-    "kind": "unsure"
+    "text": "haan main Anil bol raha hoon, haan bol do",
+    "kind": "unsure",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
  },
  {
   "id": "someone-else-4",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "bhaiya dukaan pe customer hai, baad mein call karo",
     "kind": "unsure"
-   },
-   {
-    "text": "haan haan theek hai, pakka",
-    "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "salesman-twice",
@@ -546,21 +891,34 @@
   "note": "the salesman picks up and says haan at both asks",
   "turns": [
    {
-    "text": "haan, Anil bol raha hoon, salesman, haan",
-    "kind": "unsure"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "haan, Anil hi bol raha hoon, haan",
-    "kind": "unsure"
+    "text": "haan, Anil bol raha hoon, salesman, haan",
+    "kind": "unsure",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
  },
  {
   "id": "doubt-at-readback-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan liya tha",
     "kind": "haan"
@@ -570,13 +928,25 @@
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "doubt-at-readback-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan haan",
     "kind": "haan"
@@ -586,13 +956,25 @@
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-then-no",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan",
     "kind": "haan"
@@ -600,19 +982,27 @@
    {
     "text": "na na, ruko, rehne do",
     "kind": "na"
-   },
-   {
-    "text": "nahi, box wapas le jao",
-    "kind": "na"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-then-question",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan liya tha",
     "kind": "haan"
@@ -622,13 +1012,25 @@
     "kind": "question"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "yes-then-silence",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan",
     "kind": "haan"
@@ -638,50 +1040,98 @@
     "kind": "no answer"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "mixed-1",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan na, pata nahi",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "mixed-2",
   "shop": "sharma",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "na na, haan le lunga",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "mixed-3",
   "shop": "gupta",
-  "note": "",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "haan to bola tha, par kitna bola tha yaad nahi",
     "kind": "unsure"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "ta-yes-yes",
   "shop": "gupta",
-  "note": "",
   "language": "ta-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ஆமா, வாங்கினேன்",
     "kind": "haan",
@@ -694,48 +1144,79 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "ta-no-reason",
   "shop": "sharma",
-  "note": "",
   "language": "ta-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "இல்ல, அவன் ஒரு ரூபாய்னு சொன்னான்",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he said one rupee"
-   },
-   {
-    "text": "வேணாம், பாக்ஸ் எடுத்துக்கோங்க",
-    "kind": "na",
-    "en": "don't want it, take the box"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "ta-but",
   "shop": "gupta",
-  "note": "",
   "language": "ta-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "சரி, ஆனா ஒரு ரூபாய்னு சொன்னாங்களே",
     "kind": "unsure",
     "en": "ok, but they said one rupee"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "te-yes-yes",
   "shop": "sharma",
-  "note": "",
   "language": "te-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "అవును, తీసుకున్నాను",
     "kind": "haan",
@@ -748,53 +1229,73 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "te-no-reason",
   "shop": "gupta",
-  "note": "",
   "language": "te-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "లేదు, అతను ఒక్క రూపాయి అన్నాడు",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he said one rupee"
-   },
-   {
-    "text": "వద్దు, బాక్స్ తీసుకెళ్ళండి",
-    "kind": "na",
-    "en": "don't want it, take the box"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "te-someone-else",
   "shop": "sharma",
-  "note": "",
   "language": "te-IN",
   "turns": [
    {
-    "text": "నేను పనివాడిని, యజమాని బయటకు వెళ్ళారు",
-    "kind": "unsure",
-    "en": "I'm the worker, the owner has gone out"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "సరే సరే, కట్ చేసుకోండి",
+    "text": "నేను పనివాడిని, యజమాని బయటకు వెళ్ళారు",
     "kind": "unsure",
-    "en": "ok ok, go ahead and deduct"
+    "en": "I'm the worker, the owner has gone out",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
  },
  {
   "id": "bn-yes-yes",
   "shop": "gupta",
-  "note": "",
   "language": "bn-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "হ্যাঁ, নিয়েছিলাম",
     "kind": "haan",
@@ -807,48 +1308,79 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "bn-no-reason",
   "shop": "sharma",
-  "note": "",
   "language": "bn-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "না, ও তো এক টাকা বলেছিল",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he had said one rupee"
-   },
-   {
-    "text": "না, বাক্স নিয়ে যান",
-    "kind": "na",
-    "en": "no, take the box away"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "bn-but",
   "shop": "gupta",
-  "note": "",
   "language": "bn-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "হ্যাঁ, কিন্তু প্রথম মাস ফ্রি বলেছিল না?",
     "kind": "unsure",
     "en": "yes, but didn't he say the first month was free?"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "mr-yes-yes",
   "shop": "sharma",
-  "note": "",
   "language": "mr-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "हो, घेतला होता",
     "kind": "haan",
@@ -861,48 +1393,79 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "mr-no-reason",
   "shop": "gupta",
-  "note": "",
   "language": "mr-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "नाही, त्याने ₹1 सांगितलं होतं",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he had said ₹1"
-   },
-   {
-    "text": "नाही, बॉक्स घेऊन जा",
-    "kind": "na",
-    "en": "no, take the box away"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "mr-but",
   "shop": "sharma",
-  "note": "",
   "language": "mr-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "हो, पण ₹1 सांगितलं होतं",
     "kind": "unsure",
     "en": "yes, but ₹1 was what I was told"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "kn-yes-yes",
   "shop": "gupta",
-  "note": "",
   "language": "kn-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ಹೌದು, ತಗೊಂಡಿದ್ದೆ",
     "kind": "haan",
@@ -915,48 +1478,79 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "kn-no-reason",
   "shop": "sharma",
-  "note": "",
   "language": "kn-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ಇಲ್ಲ, ಅವನು ಒಂದು ರೂಪಾಯಿ ಅಂದಿದ್ದ",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he had said one rupee"
-   },
-   {
-    "text": "ಬೇಡ, ಬಾಕ್ಸ್ ತಗೊಂಡು ಹೋಗಿ",
-    "kind": "na",
-    "en": "don't want it, take the box away"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "kn-but",
   "shop": "gupta",
-  "note": "",
   "language": "kn-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ಹೌದು, ಆದ್ರೆ ದರ ಸ್ವಲ್ಪ ಕಮ್ಮಿ ಮಾಡಿ",
     "kind": "unsure",
     "en": "yes, but lower the rate a bit"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "gu-yes-yes",
   "shop": "sharma",
-  "note": "",
   "language": "gu-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "હા, લીધું હતું",
     "kind": "haan",
@@ -969,53 +1563,73 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "gu-no-reason",
   "shop": "gupta",
-  "note": "",
   "language": "gu-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ના, એણે ₹1 કીધું હતું",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he had said ₹1"
-   },
-   {
-    "text": "ના, બોક્સ લઈ જાવ",
-    "kind": "na",
-    "en": "no, take the box away"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "gu-someone-else",
   "shop": "sharma",
-  "note": "",
   "language": "gu-IN",
   "turns": [
    {
-    "text": "હું તો નોકર છું, શેઠ બહાર ગયા છે",
-    "kind": "unsure",
-    "en": "I'm only the worker, the boss is out"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "હા હા, કાપી લો",
+    "text": "હું તો નોકર છું, શેઠ બહાર ગયા છે",
     "kind": "unsure",
-    "en": "yes yes, go ahead and deduct"
+    "en": "I'm only the worker, the boss is out",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
  },
  {
   "id": "en-yes-yes",
   "shop": "gupta",
-  "note": "",
   "language": "en-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "Yes, I took it",
     "kind": "haan",
@@ -1028,48 +1642,79 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "en-no-reason",
   "shop": "sharma",
-  "note": "",
   "language": "en-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "No bhaiya, he told me it's only ₹1",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no brother, he told me it's only ₹1"
-   },
-   {
-    "text": "No, take the box back",
-    "kind": "na",
-    "en": "no, take the box back"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "en-but",
   "shop": "gupta",
-  "note": "",
   "language": "en-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "Okay yes, but he told me it was free",
     "kind": "unsure",
     "en": "okay yes, but he told me it was free"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "ml-yes-yes",
   "shop": "sharma",
-  "note": "",
   "language": "ml-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "അതെ, വാങ്ങിയതാണ്",
     "kind": "haan",
@@ -1082,53 +1727,73 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "ml-no-reason",
   "shop": "gupta",
-  "note": "",
   "language": "ml-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "അല്ല, അവൻ ഒരു രൂപയേ ആകൂ എന്ന് പറഞ്ഞു",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he said it would only be one rupee"
-   },
-   {
-    "text": "വേണ്ട, പെട്ടി കൊണ്ടുപോയ്ക്കോ",
-    "kind": "na",
-    "en": "don't want it, take the box away"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "ml-someone-else",
   "shop": "sharma",
-  "note": "",
   "language": "ml-IN",
   "turns": [
    {
-    "text": "ഞാൻ ഇവിടെ ജോലിക്കാരനാണ്, മുതലാളി പുറത്താണ്",
-    "kind": "unsure",
-    "en": "I'm only the worker here, the owner is out"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "ആ, എടുത്തോ",
+    "text": "ഞാൻ ഇവിടെ ജോലിക്കാരനാണ്, മുതലാളി പുറത്താണ്",
     "kind": "unsure",
-    "en": "yes, go ahead and take it"
+    "en": "I'm only the worker here, the owner is out",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
  },
  {
   "id": "or-yes-yes",
   "shop": "gupta",
-  "note": "",
   "language": "or-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ହଁ, ନେଇଥିଲି",
     "kind": "haan",
@@ -1141,48 +1806,79 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "or-no-reason",
   "shop": "sharma",
-  "note": "",
   "language": "or-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ନା, ସେ ₹1 କହିଥିଲା",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he had said ₹1"
-   },
-   {
-    "text": "ନା, ବାକ୍ସ ନେଇଯାଅ",
-    "kind": "na",
-    "en": "no, take the box away"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "or-but",
   "shop": "gupta",
-  "note": "",
   "language": "or-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ହଁ, କିନ୍ତୁ ସେ ମାଗଣା କହିଥିଲା",
     "kind": "unsure",
     "en": "yes, but he had said it was free"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "pa-yes-yes",
   "shop": "sharma",
-  "note": "",
   "language": "pa-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ਹਾਂ ਜੀ, ਲਿਆ ਸੀ",
     "kind": "haan",
@@ -1195,45 +1891,555 @@
    }
   ],
   "expect": "charged",
-  "honest": true
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "pa-no-reason",
   "shop": "gupta",
-  "note": "",
   "language": "pa-IN",
   "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
    {
     "text": "ਨਹੀਂ, ਉਹਨੇ ₹1 ਕਿਹਾ ਸੀ",
     "kind": "na",
     "reason": "salesman said ₹1",
     "en": "no, he had said ₹1"
-   },
-   {
-    "text": "ਨਹੀਂ, ਡੱਬਾ ਲੈ ਜਾਓ",
-    "kind": "na",
-    "en": "no, take the box away"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
  },
  {
   "id": "pa-someone-else",
   "shop": "sharma",
-  "note": "",
   "language": "pa-IN",
   "turns": [
    {
-    "text": "ਮੈਂ ਤਾਂ ਨੌਕਰ ਹਾਂ, ਮਾਲਕ ਬਾਹਰ ਗਏ ਨੇ",
-    "kind": "unsure",
-    "en": "I'm only the worker, the owner is out"
+    "text": "haan ji, theek hai",
+    "kind": "haan"
    },
    {
-    "text": "ਹਾਂ ਹਾਂ, ਕੱਟ ਲਓ",
+    "text": "ਮੈਂ ਤਾਂ ਨੌਕਰ ਹਾਂ, ਮਾਲਕ ਬਾਹਰ ਗਏ ਨੇ",
     "kind": "unsure",
-    "en": "yes yes, go ahead and deduct"
+    "en": "I'm only the worker, the owner is out",
+    "speaker": "someone else"
    }
   ],
-  "expect": "held"
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
+ },
+ {
+  "id": "verma-not-delivered",
+  "shop": "verma",
+  "turns": [],
+  "expect": "not charged",
+  "note": "box never delivered: no call, nothing charged"
+ },
+ {
+  "id": "wrong-person",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "nahi, galat number hai",
+    "kind": "na",
+    "reason": "galat number hai"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
+ },
+ {
+  "id": "family-son",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "papa dukaan pe nahi hain, main beta bol raha hoon",
+    "kind": "unsure",
+    "speaker": "someone else",
+    "reason": "his son answered"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true
+ },
+ {
+  "id": "family-wife-haan",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan bolo, main unki wife hoon",
+    "kind": "unsure",
+    "speaker": "someone else",
+    "reason": "his wife answered"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: someone else",
+  "recording": true,
+  "note": "a haan from someone else never passes the owner question"
+ },
+ {
+  "id": "owner-asks-who",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "kaun bol raha hai?",
+    "kind": "question"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: not confirmed",
+  "recording": true
+ },
+ {
+  "id": "wrong-code",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1 2 3 4"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: wrong code",
+  "recording": true
+ },
+ {
+  "id": "wrong-code-haan-after",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "5 6 7 8"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: wrong code",
+  "recording": true,
+  "note": "someone with his phone but not his app says he is the owner"
+ },
+ {
+  "id": "code-refused",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "code kyun chahiye? nahi bataunga"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: no code",
+  "recording": true
+ },
+ {
+  "id": "code-silent",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": ""
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: no code",
+  "recording": true
+ },
+ {
+  "id": "code-hindi-words",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "teen chaar paanch chhe"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "code-devanagari",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "तीन चार पांच छह"
+   },
+   {
+    "text": "हाँ जी, लिया था",
+    "kind": "haan"
+   },
+   {
+    "text": "हाँ, पक्का",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "code-in-a-sentence",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "haan code hai 34 56, likh lo"
+   },
+   {
+    "text": "haan ji",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "consent-no",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "nahi, record mat karo",
+    "kind": "na",
+    "reason": "record mat karo"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": false,
+  "note": "the call goes on without recording, and a clear yes still counts"
+ },
+ {
+  "id": "consent-question",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "record kyun kar rahe ho?",
+    "kind": "question"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "na bhaiya, nahi chahiye",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": false
+ },
+ {
+  "id": "consent-silent",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "",
+    "kind": "no answer"
+   }
+  ],
+  "expect": "held",
+  "recording": false
+ },
+ {
+  "id": "angry-na",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "nahi! usne toh bola tha 1 rupaya katega, tum log jhooth bolte ho",
+    "kind": "na",
+    "reason": "salesman said ₹1"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "box-wapas-at-ask",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "nahi chahiye, box wapas le jao",
+    "kind": "na",
+    "reason": "box wapas le jao"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "note": "no pickup is booked from what the AI read"
+ },
+ {
+  "id": "box-wapas-at-readback",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "nahi nahi, rehne do, box wapas le jao",
+    "kind": "na",
+    "reason": "box wapas le jao"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "note": "no pickup is booked from what the AI read"
+ },
+ {
+  "id": "hmm-at-ask",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "हम।",
+    "kind": "no answer"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "tap-cancel",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "na bhaiya, usne ₹1 bola tha",
+    "kind": "na",
+    "reason": "salesman said ₹1"
+   }
+  ],
+  "tap": "cancel",
+  "expect": "cancelled",
+  "identity": "verified",
+  "recording": true,
+  "note": "he taps cancel in WhatsApp: the plan is cancelled and the pickup booked by his tap"
+ },
+ {
+  "id": "tap-cheaper",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na",
+    "reason": "125 bahut zyada hai"
+   }
+  ],
+  "tap": "cheaper_plan",
+  "expect": "charged:plan-b",
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "tap-keep",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "haan, par pehle mahine free bola tha",
+    "kind": "unsure",
+    "reason": "pehle mahine free bola tha"
+   }
+  ],
+  "tap": "keep_plan",
+  "expect": "charged:plan-a",
+  "identity": "verified",
+  "recording": true
  }
 ]
