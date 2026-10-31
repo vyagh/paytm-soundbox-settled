@@ -67,7 +67,35 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .st.k-not{color:var(--not)} .st.k-not::before{background:var(--not)}
 .st.k-on{color:var(--accent)} .st.k-on::before{background:var(--accent)}
 .st.k-rec{color:var(--rec)} .st.k-rec::before{background:var(--rec)}
-.railfoot{margin-top:auto;display:flex;flex-direction:column;gap:.6rem;padding:0 .75rem .25rem}
+.phone{margin-top:auto;display:flex;flex-direction:column;gap:.45rem}
+.phone h2{padding-top:0}
+.handset{background:#1d1d1f;border-radius:1.6rem;padding:.4rem;box-shadow:0 10px 28px -14px rgb(20 20 40 / .45)}
+.screen{position:relative;border-radius:1.25rem;padding:1.3rem .55rem .6rem;display:flex;flex-direction:column;gap:.5rem;
+  background:linear-gradient(180deg,#e9edf5,#dfe4ee)}
+.screen::before{content:"";position:absolute;top:.45rem;left:50%;width:2.6rem;height:.4rem;border-radius:999px;background:#1d1d1f;transform:translateX(-50%)}
+.screen.wa{background:#ece5dd}
+.notif{background:rgb(255 255 255 / .9);border-radius:.9rem;padding:.55rem .65rem .65rem;box-shadow:0 1px 2px rgb(20 20 40 / .08)}
+.app{display:flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:600;color:var(--muted)}
+.app i{width:1.05rem;height:1.05rem;border-radius:.3rem;background:var(--accent);flex:none;display:grid;place-items:center}
+.app i svg{width:.65rem;height:.65rem}
+.app.wa i{background:#1f8a4c}
+.app time{margin-left:auto;font-weight:500;color:var(--faint)}
+.notif p{font-size:.78rem;line-height:1.35;color:var(--ink);margin-top:.3rem}
+.code{display:block;font-size:1.55rem;font-weight:700;letter-spacing:.14em;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:.15rem}
+.wamsg{background:#fff;border-radius:.2rem .9rem .9rem .9rem;padding:.55rem .65rem .6rem;box-shadow:0 1px 1px rgb(20 20 40 / .1)}
+.wamsg p{font-size:.75rem;line-height:1.4;color:var(--ink)}
+.walink{display:block;margin-top:.35rem;font-size:.7rem;color:#1a6fb5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.choices{display:flex;flex-direction:column;gap:.3rem}
+.choice{border:0;background:#fff;color:#1f7a45;font-size:.78rem;font-weight:600;height:2.1rem;border-radius:.7rem;cursor:pointer;box-shadow:0 1px 1px rgb(20 20 40 / .1);
+  transition:background-color .15s,color .15s,transform .12s var(--ease)}
+.choice:hover:not(:disabled){background:#f4fbf6}
+.choice:active:not(:disabled){transform:scale(.98)}
+.choice:disabled{cursor:default;color:var(--faint)}
+.choice[aria-pressed="true"]{background:#1f8a4c;color:#fff}
+.tapnote{font-size:.68rem;line-height:1.35;color:var(--muted);text-align:center;padding:0 .2rem}
+.tapnote.warn{color:var(--rec)}
+.phone:not([hidden])+.railfoot #fresh-note{display:none}
+.railfoot{display:flex;flex-direction:column;gap:.6rem;padding:0 .75rem .25rem}
 .railfoot p{font-size:.75rem;color:var(--faint);line-height:1.4}
 .ghost{align-self:flex-start;border:0;background:var(--fill2);color:var(--ink2);font-size:.75rem;font-weight:600;height:1.9rem;padding:0 .85rem;border-radius:999px;cursor:pointer;transition:background-color .15s}
 .ghost:hover{background:#dcdce2}
@@ -84,6 +112,26 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .pill.k-charged{color:var(--charged);background:var(--charged-soft)}
 .pill.k-held{color:var(--held);background:var(--held-soft)}
 .pill.k-not{color:var(--not);background:var(--not-soft)}
+.norec{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:600;color:var(--muted);height:1.75rem;padding:0 .7rem;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair);white-space:nowrap}
+.norec svg{width:.85rem;height:.85rem}
+.norec:not([hidden])+.pill{margin-left:0}
+.callhead .norec{margin-left:auto}
+.ok{display:inline-flex;align-items:center;gap:.3rem;color:var(--charged);font-weight:600}
+.ok svg{width:.95em;height:.95em}
+
+/* steps of the call */
+.steps{list-style:none;display:flex;align-items:center;gap:.4rem;flex:none;font-size:.8125rem;font-weight:550;color:var(--faint)}
+.steps li{display:flex;align-items:center;gap:.4rem;white-space:nowrap}
+.steps li+li::before{content:"";width:1.1rem;height:1px;background:var(--fill2);margin-right:.05rem}
+.steps i{display:grid;place-items:center;width:1.2rem;height:1.2rem;border-radius:50%;background:var(--fill);color:var(--faint);font-style:normal;font-size:.65rem;font-weight:700;flex:none}
+.steps i svg{width:.7rem;height:.7rem}
+.steps .done{color:var(--ink2)}
+.steps .done i{background:var(--charged-soft);color:var(--charged)}
+.steps .now{color:var(--ink);font-weight:650}
+.steps .now i{background:var(--accent);color:#fff;box-shadow:0 0 0 .2rem var(--accent-soft)}
+.steps .stop i{background:var(--held-soft);color:var(--held)}
+.steps .stop{color:var(--held)}
+.steps .skip{text-decoration:line-through;text-decoration-color:var(--fill2)}
 
 .scene{position:relative;flex:1 1 12rem;min-height:11rem;border-radius:1rem;overflow:hidden;background:var(--fill)}
 .scene iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .5s var(--ease)}
@@ -240,6 +288,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
   <nav class="rail" aria-label="Shops">
     <h2>Rent due 1 Nov</h2>
     <ul class="shops" id="shops"></ul>
+    <div class="phone" id="phone" hidden></div>
     <div class="railfoot">
       <p id="fresh-note"></p>
       <button class="ghost" type="button" id="fresh"></button>
@@ -249,8 +298,10 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
   <section class="panel call" aria-label="The call">
     <div class="callhead">
       <div><h2 id="name"></h2><p class="sub" id="sub"></p></div>
+      <div class="norec" id="norec" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5v2M2 2l12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Not recording</div>
       <div class="pill" id="pill"></div>
     </div>
+    <ol class="steps" id="steps" aria-label="Steps of the call" hidden></ol>
     <div class="scene" id="scene">
       <iframe id="frame" title="Live scene" tabindex="-1"></iframe>
       <div class="wait" id="wait"><strong id="wait-line"></strong><span>Live scene</span></div>
@@ -292,6 +343,7 @@ const ICONS = {
   held: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><rect x="14.5" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/><rect x="21.9" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/></svg>',
   not: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M13 20h14" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>',
   phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5l2.6-.6 1.9 4.4-2 1.7a12 12 0 0 0 5.9 5.9l1.7-2 4.4 1.9-.6 2.6a2 2 0 0 1-2 1.6A16.5 16.5 0 0 1 3.5 5.5a2 2 0 0 1 1.6-2z" fill="currentColor"/></svg>',
+  tick: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5" fill="currentColor"/><path d="M4.8 8.2l2.2 2.1 4.2-4.4" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   mic: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
 };
 const CHANNEL_ICONS = {
@@ -336,7 +388,7 @@ function runOf(key) {
   let s = null;
   for (const r of view()) {
     if (r.shop !== key) continue;
-    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null};
+    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null, recording: null, identity: null};
     if (FINAL[r.outcome]) {
       s.status = FINAL[r.outcome];
       s.settled = true;
@@ -349,13 +401,20 @@ function runOf(key) {
       if (FINAL[r.outcome]) s.pinned = true;
     }
     if (r.said) s.turns.push(r);
+    if (r.said && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
     if (r.step === 'records checked') s.records = r.reason;
+    if (r.step === 'consent' && r.rule) s.recording = !/no recording/i.test(r.rule);
+    if (r.step === 'identity' && r.rule) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
     if (r.step === 'calling') s.called = true;
     if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
     if (r.step === 'follow-up' && r.outcome === 'charged') s.charge = r.rule;
     if (r.step === 'follow-up' && /confirm by SMS/i.test(r.action || '')) s.pick = r.rule;
   }
-  if (s) s.msgs = viewMsgs().filter(m => m.shop === key && m.at >= s.startAt);
+  if (s) {
+    s.msgs = viewMsgs().filter(m => m.shop === key && m.at >= s.startAt);
+    const call = SHOPS[key]?.call;
+    if (call?.active && s.recording === null && call.step && call.step !== 'consent' && typeof call.recording === 'boolean') s.recording = call.recording;
+  }
   return s || {status: 'waiting', settled: false, turns: [], acts: [], msgs: []};
 }
 
@@ -386,6 +445,8 @@ function render() {
   const s = runOf(focus);
   s.shop = SHOPS[focus];
   renderHead(s);
+  renderSteps(s);
+  renderPhone(s);
   renderScene(s);
   renderConvo(s);
   renderControls(s);
@@ -423,7 +484,9 @@ function renderHead(s) {
   const call = shop.call || {};
   html($('name'), esc(shop.name));
   const lang = call.active ? shop.language : shop.languages.find(l => l.code === (me(focus).lang || shop.default));
-  html($('sub'), [shop.owner ? `Owner ${esc(shop.owner)}` : 'Shopkeeper', lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
+  const who = s.identity?.ok ? `<span class="ok">${ICONS.tick}Verified: ${esc(shop.owner || 'shopkeeper')}</span>` : shop.owner ? `Owner ${esc(shop.owner)}` : 'Shopkeeper';
+  html($('sub'), [who, lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
+  $('norec').hidden = s.recording !== false;
   const [kind, text] = statusLine(focus, s);
   const pill = $('pill');
   pill.className = `pill k-${kind}${call.active && call.waiting && !me(focus).speaking ? ' breathe' : ''}`;
@@ -456,6 +519,86 @@ function renderScene(s) {
   $('wait').hidden = sceneUp && frame.classList.contains('ready');
   html($('wait-line'), esc(statusLine(focus, s)[1]));
 }
+
+/* Consent, Identity, Plan question, Read-back, Result */
+const STEPS = [['consent', 'Consent'], ['identity', 'Identity'], ['ask', 'Plan question'], ['readback', 'Read-back'], ['done', 'Result']];
+const STEP_AT = {consent: 0, identity: 1, ask: 2, readback: 3, followup: 4, done: 4};
+const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.2 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+function renderSteps(s) {
+  const call = s.shop.call || {};
+  const box = $('steps');
+  let at = -1;
+  if (call.active && call.step in STEP_AT) at = STEP_AT[call.step];
+  else if (s.settled && (s.recording !== null || s.identity)) at = 4;
+  if (at < 0 && !(call.active && call.step)) { box.hidden = true; return; }
+  box.hidden = false;
+  const failed = s.identity && !s.identity.ok;
+  const ended = at === 4 && !call.active;
+  html(box, STEPS.map(([k, name], i) => {
+    let kind = i < at ? 'done' : i === at ? 'now' : '';
+    if (failed && i === 1) kind = 'stop';
+    if (ended && i === 3 && !(s.asked?.[0]?.read_as === 'haan' && s.asked.length > 1)) kind = 'skip';
+    if (failed && i > 1 && i < 4) kind = '';
+    if (ended && i === 4) kind = 'done';
+    const mark = kind === 'done' ? TICK : kind === 'stop' ? '!' : i + 1;
+    return `<li class="${kind}"${kind === 'now' ? ' aria-current="step"' : ''}><i>${mark}</i>${name}</li>`;
+  }).join(''));
+}
+
+/* his phone: the Paytm code during identity, the WhatsApp choices after a na */
+const CHOICES = {keep_plan: 'Keep my plan', cheaper_plan: 'Show me a cheaper plan', cancel: 'Cancel'};
+const APP_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.5h6v7H3z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 7.5h2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>';
+const taps = {};
+
+function choicesOf(m) {
+  let c = m.choices;
+  if (typeof c === 'string') { try { c = JSON.parse(c); } catch (e) { c = c.split(/[,|]/); } }
+  if (!Array.isArray(c)) return [];
+  return c.map(x => typeof x === 'string' ? {id: x.trim(), label: CHOICES[x.trim()] || x.trim()} : {id: x.id || x.choice, label: x.label || CHOICES[x.id || x.choice] || x.id})
+    .filter(x => x.id in CHOICES);
+}
+
+function renderPhone(s) {
+  const call = s.shop.call || {};
+  const box = $('phone');
+  const asking = s.msgs.filter(m => m.to_whom === 'shopkeeper' && m.channel === 'WhatsApp' && (m.link || m.choices)).pop();
+  let inner = '';
+  if (call.active && call.step === 'identity' && call.app_code) {
+    inner = `<div class="screen"><div class="notif pop"><div class="app"><i>${APP_ICON}</i>Paytm<time>now</time></div>
+      <p>Your Settled verification code: <span class="code">${esc(call.app_code)}</span></p></div></div>`;
+  } else if (asking) {
+    const choices = choicesOf(asking);
+    const tap = taps[asking.id] || {};
+    const picked = tap.choice || asking.chosen || asking.choice || null;
+    const text = asking.text.replace(/^Paytm:\s*/, '');
+    inner = `<div class="screen wa"><div class="app wa"><i>${CHANNEL_ICONS.WhatsApp.replace('fill="currentColor"', 'fill="#fff"')}</i>WhatsApp<time>${esc(clock(asking.at))}</time></div>
+      <div class="wamsg"><p>${esc(text)}</p>${asking.link ? `<span class="walink">${esc(asking.link)}</span>` : ''}</div>
+      ${choices.length ? `<div class="choices">${choices.map(c => `<button class="choice" type="button" data-msg="${esc(asking.id)}" data-choice="${esc(c.id)}"
+        aria-pressed="${picked === c.id}"${picked || tap.busy ? ' disabled' : ''}>${esc(c.label)}</button>`).join('')}</div>` : ''}
+      <p class="tapnote${tap.warn ? ' warn' : ''}">${esc(tap.note || (picked ? 'His tap is recorded' : 'Only his tap here changes the plan'))}</p></div>`;
+  }
+  box.hidden = !inner;
+  html(box, inner ? `<h2>His phone</h2><div class="handset">${inner}</div>` : '');
+}
+
+$('phone').addEventListener('click', async e => {
+  const b = e.target.closest('.choice');
+  if (!b || b.disabled) return;
+  const id = b.dataset.msg;
+  const tap = taps[id] = {busy: true, note: 'Sending his tap…'};
+  render();
+  try {
+    const res = await fetch(`/api/consent/${encodeURIComponent(id)}/${encodeURIComponent(b.dataset.choice)}`, {method: 'POST'});
+    const got = await res.json().catch(() => ({}));
+    if (res.ok) Object.assign(tap, {choice: b.dataset.choice, note: got.note || 'His tap is recorded'});
+    else Object.assign(tap, {warn: true, note: got.error || 'Could not send his tap'});
+  } catch (e) {
+    Object.assign(tap, {warn: true, note: 'Network failed, tap again'});
+  }
+  tap.busy = false;
+  await refreshShops().catch(() => render());
+});
 
 function bubbleSettled(said, shop, old, speaking) {
   const native = shop.lines[said];
@@ -494,9 +637,12 @@ function renderConvo(s) {
   turns.forEach((r, i) => {
     const old = i < total - 1;
     parts.push(bubbleSettled(r.said, shop, old, false));
-    const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q>${clipBtn(clipUrl(r.clip), old)}</p>` : `<p class="words"><span class="none">No reply</span></p>`;
+    const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q>${s.recording === false ? '' : clipBtn(clipUrl(r.clip), old)}</p>` : `<p class="words"><span class="none">No reply</span></p>`;
     parts.push(bubbleHim(`${who} said`, inner, readAs(r), old));
   });
+  if (s.identity && !s.identity.ok && !pending) {
+    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Not confirmed as ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(/someone/i.test(s.identity.why) ? 'someone else answered' : s.identity.why)}. Nothing taken, nothing changed.</span></div>`);
+  }
   if (pending) {
     parts.push(bubbleSettled(call.said, shop, false, m.speaking));
     let inner;
