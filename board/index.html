@@ -364,9 +364,9 @@ function shopState(key) {
     } else if (!s.settled) {
       s.status = statusOf(r, s.status);
     }
-    if (r.step === 'decided' && r.rule) {
+    if (r.step === 'decided' && r.rule && (!s.pinned || (FINAL[r.outcome] && r.rule !== s.why))) {
       s.why = r.rule;
-      if (!s.pinned) s.decisive = s.turns[s.turns.length - 1];
+      s.decisive = s.turns[s.turns.length - 1];
       if (FINAL[r.outcome]) s.pinned = true;
     }
     if (r.said) {
