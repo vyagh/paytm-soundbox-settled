@@ -28,6 +28,7 @@ def load(shop_id):
         delivery=s.get("delivery"),
         returned=s.get("return"),
         plans=[Plan(**p) for p in data["plans"]],
+        language=s.get("language", "hi"),
     )
 
 

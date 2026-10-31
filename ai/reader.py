@@ -6,7 +6,7 @@ from datetime import datetime
 from pathlib import Path
 
 from settled.models import KINDS, Answer
-from voice.script_hi import NA_FOLLOW_UP
+from voice.script import NA_FOLLOW_UP
 
 ROOT = Path(__file__).resolve().parent.parent
 PROMPT = Path(__file__).resolve().parent / "prompt_hi.md"

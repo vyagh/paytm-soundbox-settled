@@ -1,4 +1,4 @@
-from voice.script_hi import ASK, NA_FOLLOW_UP, READ_BACK
+from voice.script import ASK, NA_FOLLOW_UP, READ_BACK
 
 from . import log, paytm_mock, records
 from .rules import decide

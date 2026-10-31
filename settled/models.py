@@ -21,6 +21,7 @@ class Shop:
     delivery: dict | None
     returned: dict | None
     plans: list[Plan] = field(default_factory=list)
+    language: str = "hi"
 
     def plan(self, plan_id):
         return next((p for p in self.plans if p.id == plan_id), None)

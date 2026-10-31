@@ -7,6 +7,7 @@
     "gupta": {
       "name": "Gupta Kirana",
       "owner": null,
+      "language": "hi",
       "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
       "delivery": {"delivered": true, "on": "2026-10-24"},
       "return": {"returned": false}
@@ -14,6 +15,7 @@
     "sharma": {
       "name": "Sharma Store",
       "owner": "Ramesh",
+      "language": "hi",
       "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
       "delivery": {"delivered": true, "on": "2026-10-25"},
       "return": {"returned": false}
@@ -21,6 +23,7 @@
     "verma": {
       "name": "Verma Dairy",
       "owner": null,
+      "language": "hi",
       "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
       "delivery": null,
       "return": {"returned": false}
