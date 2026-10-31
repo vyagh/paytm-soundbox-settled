@@ -1,8 +1,8 @@
 import time
 
 from voice import script
-from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, CALL_LATER, CALLBACK, CHARGED,
-                          CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO,
+from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, AUTOMATED, CALL_LATER, CALLBACK,
+                          CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO,
                           NAME_AGAIN, OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK,
                           READ_BACK_B, REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
 
@@ -38,6 +38,10 @@ class _Busy(Exception):
     def __init__(self, line, answer):
         super().__init__(line)
         self.line, self.answer = line, answer
+
+
+class _Robot(_Busy):
+    """He asked if this is a machine, or for a person."""
 
 
 def run(shop_id, listener, state=None, callback=False):
@@ -79,6 +83,14 @@ def _run(shop, listener, state, callback=False):
     log.add(shop.id, "calling", rule="callback: he tapped Call me now or called the number back" if callback else None)
     try:
         return _call(shop, _busy_aware(listener), state)
+    except _Robot as asked:
+        step = "answered" if state.step in ("ask", "readback") else state.step
+        _log_reply(shop, state, step, asked.line, asked.answer, rule="asked if it's a robot or for a person → a person calls back")
+        decision = _decided(shop, rules.person_later())
+        paytm_mock.tell_call_later(shop)
+        paytm_mock.book_retry(shop, "a person calls him back")
+        _say(shop, listener, AUTOMATED)
+        return decision
     except _Busy as busy:
         step = "answered" if state.step in ("ask", "readback") else state.step
         _log_reply(shop, state, step, busy.line, busy.answer, rule="busy → call back later")
@@ -95,6 +107,8 @@ def _busy_aware(listener):
         if not wait:
             return listener(shop, line, wait=False)
         answer = listener(shop, line)
+        if rules.robot(answer.words):
+            raise _Robot(line, answer)
         if rules.busy(answer.words):
             raise _Busy(line, answer)
         return answer

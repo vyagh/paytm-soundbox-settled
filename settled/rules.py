@@ -5,6 +5,10 @@ from .year import refused, spoken
 BUSY = ("busy", "bizi", "baad mein", "baad me ", "bad mein", "baad main", "call later", "later call", "call back",
         "callback", "phir se call", "phir call", "fir call", "dobara call", "free nahi", "time nahi",
         "बिज़ी", "बिजी", "व्यस्त", "बाद में", "बाद मे ", "फ्री नहीं", "टाइम नहीं", "फिर से कॉल", "दोबारा कॉल")
+# He asks if this is a machine, or to talk to a person. Matched in plain code at every step: Settled
+# says it's an automated call and a person calls him back. Never "machine" alone: the Soundbox is one.
+ROBOT = ("robot", "bot ", "recording", "insaan", "insan", "human", "real person", "asli aadmi", "aadmi se baat",
+         "kisi aadmi", "रोबोट", "बॉट", "रिकॉर्डिंग", "इंसान", "इन्सान", "असली आदमी", "आदमी से बात", "किसी आदमी")
 # A bare yes to "am I speaking with him": confirmed in plain code, before the AI reads it,
 # which takes a lone "हाँ" for a garbled scrap.
 YES_WORDS = {"haan", "han", "haa", "ha", "ji", "jee", "yes", "yeah", "boliye", "bolie", "speaking", "हा", "जी", "बोलिए",
@@ -136,3 +140,12 @@ def busy(text):
 
 def call_later():
     return Decision("held", "busy, asked for a call later → nothing changed, Paytm calls back")
+
+
+def robot(text):
+    """True when he asks if he's talking to a machine, or asks for a person."""
+    return any(spoken(phrase) in spoken(text) for phrase in ROBOT)
+
+
+def person_later():
+    return Decision("held", "asked if it's a robot or for a person → nothing changed, a person calls back")

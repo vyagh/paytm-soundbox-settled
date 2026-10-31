@@ -4059,5 +4059,78 @@
   "call_me": true,
   "retry": true,
   "note": "a haan with a but after it is not taken as him"
+ },
+ {
+  "id": "robot-at-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "are you a robot? कोई इंसान से बात कराओ",
+    "kind": "question",
+    "topic": "who"
+   },
+   {
+    "text": "are you a robot? कोई इंसान से बात कराओ",
+    "kind": "question",
+    "topic": "who"
+   }
+  ],
+  "expect": "held",
+  "identity": "asked if it's a robot or for a person → a person calls back",
+  "retry": true,
+  "answered": [
+   "AUTOMATED"
+  ],
+  "unread": 1,
+  "note": "told it's an automated call, a person calls him back, nothing changed"
+ },
+ {
+  "id": "robot-at-ask",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "ye recording hai kya? mujhe insaan se baat karni hai",
+    "kind": "question",
+    "topic": "other"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "retry": true,
+  "answered": [
+   "AUTOMATED"
+  ]
+ },
+ {
+  "id": "machine-is-the-box",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha, machine chal rahi hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true,
+  "note": "the Soundbox is a machine to him: not a robot question"
  }
 ]
