@@ -67,7 +67,7 @@ def charge_rent(shop, plan, tapped=False):
     log.add_settle(shop.id, "follow-up", action="charge rent (mock)", outcome="charged",
                    rule=f"₹{plan.price} a month, {plan.name}")
     _sms(shop, f"Your Soundbox rent for {shop.name} is ₹{plan.price}/month ({plan.name}) from {_starts(shop)}. "
-               f"{why} Not right? Reply NO to this SMS and we will stop it.")
+               f"{why}")
     return DONE
 
 
