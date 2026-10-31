@@ -188,6 +188,10 @@ robot-carry-on-name       gupta   charged:plan-a  charged:plan-a  verified: year
 robot-carry-on-year       gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
 robot-carry-on-ask        sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
 robot-again-after-carry-onsharma  held            held            verified: year of birth matches
+not-right-after-charge    gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+not-right-after-tap       sharma  charged:plan-b  charged:plan-b  verified: year of birth matches
+not-right-second-tap      sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+not-right-absent-when-heldgupta   held            held            verified: year of birth matches
 
 charged after na or unsure: 0
 charged without verified identity: 0
@@ -195,6 +199,6 @@ negative actions from the AI: 0
 plan changed on the call, not by his tap: 0
 double charges (more than one charge or cancel per shop in a round): 0
 honest yeses charged: 44/44
-consent taps through the endpoint: 17
-cases matching expected outcome: 189/189
+consent taps through the endpoint: 21
+cases matching expected outcome: 193/193
 lines read differently from their label: 0

@@ -139,14 +139,14 @@ With the Sarvam model sorting every reply, across every saved run:
 - **Every honest yes was charged.**
 - In the version 2 model run, made before the year-of-birth check replaced an app code, nothing was charged without a verified owner, and the AI caused no cancel, plan change or pickup.
 
-On the code as it stands, with the labels standing in for the AI, [all 189 typed calls end as expected](bench/results/typed-v2-189-cases-2026-10-31.txt): 44/44 honest yeses charged, nothing charged after a na or unsure or without a verified owner. No model run covers this version yet.
+On the code as it stands, with the labels standing in for the AI, [all 193 typed calls end as expected](bench/results/typed-v2-193-cases-2026-10-31.txt): 44/44 honest yeses charged, nothing charged after a na or unsure or without a verified owner. No model run covers this version yet.
 
 <details>
 <summary>Every saved run</summary>
 
 | Run | Outcomes matched | Honest yeses charged | Charged after na or unsure |
 |---|---|---|---|
-| [Version 2 as it stands, labels standing in for the AI, all 189 cases](bench/results/typed-v2-189-cases-2026-10-31.txt) | 189/189 | 44/44 | 0 |
+| [Version 2 as it stands, labels standing in for the AI, all 193 cases](bench/results/typed-v2-193-cases-2026-10-31.txt) | 193/193 | 44/44 | 0 |
 | [Version 2 earlier, labels standing in for the AI, the 144 cases saved then](bench/results/typed-v2-2026-10-31.txt) | 144/144 | 31/31 | 0 |
 | [Version 2 before the year-of-birth check (an app code then), Sarvam model, 16 identity and plan cases picked](bench/results/ai-reader-v2-2026-10-31.txt) | 13 of the 14 run before the spend cap | 2/2 | 0 |
 | [Version 1, Sarvam model, 62 cases](bench/results/ai-reader-2026-10-31.txt) | 62/62 | 13/13 | 0 |
