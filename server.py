@@ -41,7 +41,7 @@ def shops():
             "language": {"code": code, "name": language["name"], "own": language["own"]},
             "default": shop.language,
             "languages": LANGUAGES,
-            "lines": {script.english(line, shop): script.say(code, line, shop) for line in script.LINES},
+            "lines": {script.english(line, shop): script.say(code, line, shop) for line in script.lines(code)},
             "checked": code not in script.UNCHECKED,
             "record": records.record(shop_id),
             "plans": [{"id": p.id, "name": p.name, "price": p.price} for p in shop.plans],

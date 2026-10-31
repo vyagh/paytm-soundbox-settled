@@ -49,6 +49,10 @@ A_WHO = "I'm calling from Paytm, about the rent for your Soundbox."
 A_OTHER = "A Paytm representative will call you with the full details on that, and we're also sending everything on WhatsApp."
 SOFT = "No problem, take your time to think it over. Nothing will be taken now, and we're sending everything on WhatsApp."
 CALLBACK = "No problem. Nothing will be taken now. A Paytm representative will call you within two days with the right plan, and we're also sending everything on WhatsApp."
+# Said after a line the AI wrote, so the question or the promise in them stays fixed. Hindi only, like the AI's lines.
+NAME_SHORT = "Am I speaking with {owner} ji?"
+FACTS = ("Nothing will be taken now. A Paytm representative will call you within two days, "
+         "and we're sending everything on WhatsApp.")
 
 LINES = (GREETING, NAME_AGAIN, YEAR, YEAR_WAIT, YEAR_AGAIN, YEAR_WRONG, REASSURE, WHO_WHY, ASK, READ_BACK, CHARGED,
          FOLLOW_UP, CLOSING, CALL_LATER, GOODBYE_OTHER, GOODBYE_UNVERIFIED, DECLINED, ASK_AGAIN, OFFER_B, OFFER_AGAIN,
@@ -58,6 +62,7 @@ YEAR_LINES = (YEAR, YEAR_WAIT, YEAR_AGAIN, YEAR_WRONG)
 # Lines that take no reply: Settled says them and the call goes on or ends.
 STATEMENTS = (REASSURE, WHO_WHY, CHARGED, FOLLOW_UP, CLOSING, CALL_LATER, GOODBYE_OTHER, GOODBYE_UNVERIFIED, DECLINED,
               A_PRICE, A_START, A_CHARGE, A_WHO, A_OTHER, SOFT, CALLBACK)
+AGENT_LINES = (NAME_SHORT, FACTS)
 UNCHECKED = ("bn", "gu", "kn", "ml", "mr", "od", "pa", "ta", "te", "en")
 
 LANGUAGES = {
@@ -95,6 +100,8 @@ LANGUAGES = {
         A_OTHER: "इसकी पूरी जानकारी Paytm के एक प्रतिनिधि आपको कॉल करके देंगे, और हम व्हाट्सऐप पर भी सब भेज रहे हैं।",
         SOFT: "कोई बात नहीं जी, आप आराम से सोच लीजिए। अभी कुछ नहीं कटेगा, और हम सारी जानकारी व्हाट्सऐप पर भेज रहे हैं।",
         CALLBACK: "कोई बात नहीं जी। अभी कुछ नहीं कटेगा। Paytm के एक प्रतिनिधि दो दिन के अंदर आपको कॉल करके सही प्लान बताएँगे, और सारी जानकारी व्हाट्सऐप पर भी भेज रहे हैं।",
+        NAME_SHORT: "क्या मेरी बात {owner} जी से हो रही है?",
+        FACTS: "अभी कुछ नहीं कटेगा। Paytm के एक प्रतिनिधि दो दिन के अंदर आपको कॉल करेंगे, और सारी जानकारी व्हाट्सऐप पर भेज रहे हैं।",
     },
     "bn": {
         "name": "Bengali", "own": "বাংলা", "code": "bn-IN", "voice": "rehan",
@@ -414,7 +421,7 @@ LANGUAGES = {
     "en": {
         "name": "English", "own": "English", "code": "en-IN", "voice": "ratan",
         "months": "January February March April May June July August September October November December",
-        **{key: key for key in LINES},
+        **{key: key for key in LINES + AGENT_LINES},
     },
 }
 
@@ -445,10 +452,22 @@ def _cheaper(shop):
     return shop.cheaper(signed) if signed else None
 
 
+class Fresh(str):
+    """A line the AI wrote for this turn, already in the call's language. It is spoken
+    fresh each time, never cached, and the board and log show it as said."""
+
+
 def say(language, line, shop):
     """The line as spoken in language, filled from the shop's record."""
+    if isinstance(line, Fresh):
+        return str(line)
     return LANGUAGES[language][line].format(**fields(language, shop))
 
 
 def english(line, shop):
     return say("en", line, shop)
+
+
+def lines(language):
+    """Every fixed line this language has."""
+    return [line for line in LINES + AGENT_LINES if line in LANGUAGES[language]]

@@ -28,10 +28,11 @@ def cached(text, language_code, voice):
     return CACHE / f"{language_code}-{name}.wav"
 
 
-def speak(text, language_code, voice):
-    """WAV bytes for text, from the cache when this line was said before."""
+def speak(text, language_code, voice, fresh=False):
+    """WAV bytes for text, from the cache when this line was said before.
+    fresh: a line the AI wrote for this turn, spoken each time and never kept."""
     path = cached(text, language_code, voice)
-    if path.exists():
+    if not fresh and path.exists():
         return path.read_bytes()
 
     body = json.dumps({
@@ -43,7 +44,9 @@ def speak(text, language_code, voice):
     }).encode("utf-8")
     reply, took = _post(TTS_URL, body, "application/json")
     audio = base64.b64decode(reply["audios"][0])
-    _cost("tts", len(text) * TTS_PER_CHAR, took, chars=len(text))
+    _cost("tts", len(text) * TTS_PER_CHAR, took, chars=len(text), fresh=fresh)
+    if fresh:
+        return audio
 
     CACHE.mkdir(exist_ok=True)
     path.write_bytes(audio)

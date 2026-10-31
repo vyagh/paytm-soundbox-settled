@@ -14,7 +14,7 @@ def lines(language):
         shop = records.load(shop_id)
         if rules.before_call(shop).outcome != "call":
             continue
-        for line in script.LINES:
+        for line in script.lines(language):
             text = script.say(language, line, shop)
             if text not in seen:
                 seen.append(text)
