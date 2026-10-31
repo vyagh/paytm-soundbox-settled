@@ -160,12 +160,14 @@ def say_ok(say, shop, heard, kind, step):
         return "too long"
     if not any("ऀ" <= c <= "ॿ" for c in text):
         return "not in Hindi"
-    for sentence in re.split(r"[।.!?\n]+", low):
-        negated = bool(NEGATION & set(year._tokens(sentence)))
-        if any(_has(sentence, w) for w in SECRETS) and not negated:
-            return "asks for a secret"
-        if ("कट" in sentence or "काट" in sentence) and not negated:
-            return "says money will be taken"
+    # a clause's verb comes last, so "OTP नहीं माँग रहे" negates the ask and "घबराइए मत, OTP बताइए" does not
+    for clause in re.split(r"[।.!?,;\n]+", low):
+        tokens = year._tokens(clause)
+        for i, token in enumerate(tokens):
+            if any(_has(token, w) for w in SECRETS) and not NEGATION & set(tokens[i + 1:]):
+                return "asks for a secret"
+            if ("कट" in token or "काट" in token) and not NEGATION & set(tokens[:i]):
+                return "says money will be taken"
     if any(w in low for w in NEVER) or ("वापस" in low and not re.search(r"वापस\s*(कॉल|फ़ोन|फोन|call)", low)):
         return "promises a refund, cancel, pickup or plan change"
     if any(w in low for w in HIS_WORDS) and not any(w in his for w in HIS_WORDS):
