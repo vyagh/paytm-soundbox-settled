@@ -4,7 +4,7 @@ Paytm asks before it charges.
 
 Settled phones a shopkeeper before the first Soundbox rent is taken and asks him, in his own language, whether he agreed to the plan. If he says yes twice, the rent runs and his yes is saved. If he says no, isn't sure, or someone else answers, the money is held and a person follows up. An AI model sorts what he said. Plain code decides what happens to the money.
 
-It's a prototype built for Paytm at the Paytm Build for India AI Hackathon in Delhi (October 2026). It isn't a Paytm product, and every Paytm action in it is a mock.
+A prototype built for Paytm. Paytm's side (charges, holds, tickets and texts) is mocked.
 
 ## Shopkeepers get charged rent they never agreed to
 
@@ -41,7 +41,7 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 | Haan, then haan again on the read-back | Charged at the signed plan |
 | Haan, then anything else on the read-back | Held |
 | Na | Held, manager told, plans or pickup offered |
-| Na, then he picks a plan by name or price | Charged at that plan |
+| Na, then he picks a plan by name or price | Held. He gets an SMS, and the plan starts only when he replies YES |
 | Unsure, a question, or no answer | Held, a person follows up |
 | Anyone but the shopkeeper answers | Held |
 
@@ -68,15 +68,15 @@ The Hindi lines are hand-written. The other ten are machine-written and need a n
 - Log: SQLite, with triggers that abort any update or delete on the log and messages tables
 - Board: one plain HTML file with inline script and bundled fonts, no framework, no CDN
 
-## Tested on 62 simulated shopkeepers
+## Tested on 63 simulated shopkeepers
 
-[`bench/cases.json`](bench/cases.json) holds 62 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, the salesman or a relative answering, and cases in Tamil, Telugu, Bengali, Marathi, Kannada and Gujarati alongside Hindi. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
+[`bench/cases.json`](bench/cases.json) holds 63 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, the salesman or a relative answering, and cases in Tamil, Telugu, Bengali, Marathi, Kannada and Gujarati alongside Hindi. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
 
 With the Sarvam model sorting every reply:
 
 | Run | Outcomes matched | Honest yeses charged | Charged after na or unsure |
 |---|---|---|---|
-| [All 62 cases](bench/results/ai-reader-2026-10-31.txt) | 62/62 | 13/13 | 0 |
+| [62 cases, before the 63rd was added](bench/results/ai-reader-2026-10-31.txt) | 62/62 | 13/13 | 0 |
 | [Re-run after a prompt change](bench/results/ai-reader-langs-2026-10-31.txt) | 27 of 27 run (stopped at the spend cap, 35 cases) | 4/4 | 0 |
 | [Marathi, Kannada, Gujarati](bench/results/ai-reader-mr-kn-gu-2026-10-31.txt) | 8/8 | 2/2 | 0 |
 
@@ -163,6 +163,6 @@ settled/
 │   └── calls.py        one live call per shop
 ├── board/index.html    the board
 ├── data/shops.json     three demo shops and two plans
-├── bench/              62 cases, the runner, saved results
+├── bench/              63 cases, the runner, saved results
 └── pitch/              the deck (PDF) and the demo video
 ```
