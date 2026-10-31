@@ -212,7 +212,7 @@ function render() {
   if (pick.value !== lang && document.activeElement !== pick) pick.value = lang;
 
   // what Settled said, in his script, English under it
-  const said = active && call.said ? call.said : s.turns.length ? s.turns[s.turns.length - 1].said : null;
+  const said = active && call.said ? call.said : s.settled && s.decisive ? s.decisive.said : s.turns.length ? s.turns[s.turns.length - 1].said : null;
   const ask = Object.keys(shop.lines)[0];
   const own = pick.value === shop.language.code;
   if (said) {
@@ -273,7 +273,7 @@ function render() {
   html(talk, `${ICONS.mic}${me.rec ? "Listening… let go to send" : call.hearing || me.sending ? "Hearing…" : "Hold to speak"}`);
   $("p-typed").hidden = !listening;
   let note = me.note || "";
-  if (!active && /^Heard: /.test(note)) note = "";
+  if (!active && !/could not start|busy|already/i.test(note)) note = "";
   if (call.problem) note = call.problem;
   const mic = active && !me.stream && me.mic ? me.mic : "";
   html($("p-note"), [mic, note].filter(Boolean).map(n => `<span${/Try again|No mic|Hold the button|heard nothing|problem|stopped|no voice/i.test(n) ? ' class="warn"' : ""}>${esc(n)}</span>`).join(" "));

@@ -1,4 +1,7 @@
 <!doctype html>
+<!-- Settled's call as a live isometric machine. ?shop=<id> picks the shop; &embed=1 shows the scene alone, filling its box.
+     Embedded, a parent page may postMessage {type: "settled-scene", shop, speaking, rec, level} (level 0..1) to drive the voice and mic parts.
+     Source: d-scene/*, built with node d-scene/build.mjs -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -141,9 +144,9 @@ q{quotes:"\201C" "\201D"}
 .sc-accent{fill:var(--accent)} .sc-charged{fill:var(--charged)} .sc-held{fill:var(--held)} .sc-not{fill:var(--not)}
 .lamp{fill:var(--anatomy-shade-1);stroke:var(--anatomy-mid);stroke-width:.75px;vector-effect:non-scaling-stroke;transition:fill .5s var(--ease)}
 .lamp.on-accent{fill:var(--accent)} .lamp.on-charged{fill:var(--charged)} .lamp.on-held{fill:var(--held)} .lamp.on-not{fill:var(--not)} .lamp.on-rec{fill:var(--rec)}
-.glow{fill:none;stroke-width:1.4px;vector-effect:non-scaling-stroke;opacity:0}
+
 .pulse{fill:var(--accent);stroke:#fff;stroke-width:1px} .pulse.in{fill:var(--ink)}
-.wave{fill:none;stroke:var(--accent);stroke-width:1.5px;vector-effect:non-scaling-stroke;opacity:0}
+.wave{fill:none;stroke:var(--accent);stroke-width:1.6px;vector-effect:non-scaling-stroke}
 .bar{fill:var(--rec);opacity:.85}
 .face-paint{fill:var(--anatomy-face);stroke:var(--anatomy-mid);stroke-width:.75px;vector-effect:non-scaling-stroke}
 .face-dark{fill:var(--anatomy-shade-0);stroke:var(--anatomy-mid);stroke-width:.6px;vector-effect:non-scaling-stroke}
@@ -157,6 +160,15 @@ q{quotes:"\201C" "\201D"}
 .cloth-a{fill:#e9e7e0} .cloth-b{fill:#fbfbf9}
 .coin .iso-top{fill:#f3e7c4!important} .coin .iso-shade{fill:#d8c48c!important} .coin .iso-fill{fill:#e6d6a6!important}
 .coin text{fill:#5b4a1c}
+.beacon[data-on] .iso-fill,.beacon[data-on] .iso-shade{fill:var(--b)!important}
+.beacon[data-on] .iso-top{fill:color-mix(in srgb,var(--b) 50%,#fff)!important}
+.beacon[data-on] .iso-edge{stroke:color-mix(in srgb,var(--b) 70%,#000)}
+.iso-halo{filter:blur(6px)}
+.token .iso-fill,.token .iso-shade{fill:#3a3a44!important}
+.token .iso-top{fill:#55555f!important}
+.token .iso-edge{stroke:#16161d!important}
+.token .iso-line[data-tone="mid"]{stroke:#d8d8dc}
+.engrave.lit{fill:var(--accent)}
 .tray-tint{fill:var(--accent);opacity:0;transition:opacity .5s var(--ease)}
 .tray-tint.on{opacity:.3}
 #scene-svg{display:block;width:100%;height:100%;overflow:visible}
@@ -189,7 +201,15 @@ h1{font-size:1.4rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font
 
 .main{display:grid;grid-template-columns:minmax(0,1fr) minmax(24rem,30rem);gap:calc(1.75*var(--u));min-height:0}
 .stage{position:relative;background:var(--anatomy-card);box-shadow:0 0 0 1px var(--hair);border-radius:calc(2*var(--u));min-height:0;overflow:hidden}
-.stage .holder{position:absolute;inset:calc(5*var(--u)) calc(2.5*var(--u)) calc(5*var(--u))}
+.stage .holder{position:absolute;inset:calc(5*var(--u)) calc(2.5*var(--u)) calc(10*var(--u))}
+.legend{position:absolute;left:calc(2.5*var(--u));right:calc(2.5*var(--u));bottom:calc(5.25*var(--u));list-style:none;display:flex;flex-wrap:wrap;justify-content:center;gap:calc(.75*var(--u)) calc(2.5*var(--u));font-size:.76rem;color:var(--muted)}
+.legend li{display:flex;align-items:center;gap:calc(.75*var(--u));white-space:nowrap}
+.legend i{flex:none;display:block}
+.k-dot{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.k-tile{width:11px;height:11px;border-radius:2px;background:#3a3a44;box-shadow:inset 0 0 0 1.5px var(--ink)}
+.k-dial{width:13px;height:13px;border-radius:50%;box-shadow:inset 0 0 0 1.5px var(--anatomy-mid);background:linear-gradient(60deg,transparent 46%,var(--ink) 46% 56%,transparent 56%) #fff}
+.k-coin{width:13px;height:13px;border-radius:50%;background:#e6d6a6;box-shadow:inset 0 0 0 1.5px #b59a52}
+.k-env{width:14px;height:10px;border-radius:1.5px;background:linear-gradient(155deg,transparent 48%,var(--anatomy-mid) 48% 56%,transparent 56%),linear-gradient(25deg,transparent 48%,var(--anatomy-mid) 48% 56%,transparent 56%) #fff;box-shadow:inset 0 0 0 1.2px var(--anatomy-mid)}
 .corner{position:absolute;font-size:.72rem;line-height:1;letter-spacing:.06em;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 .corner.fig{top:calc(2.25*var(--u));left:calc(2.5*var(--u));color:var(--ink2);font-weight:600}
 .corner.title{top:calc(2.25*var(--u));right:calc(2.5*var(--u));text-transform:uppercase;letter-spacing:.12em}
@@ -270,7 +290,16 @@ body.embed .embed-box{display:block}
   .eq i:nth-child(3){animation-delay:-.5s}
 }
 @media (prefers-reduced-motion:reduce){
-  .btn,.btn.talk.on,.meter i,.lamp,.tray-tint{transition:none;transform:none}
+  .btn,.btn.talk.on,.meter i,.lamp,.beacon[data-on] .iso-fill,.beacon[data-on] .iso-shade{fill:var(--b)!important}
+.beacon[data-on] .iso-top{fill:color-mix(in srgb,var(--b) 50%,#fff)!important}
+.beacon[data-on] .iso-edge{stroke:color-mix(in srgb,var(--b) 70%,#000)}
+.iso-halo{filter:blur(6px)}
+.token .iso-fill,.token .iso-shade{fill:#3a3a44!important}
+.token .iso-top{fill:#55555f!important}
+.token .iso-edge{stroke:#16161d!important}
+.token .iso-line[data-tone="mid"]{stroke:#d8d8dc}
+.engrave.lit{fill:var(--accent)}
+.tray-tint{transition:none;transform:none}
 }
 @keyframes eq{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
 
@@ -291,6 +320,13 @@ body.embed .embed-box{display:block}
       <span class="corner fig">Fig. 1</span>
       <span class="corner title" id="c-title">One call, live</span>
       <div class="holder" id="holder"></div>
+      <ul class="legend" aria-label="How to read the machine">
+        <li><i class="k-dot"></i>Blue dots: Settled's line to his phone</li>
+        <li><i class="k-tile"></i>A tile: his reply, sorted by AI into a bin</li>
+        <li><i class="k-dial"></i>The dial: plain rules decide</li>
+        <li><i class="k-coin"></i>The coin: to the ledger, the held cage, or it stays</li>
+        <li><i class="k-env"></i>Envelopes: texts out (mock)</li>
+      </ul>
       <span class="corner hint">The parts move with the real call</span>
       <span class="corner readout" id="readout" aria-live="polite"></span>
     </section>
@@ -995,7 +1031,6 @@ function buildScene(host) {
     s += screws([[CALLER.x + 4, CALLER.y + 4], [CALLER.x + CALLER.w - 4, CALLER.y + 4], [CALLER.x + 4, fy - 4], [CALLER.x + CALLER.w - 4, fy - 4]], CALLER_TOP);
     // desk phone on top
     const base = {x: CALLER.x + 8, y: CALLER.y + 10, w: 30, d: 26, r: 3};
-    s += halo(base, CALLER_TOP, 1, 3);
     s += slab(base, CALLER_TOP, 6, {tone: "mid", bevel: .8});
     s += D(dotGrid(base.x + 18, base.y + 11, 3, 4, 3.4, CALLER_TOP + 6, P), {size: .7, tone: "hi"});
     s += slab({x: base.x + 4, y: base.y + 11, w: 10, d: 11, r: 1}, CALLER_TOP + 6, .6, {tone: "lo", flat: true});
@@ -1008,13 +1043,13 @@ function buildScene(host) {
     s += cyl(MAST[0], MAST[1], 3, CALLER_TOP + 49, 2.4, {tone: "mid", steps: 20});
     const tip = at([MAST[0], MAST[1], CALLER_TOP + 54]);
     s += `<circle class="face-paint" cx="${tip[0]}" cy="${tip[1]}" r="3.4"/><circle id="mast-lamp" class="lamp" cx="${tip[0]}" cy="${tip[1]}" r="2.3"/>`;
-    s += `<g id="mast-waves">${[0, 1, 2].map(i => `<path class="wave" data-i="${i}" d="${ring(MAST[0], MAST[1], 9, CALLER_TOP + 54, P, 36)}"/>`).join("")}</g>`;
+    s += `<g id="mast-waves">${[0, 1, 2].map(i => `<path class="wave" opacity="0" data-i="${i}" d="${ring(MAST[0], MAST[1], 9, CALLER_TOP + 54, P, 36)}"/>`).join("")}</g>`;
     add(depthOf([CALLER.x + 30, CALLER.y + 26, 0], P), s);
   }
 
   // manager's phone stand (WhatsApp lands here)
   {
-    let s = halo(MANAGER, 0, 6);
+    let s = "";
     s += slab(MANAGER, 0, 16, {tone: "hi", bevel: .8});
     s += front(MANAGER.x, MANAGER.y + MANAGER.d, 16, plate3(6, 4, 22, 9));
     const stand = {x: MANAGER.x + 18, y: MANAGER.y + 4, w: 12, d: 4, r: .8};
@@ -1026,7 +1061,7 @@ function buildScene(host) {
 
   // support ticket spike
   {
-    let s = halo({x: SPIKE[0] - 10, y: SPIKE[1] - 10, w: 20, d: 20, r: 10}, 0, 3, 4);
+    let s = "";
     s += cyl(SPIKE[0], SPIKE[1], 10, 0, 3.5, {tone: "mid", bevel: .8});
     s += L(knurl(SPIKE[0], SPIKE[1], 10, 0, 3.5, 40, P), {tone: "faint"});
     s += cyl(SPIKE[0], SPIKE[1], 2.4, 3.5, 2, {tone: "hi", steps: 16});
@@ -1039,7 +1074,7 @@ function buildScene(host) {
   const binSlots = [];
   {
     const bx = SORT.x0, by = SORT.y, bw = SORT.w * SORT.n, bd = SORT.d;
-    let s = halo({x: bx, y: by, w: bw, d: bd, r: 2}, 0, 6);
+    let s = "";
     s += slab({x: bx - 2, y: by - 2, w: bw + 4, d: bd + 4, r: 2}, 0, 2.5, {tone: "lo", bevel: .6});
     s += slab({x: bx, y: by, w: bw, d: 2, r: 0}, 2.5, 13.5, {tone: "mid"});
     for (let i = 0; i < SORT.n; i++) s += `<path class="tray-tint" id="bin-tint-${i}" d="${planOutline({x: bx + SORT.w * i + 1.5, y: by + 2.5, w: SORT.w - 3, d: bd - 5, r: 1}, 2.6, P)}"/>`;
@@ -1048,9 +1083,9 @@ function buildScene(host) {
       if (i < SORT.n) s += `<g id="bin-slot-${i}"></g>`;
     }
     const fy = by + bd - 2;
-    s += slab({x: bx, y: fy, w: bw, d: 2, r: 0}, 2.5, 9, {tone: "hi", inner: ""});
+    s += slab({x: bx, y: fy, w: bw, d: 2, r: 0}, 2.5, 7.5, {tone: "hi", inner: ""});
     const names = ["HAAN", "NA", "OTHER", "NONE"];
-    s += front(bx, fy + 2, 11.5, names.map((n, i) => text(n, SORT.w * i + SORT.w / 2, 6.6, 5.2)).join("") +
+    s += front(bx, fy + 2, 10, names.map((n, i) => text(n, SORT.w * i + SORT.w / 2, 5.6, 5).replace('class="engrave"', `class="engrave" id="bin-label-${i}"`)).join("") +
       [1, 2, 3].map(i => `<path class="face-faint" d="M${SORT.w * i} 1.5V7.5"/>`).join(""));
     add(depthOf([bx + bw / 2, by + bd / 2, 0], P), s);
     // wire from bins to the rules cabinet
@@ -1093,7 +1128,7 @@ function buildScene(host) {
     s += slab({x: RULES.x - 3, y: RULES.y - 3, w: RULES.w + 6, d: RULES.d + 6, r: 4}, 0, 4, {tone: "lo", bevel: .8});
     s += slab(RULES, 4, RULES_TOP - 4, {tone: "hi", bevel: 1.2, inner: L(sideSeam(RULES, 14, P), {tone: "faint"})});
     const fy = RULES.y + RULES.d;
-    const cx = 27, cy = 22, R = 15.5;
+    const cx = 28, cy = 25, R = 19;
     const ticks = [];
     for (let a = -120; a <= 120; a += 6) {
       const big = Object.values(DIAL_AT).includes(a) || a % 36 === 0;
@@ -1108,9 +1143,9 @@ function buildScene(host) {
     s += front(RULES.x, fy, RULES_TOP, `<circle class="face-paint" cx="${cx}" cy="${cy}" r="${R + 2.6}"/><circle class="face-line" cx="${cx}" cy="${cy}" r="${R + 1}"/>` +
       `<path class="face-line" d="${ticks.join("")}"/>${dots}` +
       `<g id="needle" transform="rotate(${DIAL_AT.rest} ${cx} ${cy})"><path class="needle" d="M${cx} ${cy + 3.5}V${cy - R + 2.2}"/></g><circle class="hub" cx="${cx}" cy="${cy}" r="1.9"/>` +
-      plate3(12, 43, 30, 10) +
-      [["lamp-charged", 10], ["lamp-held", 21], ["lamp-not", 32]].map(([id, v]) => `<circle class="face-paint" cx="60" cy="${v}" r="3.6"/><circle id="${id}" class="lamp" cx="60" cy="${v}" r="2.4"/>`).join("") +
-      `<path class="face-faint" d="M52 41H68M52 45H64"/>`);
+      plate3(14, 49, 28, 8) +
+      [["lamp-charged", 12], ["lamp-held", 25], ["lamp-not", 38]].map(([id, v]) => `<circle class="face-paint" cx="61" cy="${v}" r="4.8"/><circle id="${id}" class="lamp" cx="61" cy="${v}" r="3.4"/>`).join("") +
+      `<path class="face-faint" d="M53 48H69M53 52H65"/>`);
     s += side(RULES.x + RULES.w, fy, RULES_TOP, [12, 17, 22, 27, 32].map(v => `<rect class="face-dark" x="12" y="${v}" width="34" height="2.2" rx="1.1"/>`).join("") +
       `<circle class="face-paint" cx="8" cy="48" r="1.4"/><circle class="face-paint" cx="54" cy="48" r="1.4"/>`);
     s += screws([[RULES.x + 4, RULES.y + 4], [RULES.x + RULES.w - 4, RULES.y + 4], [RULES.x + 4, fy - 4], [RULES.x + RULES.w - 4, fy - 4]], RULES_TOP);
@@ -1123,6 +1158,11 @@ function buildScene(host) {
     for (let i = 0; i < 4; i++) s += slab({x: 14, y: -86 + i * 5, w: 18, d: 1, r: 0}, RULES_TOP + 6, 6 - (i % 2), {tone: "hi", lit: false});
     s += `<g id="record-card">${slab({x: 14, y: -67, w: 18, d: 1, r: 0}, RULES_TOP + 6, 7, {tone: "hi", lit: true})}</g>`;
     s += slab({x: 12, y: -66, w: 22, d: 2, r: 0}, RULES_TOP, 7, {tone: "mid"});
+    // beacon: blue while the call is on, then the outcome's colour
+    s += cyl(66, -84, 6.5, RULES_TOP, 3, {tone: "mid", bevel: .6});
+    s += `<g id="beacon" class="beacon">${cyl(66, -84, 5, RULES_TOP + 3, 10, {tone: "hi", steps: 32})}</g>`;
+    s += cyl(66, -84, 5.8, RULES_TOP + 13, 2, {tone: "mid", bevel: .5});
+    s += cyl(66, -84, 2, RULES_TOP + 15, 1.6, {tone: "mid", steps: 16});
     // out tray for texts
     s += slab(OUTTRAY, RULES_TOP, 3.5, {tone: "mid", bevel: .5});
     s += slab(insetPlan(OUTTRAY, 2), RULES_TOP + 3.5, .3, {tone: "lo", flat: true});
@@ -1150,7 +1190,7 @@ function buildScene(host) {
 
   // held tray: a cage on a gallows drops over the coin and locks
   {
-    let s = halo(HELD, 0, 5);
+    let s = "";
     s += slab(HELD, 0, 4, {tone: "mid", bevel: .8});
     s += slab(insetPlan(HELD, 3), 4, .4, {tone: "lo", flat: true});
     s += screws(corners(HELD, 2), 4, .5);
@@ -1212,10 +1252,9 @@ function buildScene(host) {
       }
     }
     // sacks on the floor
-    s += cyl(SHOP.x + 22, SHOP.y + 46, 9, 5, 15, {tone: "mid", steps: 24, bevel: 2});
-    s += cyl(SHOP.x + 40, SHOP.y + 44, 8, 5, 13, {tone: "mid", steps: 24, bevel: 2});
+    s += cyl(SHOP.x + 12, SHOP.y + 34, 8, 5, 15, {tone: "mid", steps: 24, bevel: 2});
+    s += cyl(SHOP.x + 13, SHOP.y + 52, 7, 5, 12, {tone: "mid", steps: 24, bevel: 2});
     // counter
-    s += halo(COUNTER, 5, 4, 5);
     s += slab({x: COUNTER.x + 2, y: COUNTER.y + 2, w: COUNTER.w - 4, d: COUNTER.d - 2, r: 0}, 5, 3, {tone: "lo"});
     s += slab(COUNTER, 8, COUNTER_TOP - 11, {tone: "hi", inner: L(sideSeam(COUNTER, 22, P), {tone: "faint"})});
     s += front(COUNTER.x, COUNTER.y + COUNTER.d, COUNTER_TOP - 3, [0, 1, 2].map(i => `<rect class="face-faint" x="${4 + i * 29}" y="5" width="26" height="21" rx="1"/>`).join(""));
@@ -1240,7 +1279,6 @@ function buildScene(host) {
     let s = "";
     s += `<g id="soundbox">`;
     const sb = {x: 158, y: 3, w: 18, d: 15, r: 2.2};
-    s += halo(sb, COUNTER_TOP, 1, 3);
     s += slab(sb, COUNTER_TOP, 22, {tone: "hi", bevel: .8, lit: true});
     const g = [];
     for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) g.push(`<circle class="face-dark" cx="${4.4 + c * 3.1}" cy="${9 + r * 2.9}" r=".7"/>`);
@@ -1254,9 +1292,8 @@ function buildScene(host) {
     s += `<g id="soundbox-gone" opacity="0">${L(planOutline({x: 158, y: 3, w: 18, d: 15, r: 2.2}, COUNTER_TOP + .1, P), {tone: "mid"})}${L(planOutline({x: 160, y: 5, w: 14, d: 11, r: 1.6}, COUNTER_TOP + .1, P), {tone: "faint"})}</g>`;
     // phone
     s += `<g id="phone">${slab(PHONE, COUNTER_TOP, 1.6, {tone: "hi", bevel: .4})}<path id="phone-screen" class="screen" d="${planOutline(insetPlan(PHONE, 1.2), COUNTER_TOP + 1.65, P)}"/></g>`;
-    s += `<g id="phone-waves">${[0, 1, 2].map(i => `<path class="wave" data-i="${i}" d="${ring(PHONE_AT[0], PHONE_AT[1], 9, COUNTER_TOP + 2, P, 36)}"/>`).join("")}</g>`;
+    s += `<g id="phone-waves">${[0, 1, 2].map(i => `<path class="wave" opacity="0" data-i="${i}" d="${ring(PHONE_AT[0], PHONE_AT[1], 9, COUNTER_TOP + 2, P, 36)}"/>`).join("")}</g>`;
     // galla, the shop's own cash box
-    s += halo(GALLA, COUNTER_TOP, 1, 3);
     s += slab(GALLA, COUNTER_TOP, 10, {tone: "mid", bevel: .8});
     s += slab({x: GALLA.x + 4, y: GALLA.y + 4, w: 4, d: 12, r: 1}, COUNTER_TOP + 10, .3, {tone: "lo", flat: true});
     s += `<path id="kept-ring" opacity="0" style="fill:none;stroke:var(--charged);stroke-width:1.6px" d="${ring(COIN_REST[0], COIN_REST[1], 10.4, COUNTER_TOP + 10.1, P, 40)}"/>`;
@@ -1270,7 +1307,8 @@ function buildScene(host) {
     `<g id="pulses"></g><g id="coin-top"></g><g id="flying"></g></svg>`;
   host.innerHTML = sceneSvg;
   const svg = host.firstElementChild;
-  const $ = id => svg.getElementById ? svg.getElementById(id) : svg.querySelector("#" + id);
+  const refs = {};
+  const $ = id => refs[id] || (refs[id] = svg.querySelector("#" + id));
   const make = (tag, attrs = {}, html = "") => {
     const el = document.createElementNS(SVGNS, tag);
     for (const [k, v] of Object.entries(attrs)) el.setAttribute(k, v);
@@ -1282,9 +1320,9 @@ function buildScene(host) {
   const origin = at([0, 0, 0]);
   const offset = p => { const q = at(p); return [q[0] - origin[0], q[1] - origin[1]]; };
   const place = (el, p) => { const [x, y] = offset(p); el.setAttribute("transform", `translate(${x.toFixed(2)} ${y.toFixed(2)})`); };
-  const coinSvg = () => `<g class="coin">${halo({x: -9.5, y: -9.5, w: 19, d: 19, r: 9.5}, 0, 1, 2)}${S(cylinder(0, 0, 9.5, 0, 2.8, P, 40, .6), {tone: "hi", lit: true})}` +
+  const coinSvg = () => `<g class="coin">${S(cylinder(0, 0, 9.5, 0, 2.8, P, 40, .6), {tone: "hi", lit: true})}` +
     `${L(ring(0, 0, 7.6, 2.8, P, 40), {tone: "lo"})}<g transform="${topMatrix([0, 0], 2.8, P, "x")}"><text class="coin-amount" x="0" y="2" font-size="5.6" font-weight="750" text-anchor="middle" font-family="var(--sans)"></text></g></g>`;
-  const tokenSvg = () => `<g>${S(slabOf({x: -6.5, y: -6.5, w: 13, d: 13, r: 1.4}, 0, 3, P, 8, .4), {tone: "hi", lit: true})}${L(planOutline({x: -3.5, y: -3.5, w: 7, d: 7, r: 3.5}, 3, P), {tone: "mid"})}</g>`;
+  const tokenSvg = () => `<g class="token">${S(slabOf({x: -6.5, y: -6.5, w: 13, d: 13, r: 1.4}, 0, 3, P, 8, .4), {tone: "hi", lit: true})}${L(planOutline({x: -3.5, y: -3.5, w: 7, d: 7, r: 3.5}, 3, P), {tone: "mid"})}</g>`;
   const envSvg = (cls) => {
     const w = 16, d = 11;
     const top = (x, y) => at([x, y, 0]);
@@ -1315,7 +1353,7 @@ function buildScene(host) {
     return [r[i - 1][0] + (r[i][0] - r[i - 1][0]) * f, r[i - 1][1] + (r[i][1] - r[i - 1][1]) * f];
   };
   const PULSES = 7;
-  const dots = Array.from({length: PULSES}, () => { const c = make("circle", {r: 3, class: "pulse", opacity: 0}); pulses.appendChild(c); return c; });
+  const dots = Array.from({length: PULSES}, () => { const c = make("circle", {r: 3.8, class: "pulse", opacity: 0}); pulses.appendChild(c); return c; });
 
   const st = {needle: DIAL_AT.rest, carriageX: HOME_X, cage: 0, handset: 0, card: 0, coinIn: "galla", ledgerN: 0, tickets: 0, mgr: 0, sms: 0};
   const tweens = new Set();
@@ -1336,7 +1374,7 @@ function buildScene(host) {
   }
   const wait = ms => REDUCED || ms === 0 ? Promise.resolve() : new Promise(r => setTimeout(r, ms));
 
-  function setNeedle(a) { st.needle = a; needle.setAttribute("transform", `rotate(${a.toFixed(2)} 27 22)`); }
+  function setNeedle(a) { st.needle = a; needle.setAttribute("transform", `rotate(${a.toFixed(2)} 28 25)`); }
   function setCarriage(x) { st.carriageX = x; carriage.setAttribute("transform", translateAlong(P, [x - HOME_X, 0, 0])); }
   function setHandset(f) { st.handset = f; handset.setAttribute("transform", translateAlong(P, [0, 0, 7 * f])); }
   function setCage(f) {
@@ -1375,7 +1413,7 @@ function buildScene(host) {
     coin.removeAttribute("opacity");
     $("padlock").setAttribute("opacity", 0);
     $("kept-ring").setAttribute("opacity", 0);
-    for (let i = 0; i < SORT.n; i++) { $(`bin-slot-${i}`).innerHTML = ""; $(`bin-tint-${i}`).classList.remove("on"); }
+    for (let i = 0; i < SORT.n; i++) { $(`bin-slot-${i}`).innerHTML = ""; $(`bin-tint-${i}`).classList.remove("on"); $(`bin-label-${i}`).classList.remove("lit"); }
     flying.innerHTML = "";
     $("spike-tickets").innerHTML = "";
     st.tickets = st.mgr = st.sms = 0;
@@ -1406,7 +1444,7 @@ function buildScene(host) {
     const n = slot.childElementCount;
     const tok = make("g", {}, tokenSvg());
     const rest = [BIN_X(bin), -26, 2.5 + n * 3];
-    const tint = () => { for (let i = 0; i < SORT.n; i++) $(`bin-tint-${i}`).classList.toggle("on", i === bin); };
+    const tint = () => { for (let i = 0; i < SORT.n; i++) { $(`bin-tint-${i}`).classList.toggle("on", i === bin); $(`bin-label-${i}`).classList.toggle("lit", i === bin); } };
     if (instant) { slot.appendChild(tok); place(tok, rest); setCarriage(BIN_X(bin)); tint(); return; }
     // his reply travels back along the line to the sorter
     inFlight = {t0: performance.now(), ms: 1500};
@@ -1485,7 +1523,7 @@ function buildScene(host) {
   // continuous parts: pulses, waves, ringing, mic level
   const mastWaves = [...$("mast-waves").children];
   const phoneWaves = [...$("phone-waves").children];
-  const phone = $("phone"), phoneScreen = $("phone-screen");
+  const phone = $("phone"), phoneScreen = $("phone-screen"), beacon = $("beacon");
   const mastCenter = at([MAST[0], MAST[1], CALLER_TOP + 54]);
   const phoneCenter = at([PHONE_AT[0], PHONE_AT[1], COUNTER_TOP + 2]);
   const scaleAt = ([cx, cy], k) => `translate(${cx} ${cy}) scale(${k}) translate(${-cx} ${-cy})`;
@@ -1500,7 +1538,7 @@ function buildScene(host) {
     const speaking = live.speaking, hearing = live.hearing || !!inFlight;
     const sec = now / 1000;
     // pulses: out while Settled speaks, in while his reply travels
-    if (speaking || hearing) {
+    if ((speaking || hearing) && !REDUCED) {
       const r = speaking ? routeOut : routeIn, l = speaking ? lenOut : lenIn;
       const base = inFlight && !speaking ? Math.min(1, (now - inFlight.t0) / inFlight.ms) : (sec * .32) % 1;
       dots.forEach((d, i) => {
@@ -1515,7 +1553,7 @@ function buildScene(host) {
     } else dots.forEach(d => d.setAttribute("opacity", 0));
     // radio waves at the mast while speaking, and at his phone
     mastWaves.forEach((w, i) => {
-      const p = (sec * .7 + i / 3) % 1;
+      const p = REDUCED ? .35 + i * .25 : (sec * .7 + i / 3) % 1;
       w.setAttribute("opacity", speaking ? ((1 - p) * .8).toFixed(2) : 0);
       if (speaking) w.setAttribute("transform", scaleAt(mastCenter, .6 + p * 1.9));
     });
@@ -1527,7 +1565,7 @@ function buildScene(host) {
         w.setAttribute("transform", scaleAt(phoneCenter, k));
         w.style.stroke = "var(--rec)";
       } else if (speaking) {
-        const p = (sec * .7 + i / 3) % 1;
+        const p = REDUCED ? .35 + i * .25 : (sec * .7 + i / 3) % 1;
         w.style.stroke = "";
         w.setAttribute("opacity", ((1 - p) * .7).toFixed(2));
         w.setAttribute("transform", scaleAt(phoneCenter, .5 + p * 1.4));
@@ -1538,12 +1576,15 @@ function buildScene(host) {
     else phone.removeAttribute("transform");
     phoneScreen.setAttribute("class", live.onCall || live.ringing ? "screen on" : "screen");
     lamp("mast-lamp", speaking ? "accent" : live.listening ? (live.rec ? "rec" : null) : null);
-    if (live.listening && !live.rec) $("mast-lamp").setAttribute("class", Math.sin(sec * 4) > 0 ? "lamp on-accent" : "lamp");
+    if (live.listening && !live.rec) $("mast-lamp").setAttribute("class", REDUCED || Math.sin(sec * 4) > 0 ? "lamp on-accent" : "lamp");
+    const fin = {charged: "var(--charged)", held: "var(--held)", "not charged": "var(--not)"}[live.outcome];
+    const glow = fin || (live.onCall ? "var(--accent)" : "");
+    if (beacon._on !== glow) { beacon._on = glow; glow ? (beacon.setAttribute("data-on", ""), beacon.style.setProperty("--b", glow)) : beacon.removeAttribute("data-on"); }
     const want = live.onCall ? 1 : 0;
     if (Math.abs(st.handset - want) > .002) setHandset(REDUCED ? want : st.handset + (want - st.handset) * .12);
     else if (st.handset !== want) setHandset(want);
     lamp("caller-lamp", live.onCall ? "accent" : null);
-    const busy = st.handset !== want || tweens.size || speaking || hearing || live.rec || (live.ringing && !REDUCED) || live.listening;
+    const busy = st.handset !== want || tweens.size || (!REDUCED && (speaking || hearing || live.rec || live.ringing || live.listening));
     raf = busy && !document.hidden ? requestAnimationFrame(frame) : 0;
   }
   wakeFn = () => { if (!raf) raf = requestAnimationFrame(frame); };
@@ -1770,7 +1811,7 @@ function render() {
   if (pick.value !== lang && document.activeElement !== pick) pick.value = lang;
 
   // what Settled said, in his script, English under it
-  const said = active && call.said ? call.said : s.turns.length ? s.turns[s.turns.length - 1].said : null;
+  const said = active && call.said ? call.said : s.settled && s.decisive ? s.decisive.said : s.turns.length ? s.turns[s.turns.length - 1].said : null;
   const ask = Object.keys(shop.lines)[0];
   const own = pick.value === shop.language.code;
   if (said) {
@@ -1831,7 +1872,7 @@ function render() {
   html(talk, `${ICONS.mic}${me.rec ? "Listening… let go to send" : call.hearing || me.sending ? "Hearing…" : "Hold to speak"}`);
   $("p-typed").hidden = !listening;
   let note = me.note || "";
-  if (!active && /^Heard: /.test(note)) note = "";
+  if (!active && !/could not start|busy|already/i.test(note)) note = "";
   if (call.problem) note = call.problem;
   const mic = active && !me.stream && me.mic ? me.mic : "";
   html($("p-note"), [mic, note].filter(Boolean).map(n => `<span${/Try again|No mic|Hold the button|heard nothing|problem|stopped|no voice/i.test(n) ? ' class="warn"' : ""}>${esc(n)}</span>`).join(" "));
