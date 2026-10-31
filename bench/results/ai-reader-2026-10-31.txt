@@ -1,0 +1,16 @@
+a1c59c2 add a reconnecting ssh link that shows the board on the venue laptop
+charged after na or unsure: 0
+honest yeses charged: 13/13
+cases matching expected outcome: 62/62
+lines read differently from their label: 8
+  confused-1: 'kya? kaunsa plan? samajh nahi aaya' labelled unsure, read question
+  confused-2: 'hello? kaun bol raha hai?' labelled unsure, read question
+  doubt-at-readback-2: 'pakka? ruko main pooch ke batata hoon' labelled unsure, read question
+  ta-no-reason: 'இல்ல, அவன் ஒரு ரூபாய்னு சொன்னான்' labelled na, read unsure
+  te-no-reason: 'లేదు, అతను ఒక్క రూపాయి అన్నాడు' labelled na, read unsure
+  bn-no-reason: 'না, ও তো এক টাকা বলেছিল' labelled na, read unsure
+  kn-no-reason: 'ಇಲ್ಲ, ಅವನು ಒಂದು ರೂಪಾಯಿ ಅಂದಿದ್ದ' labelled na, read unsure
+  gu-no-reason: 'ના, એણે ₹1 કીધું હતું' labelled na, read unsure
+ai calls: 89, errors: 1, average 0.33s per reply
+cost this run: ₹1.4246 (incl. GST), all runs: ₹5.9547
+
