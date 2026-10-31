@@ -1,0 +1,15 @@
+69:    parser.add_argument("--cases", help="comma-separated case ids, default all")
+75:        wanted = args.cases.split(",")
+kn-no-reason          sharma  held            held            
+kn-but                gupta   held            held            
+gu-yes-yes            sharma  charged:plan-a  charged:plan-a  
+gu-no-reason          gupta   held            held            
+gu-someone-else       sharma  held            held            
+
+charged after na or unsure: 0
+honest yeses charged: 2/2
+cases matching expected outcome: 8/8
+lines read differently from their label: 0
+ai calls: 13, errors: 1, average 0.30s per reply
+cost this run: ₹0.2318 (incl. GST), all runs: ₹7.2622
+
