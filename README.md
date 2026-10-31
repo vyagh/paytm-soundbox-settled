@@ -2,7 +2,7 @@
 
 Paytm asks before it charges.
 
-Settled phones a shopkeeper before the first Soundbox rent is taken and asks him, in his own language, whether he agreed to the plan. If he says yes twice, the rent runs and his yes is saved. If he says no, isn't sure, or someone else answers, the money is held and a person follows up. An AI model sorts what he said. Plain code decides what happens to the money.
+Settled phones a shopkeeper before the first Soundbox rent is taken, checks it's really him, and asks him, in his own language, whether he agreed to the plan. If he says yes twice, the rent runs and his yes goes in the log. If he says no, isn't sure, or someone else answers, the money is held and a person follows up. An AI model sorts what he said. Plain code decides what happens to the money.
 
 A prototype built for Paytm. Paytm's side (charges, holds, tickets and texts) is mocked.
 
@@ -14,48 +14,66 @@ Paytm's own AI Soundbox already answers merchants' questions about money coming 
 
 ## How a call goes
 
+Version 2 changed the call after feedback from the hackathon mentors.
+
 ```mermaid
 flowchart LR
-    A["Records checked<br/>sign-up, delivery, return"] --> B["Call in his language"]
-    B --> C["AI sorts the reply<br/>haan, na, unsure, question, no answer"]
-    C --> D["Plain code decides<br/>charge, hold, not charged"]
-    D --> E["Paytm actions (mock)<br/>charge, hold, ticket, SMS"]
-    D --> F[("Append-only log")]
-    E --> F
+    A["Records checked<br/>sign-up, delivery, return"] --> B["Recording ok?"]
+    B --> C["Am I speaking with the owner?"]
+    C --> D["4-digit code from his Paytm app<br/>checked in plain code"]
+    D --> E["Plan question<br/>from his record"]
+    E --> F["Price read back"]
+    F --> G["Plain code decides<br/>charge or hold"]
+    E -. not a haan .-> G
+    C -. someone else .-> X["Ends politely<br/>rent held, plan unchanged"]
+    D -. wrong or no code .-> X
+    G --> H["Held: sorry, WhatsApp with his choices<br/>manager told on a na"]
+    H --> I["Only his tap<br/>keeps, changes or cancels"]
+    G --> L[("Append-only log")]
+    X --> L
+    I --> L
 ```
 
 Before any call, Settled reads the shop's records. A box that was never delivered isn't charged and the shop isn't called. A missing record puts the rent on hold for a person to check.
 
-If the records are in order, it asks: "₹125 a month for the Soundbox from 1 Nov. Did you take this plan? Haan or na?" A clear haan gets the price read back ("₹125 every month, from 1 Nov. Sure?"), and only a second haan charges. A na holds the rent, texts the shopkeeper that nothing will be taken, tells the salesman's manager what he said, and offers to explain the real plans or take the box back.
+If the records are in order, it calls and asks first if the call can be recorded. Saying no is fine: the call goes on and no voice clip is saved. Then it asks if it's speaking with the owner by name, and asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe" or "३४५६", and the AI never sees it. If someone else picks up, the code is wrong, or he won't give it, Settled says goodbye politely and nothing about his plan changes.
+
+Only then comes the plan question, built from his record in [`data/shops.json`](data/shops.json): "Anil gave you the ₹125 a month plan on 23 October, starting 1 November. Is this the plan you took?" A clear haan gets the price read back ("So ₹125 every month from 1 November. Shall I confirm it?"), and only a second haan charges.
+
+Anything else holds the rent. Settled says sorry, tells him nothing will be taken, and sends him a WhatsApp with what his sign-up form says and three choices: keep the plan, switch to the cheaper one, or cancel and return the box. On a na, the salesman's manager gets a WhatsApp with what he said. Settled never offers to take the box back on the call.
 
 Every step writes a row to the log: what was said, what was heard, how the AI sorted it, which rule fired, and what Paytm would do.
 
 ## The money rules live in code
 
-The AI's only job is to sort a reply into one of five kinds and say who's speaking. [`settled/rules.py`](settled/rules.py) turns that into an outcome, and nothing the model says can charge anyone on its own.
+The AI's only job is to sort a reply into one of five kinds and say who's speaking. [`settled/rules.py`](settled/rules.py) turns that into an outcome. The one thing it does straight from the AI's reading is charge, after two clear haans from the verified owner.
 
 | What happened | Outcome |
 |---|---|
 | Box never delivered | Not charged, no call |
 | Sign-up, delivery or return record missing | Held, a person checks |
+| No to recording | The call goes on, no voice saved |
+| No answer to the first line | Held, a person calls |
+| Someone else answers, or he doesn't say he's the owner | Ends politely, held, plan unchanged |
+| Wrong code, or no code | Ends politely, held, plan unchanged |
 | Haan, then haan again on the read-back | Charged at the signed plan |
-| Haan, then anything else on the read-back | Held |
-| Na | Held, manager told, plans or pickup offered |
-| Na, then he picks a plan by name or price | Held. He gets an SMS, and the plan starts only when he replies YES |
-| Unsure, a question, or no answer | Held, a person follows up |
-| Anyone but the shopkeeper answers | Held |
+| Haan, then anything else on the read-back | Held, WhatsApp with his choices |
+| Na | Held, manager told, WhatsApp with his choices |
+| Unsure, a question, or no answer | Held, WhatsApp with his choices |
+| He taps a choice in the WhatsApp | Kept, switched or cancelled, as he chose |
 
-A few things hold these together, from [`ai/reader.py`](ai/reader.py):
+A few things hold these together:
 
-- If the reply comes from someone else (a son, a worker, the salesman), the reader turns it into unsure, so a yes from them never counts.
-- A plan pick only counts on the follow-up line and only with a haan.
+- Cancelling, changing a plan or booking a pickup only happens through his own tap (`POST /api/consent/<id>/<choice>`, in [`settled/paytm_mock.py`](settled/paytm_mock.py)). A second tap on the same message is refused.
+- If the reply comes from someone else (a son, a worker, the salesman), [`ai/reader.py`](ai/reader.py) turns it into unsure, so a yes from them never counts.
+- A lone "hmm" reads as no answer, never haan. On a live call, a reply that reads as no answer gets the line said once more before it counts.
 - If the AI call fails or returns anything outside the expected JSON, the reply reads as unsure, and unsure holds.
 
 ## It speaks 11 languages, with no translation step
 
 Settled speaks Hindi, Bengali, Gujarati, Kannada, Malayalam, Marathi, Odia, Punjabi, Tamil, Telugu and English: every language that both Sarvam's speech-to-text and text-to-speech take.
 
-The three lines Settled says are written out in each language's own script in [`voice/script.py`](voice/script.py). Bulbul speaks them, Saaras transcribes his reply in the same language, and the reader gets that transcript as is, Tamil script or Hinglish or a mix. The prompt ([`ai/prompt_hi.md`](ai/prompt_hi.md)) tells the model the agent's line in English and his reply in whatever he said, so nothing gets translated on the way in.
+The ten lines Settled says are written out in each language's own script in [`voice/script.py`](voice/script.py). Bulbul speaks them, Saaras transcribes his reply in the same language, and the reader gets that transcript as is, Tamil script or Hinglish or a mix. The prompt ([`ai/prompt_hi.md`](ai/prompt_hi.md)) tells the model the agent's line in English and his reply in whatever he said, so nothing gets translated on the way in.
 
 The Hindi lines are hand-written. The other ten are machine-written and need a native speaker to check them before a real shop hears them.
 
@@ -66,23 +84,26 @@ The Hindi lines are hand-written. The other ten are machine-written and need a n
 - Sorting the reply: `sarvam-105b-conversations`, temperature 0, JSON output
 - Server and logic: Python standard library only, no packages to install
 - Log: SQLite, with triggers that abort any update or delete on the log and messages tables
-- Board: one plain HTML file with inline script and bundled fonts, no framework, no CDN
+- Board: plain HTML and script with bundled fonts, no framework, no CDN
 
-## Tested on 63 simulated shopkeepers
+## Tested on 97 simulated shopkeepers
 
-[`bench/cases.json`](bench/cases.json) holds 63 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, the salesman or a relative answering, and cases in Tamil, Telugu, Bengali, Marathi, Kannada and Gujarati alongside Hindi. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
+[`bench/cases.json`](bench/cases.json) holds 97 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, a lone "hmm", the salesman or a relative answering, no to recording, wrong and missing codes, codes said in Hindi words or Devanagari digits, his taps on the WhatsApp choices, and cases in all 11 languages. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
 
 With the Sarvam model sorting every reply:
 
 | Run | Outcomes matched | Honest yeses charged | Charged after na or unsure |
 |---|---|---|---|
-| [62 cases, before the 63rd was added](bench/results/ai-reader-2026-10-31.txt) | 62/62 | 13/13 | 0 |
-| [Re-run after a prompt change](bench/results/ai-reader-langs-2026-10-31.txt) | 27 of 27 run (stopped at the spend cap, 35 cases) | 4/4 | 0 |
-| [Marathi, Kannada, Gujarati](bench/results/ai-reader-mr-kn-gu-2026-10-31.txt) | 8/8 | 2/2 | 0 |
+| [Version 2: 16 consent, identity and plan cases picked](bench/results/ai-reader-v2-2026-10-31.txt) | 13 of the 14 run before the spend cap | 2/2 | 0 |
+| [Version 1: 62 cases](bench/results/ai-reader-2026-10-31.txt) | 62/62 | 13/13 | 0 |
+| [Version 1: re-run after a prompt change](bench/results/ai-reader-langs-2026-10-31.txt) | 27 of 27 run (stopped at the spend cap, 35 cases) | 4/4 | 0 |
+| [Version 1: Marathi, Kannada, Gujarati](bench/results/ai-reader-mr-kn-gu-2026-10-31.txt) | 8/8 | 2/2 | 0 |
 
-In the 62-case run the model sorted 8 lines differently from their label. Five were Tamil, Telugu, Bengali, Kannada and Gujarati nos with a reason, read as unsure. Three were confused replies read as questions. All 8 calls still ended held, which is the point of keeping the money in code. The prompt was changed afterwards to keep a no with a reason as na, and the Marathi, Kannada and Gujarati run had no misreads. Replies took 0.30 to 0.33 seconds on average.
+In the version 2 run nothing was charged without a verified owner, and the AI caused no cancel, plan change or pickup. The one miss was "haan bolo, main unki wife hoon" (yes, go on, I'm his wife) at the owner question. The model read it as the shopkeeper being unsure, not as someone else, so the call ended as "not confirmed" instead of "someone else". Either way it ended politely with nothing changed. Replies took 0.29 seconds on average.
 
-The bench sends typed text to the model. It doesn't test speech-to-text, and none of the cases come from real shopkeepers.
+In the 62-case run the model sorted 8 lines differently from their label. Five were Tamil, Telugu, Bengali, Kannada and Gujarati nos with a reason, read as unsure. Three were confused replies read as questions. All 8 calls still ended held, which is the point of keeping the money in code. The prompt was changed afterwards to keep a no with a reason as na, and the Marathi, Kannada and Gujarati run had no misreads.
+
+The bench sends typed text to the model, and none of the cases come from real shopkeepers. Speech-to-text got its own run ([`bench/results/hindi-voice-2026-10-31.md`](bench/results/hindi-voice-2026-10-31.md)): 31 Hindi replies spoken by Bulbul in eight voices, plus a clip of shop noise with nobody speaking, sent through Saaras and the real flow, clean, with crowd noise down to 5 dB, and squeezed to phone quality. Before the fixes, a lone "hmm" got charged in every version. With the fixes, tested on a spare board, every full set came back 31/31 with nothing charged wrongly, and the median time from his reply to the decision was 0.68 to 0.70 seconds. Version 2 carries those fixes, with the no-answer line in the prompt worded narrower than the one tested.
 
 Run it with the labels standing in for the AI (no key, no cost):
 
@@ -111,10 +132,12 @@ On Windows the same file goes at `%USERPROFILE%\.config\keys.env`.
 Then, from the repo root:
 
 ```
-python server.py
+python dev.py
 ```
 
-and open http://127.0.0.1:8080. The board shows three shops: Gupta Kirana and Sharma Store with full records, and Verma Dairy, whose box was never delivered. Start a call, pick a language, and hold to speak, or type a reply if there's no mic.
+and open http://127.0.0.1:8080. `dev.py` runs `server.py` and restarts it when a Python file or the prompt changes, and `python server.py` runs it once. The main page is the call screen, with a live drawing of the call as it happens. The old board is at http://127.0.0.1:8080/classic.
+
+There are three shops: Gupta Kirana and Sharma Store with full records, and Verma Dairy, whose box was never delivered. Start a call, pick a language, and hold to speak, or type a reply if there's no mic. The call screen shows his mock Paytm app with the code to read out, and his WhatsApp with the choices to tap.
 
 It runs on Linux (Python 3.14) and on Windows 11 (Python 3.12), where the live demo takes real voice calls. On Windows use `python` or `py`. The server listens on 127.0.0.1 only. `BOARD_PORT` changes the port and `SETTLED_DB` changes where the log lives.
 
@@ -130,14 +153,15 @@ python try.py reset
 
 There's no phone call. The board speaks Settled's line through the browser and listens on the browser mic.
 
-[`settled/paytm_mock.py`](settled/paytm_mock.py) stands in for Paytm. Charging rent, holding it, opening a support ticket, booking a pickup, the WhatsApp to the salesman's manager and the SMS to the shopkeeper are all written to the log and the messages table, and nothing is sent. The shop records are [`data/shops.json`](data/shops.json), and the price and date in the spoken lines are fixed text.
+[`settled/paytm_mock.py`](settled/paytm_mock.py) stands in for Paytm. Sending the code to his app, charging rent, holding it, opening a support ticket, booking a pickup, the WhatsApp to the salesman's manager and the SMS and WhatsApp to the shopkeeper are all written to the log and the messages table, and nothing is sent. His tap on a WhatsApp choice is a POST to the board. The shop records are mock records in [`data/shops.json`](data/shops.json): owner, sign-up form, salesman, device, delivery, return and payments. The names, price and dates in the spoken lines come from there.
 
 For real use, each mock becomes a call to a Paytm system:
 
 - the records come from Paytm's sign-up, delivery and return data
+- the code goes to the Paytm app on his phone
 - the call goes out from a Paytm line to the shop's bank-linked number
 - charge and hold go to the settlement and payout side
-- tickets, pickups, SMS and WhatsApp go to Paytm's existing support and messaging
+- tickets, pickups, SMS and WhatsApp go to Paytm's existing support and messaging, and the choice buttons come back from WhatsApp
 
 The rules, the reader and the log stay as they are.
 
@@ -146,23 +170,34 @@ The rules, the reader and the log stay as they are.
 ```
 settled/
 ├── server.py           board server, standard library http.server
+├── dev.py              runs the server, restarts it on a change
 ├── try.py              type answers by hand, no AI
 ├── settled/
 │   ├── rules.py        the money rules
+│   ├── codes.py        the 4-digit app code, read in plain code
 │   ├── flow.py         one shop from due to follow-up
 │   ├── records.py      reads the shop records
-│   ├── paytm_mock.py   Paytm's side, mocked
+│   ├── paytm_mock.py   Paytm's side, mocked, and his taps
 │   ├── log.py          append-only SQLite log and messages
 │   └── models.py       Shop, Plan, Answer, Decision
 ├── ai/
 │   ├── reader.py       sorts a reply with the Sarvam model
 │   └── prompt_hi.md    the reader's prompt
 ├── voice/
-│   ├── script.py       the three lines, in 11 languages
+│   ├── script.py       the ten lines, in 11 languages
 │   ├── sarvam.py       Bulbul and Saaras calls
-│   └── calls.py        one live call per shop
-├── board/index.html    the board
-├── data/shops.json     three demo shops and two plans
-├── bench/              63 cases, the runner, saved results
+│   ├── calls.py        one live call per shop
+│   └── warm.py         says every line once so calls play from cache
+├── board/
+│   ├── proto/          the call screen, at /
+│   └── index.html      the old board, at /classic
+├── data/shops.json     three mock shop records and two plans
+├── bench/
+│   ├── cases.json      97 cases
+│   ├── run.py          plays them through the flow
+│   ├── hindi_voice.py  the Hindi voice run
+│   ├── voice_run.py    replies as audio through a running board
+│   ├── audio/          clips and the voice run's list
+│   └── results/        saved runs
 └── pitch/              the deck (PDF) and the demo video
 ```
