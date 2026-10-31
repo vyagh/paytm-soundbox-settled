@@ -188,6 +188,10 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .team p{font-size:.875rem;line-height:1.35;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .team b{font-weight:650;color:var(--ink)}
 .mock{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);background:#fff;border-radius:999px;height:1.2rem;padding:0 .45rem;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mock) 40%,transparent)}
+.demo{display:flex;flex-direction:column;gap:.15rem;padding-top:.7rem;border-top:1px solid var(--hair);flex:none}
+.demo .label{display:flex;align-items:center;gap:.45rem}
+.demo p{font-size:.8125rem;line-height:1.3;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demo b{font-weight:650;color:var(--ink)}
 .legend{margin-top:auto;display:flex;flex-direction:column;gap:.3rem;padding-top:.8rem;border-top:1px solid var(--hair);flex:none}
 .legend p{display:flex;align-items:center;gap:.55rem;font-size:.875rem;color:var(--ink2)}
 .legend .by{min-width:4.6rem;justify-content:center}
@@ -867,7 +871,18 @@ function renderResult(s) {
       <span class="ic">${g.state === 'pass' ? TICK : g.state === 'fail' ? CROSS : g.state === 'skip' ? DASH : ''}</span>
       <span class="t"><span>${esc(g.t)}</span>${g.by.map(b => BY[b]).join('')}</span><p>${esc(g.p)}</p></li>`).join('')}</ol>
     ${team ? `<div class="team"><span class="label">Paytm team gets <span class="mock">mock</span></span>${team}</div>` : ''}
+    ${demoRecord(shop)}
     <div class="legend"><p>${BY.ai}only sorts what he says</p><p>${BY.code}decides the money</p><p>${BY.tap}is the only way to change his plan</p></div>`);
+}
+
+function demoRecord(shop) {
+  const r = shop.record || {}, su = r.signup;
+  const rows = [r.shows && `<b>${esc(r.shows)}</b>`, `${esc(r.owner || shop.owner)}${r.born ? ` · born ${r.born}` : ''}`,
+    su ? `${esc((shop.plans || []).find(p => p.id === su.plan)?.name || su.plan)} ₹${su.price} a month from ${day(su.starts)} · salesman ${esc(su.salesman?.name || '')}`
+      : 'No sign-up on record',
+    su && `Signed ${day(su.on)} · ${r.delivery?.delivered ? `delivered ${day(r.delivery.on)}` : 'never delivered'}`,
+    shop.plans?.length && `Plans: ${shop.plans.map(p => `${esc(p.name)} ₹${p.price}`).join(' · ')}`].filter(Boolean);
+  return `<div class="demo"><span class="label">Demo record <span class="mock">mock</span></span>${rows.map(x => `<p>${x}</p>`).join('')}</div>`;
 }
 
 const TEAM = {manager: 'Manager', support: 'Support'};

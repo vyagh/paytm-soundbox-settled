@@ -11,6 +11,7 @@
   },
   "shops": {
     "gupta": {
+      "shows": "Honest yes",
       "name": "Gupta Kirana",
       "owner": "Mahesh Gupta",
       "born": 1978,
@@ -25,6 +26,7 @@
       "payments": {"since": "2026-10-24", "received": 41380, "count": 236, "rent_taken": 0, "settles_to": "bank ••••4821"}
     },
     "sharma": {
+      "shows": "Says the salesman told him ₹1",
       "name": "Sharma Store",
       "owner": "Ramesh Sharma",
       "born": 1984,
@@ -39,6 +41,7 @@
       "payments": {"since": "2026-10-25", "received": 18920, "count": 131, "rent_taken": 0, "settles_to": "bank ••••0937"}
     },
     "verma": {
+      "shows": "Box never delivered, no call",
       "name": "Verma Dairy",
       "owner": "Rakesh Verma",
       "born": 1990,

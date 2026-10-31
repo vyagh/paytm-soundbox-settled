@@ -44,6 +44,7 @@ def shops():
             "lines": {script.english(line, shop): script.say(code, line, shop) for line in script.LINES},
             "checked": code not in script.UNCHECKED,
             "record": records.record(shop_id),
+            "plans": [{"id": p.id, "name": p.name, "price": p.price} for p in shop.plans],
             "call": call.state() if call else None,
             "link": paytm_mock.live_link(shop_id) if log.path().exists() else None,
             "round": current_round(),
