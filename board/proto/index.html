@@ -585,6 +585,7 @@ function bubbleHim(who, inner, read, old) {
 
 function readAs(r) {
   if (!r.read_as) return '';
+  if (r.step === 'identity' && r.read_as === 'wait') return `<p class="read">No code yet, Settled waits while he opens the app</p>`;
   if (r.step === 'identity' && /^\d+$|^no code$/.test(r.read_as)) return `<p class="read">Code read in plain code, not AI <span class="kind ${r.rule === 'verified' ? 'haan' : 'na'}">${esc(r.read_as)}</span></p>`;
   return `<p class="read">AI read it as <span class="kind ${esc(r.read_as)}">${esc(r.read_as)}</span>${r.reason ? `<span>${esc(r.reason)}</span>` : ''}</p>`;
 }
