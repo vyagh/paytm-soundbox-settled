@@ -64,7 +64,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .shop .st::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--fill2);flex:none}
 .st.k-charged{color:var(--charged)} .st.k-charged::before{background:var(--charged)}
 .st.k-held{color:var(--held)} .st.k-held::before{background:var(--held)}
-.st.k-not{color:var(--not)} .st.k-not::before{background:var(--not)}
+.st.k-not,.st.k-cancelled{color:var(--not)} .st.k-not::before,.st.k-cancelled::before{background:var(--not)}
 .st.k-on{color:var(--accent)} .st.k-on::before{background:var(--accent)}
 .st.k-rec{color:var(--rec)} .st.k-rec::before{background:var(--rec)}
 .phone{margin-top:auto;display:flex;flex-direction:column;gap:.45rem}
@@ -83,7 +83,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .notif p{font-size:.78rem;line-height:1.35;color:var(--ink);margin-top:.3rem}
 .code{display:block;font-size:1.55rem;font-weight:700;letter-spacing:.14em;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:.15rem}
 .wamsg{background:#fff;border-radius:.2rem .9rem .9rem .9rem;padding:.55rem .65rem .6rem;box-shadow:0 1px 1px rgb(20 20 40 / .1)}
-.wamsg p{font-size:.75rem;line-height:1.4;color:var(--ink)}
+.wamsg p{font-size:.75rem;line-height:1.4;color:var(--ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
 .walink{display:block;margin-top:.35rem;font-size:.7rem;color:#1a6fb5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .choices{display:flex;flex-direction:column;gap:.3rem}
 .choice{border:0;background:#fff;color:#1f7a45;font-size:.78rem;font-weight:600;height:2.1rem;border-radius:.7rem;cursor:pointer;box-shadow:0 1px 1px rgb(20 20 40 / .1);
@@ -111,7 +111,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .pill.k-rec{color:var(--rec);background:var(--rec-soft)}
 .pill.k-charged{color:var(--charged);background:var(--charged-soft)}
 .pill.k-held{color:var(--held);background:var(--held-soft)}
-.pill.k-not{color:var(--not);background:var(--not-soft)}
+.pill.k-not,.pill.k-cancelled{color:var(--not);background:var(--not-soft)}
 .norec{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:600;color:var(--muted);height:1.75rem;padding:0 .7rem;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair);white-space:nowrap}
 .norec svg{width:.85rem;height:.85rem}
 .norec:not([hidden])+.pill{margin-left:0}
@@ -204,7 +204,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .verdict svg{width:2.9rem;height:2.9rem;flex:none}
 .verdict strong{display:block;font-size:2rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums}
 .verdict span{display:block;font-size:.875rem;font-weight:500;margin-top:.3rem;color:var(--muted)}
-.v-charged{color:var(--charged)} .v-held{color:var(--held)} .v-not{color:var(--not)}
+.v-charged{color:var(--charged)} .v-held{color:var(--held)} .v-not,.v-cancelled{color:var(--not)}
 .verdict strong{color:inherit}
 .facts{display:flex;flex-direction:column;gap:.6rem;padding-top:.75rem;border-top:1px solid var(--hair)}
 .facts p{font-size:.875rem;line-height:1.45;color:var(--ink)}
@@ -337,7 +337,7 @@ let msgLastAt = null;
 let refetch = false;
 const live = {};
 const BARS = 30;
-const FINAL = {'charged': 'charged', 'held': 'held', 'not charged': 'not'};
+const FINAL = {'charged': 'charged', 'held': 'held', 'not charged': 'not', 'cancelled': 'cancelled'};
 const ICONS = {
   charged: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M12.5 20.5l5 4.8 10-10.3" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   held: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><rect x="14.5" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/><rect x="21.9" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/></svg>',
@@ -401,10 +401,11 @@ function runOf(key) {
       if (FINAL[r.outcome]) s.pinned = true;
     }
     if (r.said) s.turns.push(r);
-    if (r.said && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
+    if (r.step === 'answered' && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
+    if (r.step === 'tap' && r.rule) { s.why = r.rule; s.pinned = true; }
     if (r.step === 'records checked') s.records = r.reason;
     if (r.step === 'consent' && r.rule) s.recording = !/no recording/i.test(r.rule);
-    if (r.step === 'identity' && r.rule) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
+    if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
     if (r.step === 'calling') s.called = true;
     if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
     if (r.step === 'follow-up' && r.outcome === 'charged') s.charge = r.rule;
@@ -434,6 +435,7 @@ function statusLine(key, s) {
   if (s.status === 'charged') return ['charged', `Charged ${amount}`.trim()];
   if (s.status === 'held') return ['held', 'Held'];
   if (s.status === 'not') return ['not', 'Not charged'];
+  if (s.status === 'cancelled') return ['cancelled', 'Cancelled by his tap'];
   return ['', 'Ready'];
 }
 
@@ -526,6 +528,8 @@ const STEPS = [['consent', 'Consent'], ['identity', 'Identity'], ['ask', 'Plan q
 const STEP_AT = {consent: 0, identity: 1, ask: 2, readback: 3, followup: 4, done: 4};
 const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.2 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+const WHY_NOT = {'someone else': 'someone else answered', 'not confirmed': 'no clear answer', 'no code': 'no code given', 'wrong code': 'wrong code'};
+
 function renderSteps(s) {
   const call = s.shop.call || {};
   const box = $('steps');
@@ -571,8 +575,9 @@ function renderPhone(s) {
   } else if (asking) {
     const choices = choicesOf(asking);
     const tap = taps[asking.id] || {};
-    const picked = tap.choice || asking.chosen || asking.choice || null;
-    const text = asking.text.replace(/^Paytm:\s*/, '');
+    const picked = tap.choice || asking.tapped || null;
+    const inText = asking.link && asking.text.includes(asking.link);
+    const text = asking.text.replace(/^Paytm:\s*/, '').replace(inText ? asking.link : /$^/, '').replace(/[\s:]+$/, '');
     inner = `<div class="screen wa"><div class="app wa"><i>${CHANNEL_ICONS.WhatsApp.replace('fill="currentColor"', 'fill="#fff"')}</i>WhatsApp<time>${esc(clock(asking.at))}</time></div>
       <div class="wamsg"><p>${esc(text)}</p>${asking.link ? `<span class="walink">${esc(asking.link)}</span>` : ''}</div>
       ${choices.length ? `<div class="choices">${choices.map(c => `<button class="choice" type="button" data-msg="${esc(asking.id)}" data-choice="${esc(c.id)}"
@@ -626,6 +631,7 @@ function bubbleHim(who, inner, read, old) {
 
 function readAs(r) {
   if (!r.read_as) return '';
+  if (r.step === 'identity' && /^\d+$|^no code$/.test(r.read_as)) return `<p class="read">Code read in plain code, not AI <span class="kind ${r.rule === 'verified' ? 'haan' : 'na'}">${esc(r.read_as)}</span></p>`;
   return `<p class="read">AI read it as <span class="kind ${esc(r.read_as)}">${esc(r.read_as)}</span>${r.reason ? `<span>${esc(r.reason)}</span>` : ''}</p>`;
 }
 
@@ -651,11 +657,12 @@ function renderConvo(s) {
   turns.forEach((r, i) => {
     const old = i < total - 1;
     parts.push(bubbleSettled(r.said, shop, old, false));
+    if (r.step === 'said') return;
     const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q>${s.recording === false ? '' : clipBtn(clipUrl(r.clip), old)}</p>` : `<p class="words"><span class="none">No reply</span></p>`;
     parts.push(bubbleHim(`${who} said`, inner, readAs(r), old));
   });
   if (s.identity && !s.identity.ok && !pending) {
-    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Not confirmed as ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(/someone/i.test(s.identity.why) ? 'someone else answered' : s.identity.why)}. Nothing taken, nothing changed.</span></div>`);
+    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity.why] || s.identity.why)}. Nothing taken, nothing changed.</span></div>`);
   }
   if (pending) {
     parts.push(bubbleSettled(call.said, shop, false, m.speaking));
@@ -747,12 +754,13 @@ function renderResult(s) {
       held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes`
         : s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices)) ? '₹0 taken. Callback promised, only his tap changes the plan'
         : '₹0 taken, ₹125 a month on hold'],
-      not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made']
+      not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made'],
+      cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp, pickup booked']
     }[s.status];
     const fresh = box.dataset.v !== `${focus}:${s.status}:${s.startAt}`;
     box.dataset.v = `${focus}:${s.status}:${s.startAt}`;
     html(box, `<h3>Result</h3>
-      <div class="verdict v-${s.status}${fresh ? ' pop' : ''}">${ICONS[s.status]}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
+      <div class="verdict v-${s.status}${fresh ? ' pop' : ''}">${ICONS[s.status] || ICONS.not}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
       <div class="facts">
         ${s.why ? `<p><span class="label">Rule that fired</span>${arrows(s.why)}</p>` : ''}
         ${!s.called && s.records ? `<p><span class="label">Records</span>${esc(cap(day(s.records)))}</p>` : ''}
