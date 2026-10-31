@@ -142,7 +142,7 @@ def _call(shop, listener, state):
             return decision
         _decided(shop, decision)
         if told:
-            paytm_mock.tell_manager(shop, told.reason, _read_as(told))
+            paytm_mock.tell_manager(shop, told.reason, _read_as(told), took=decision.plan)
         state.step = "done"
         _say(shop, listener, CHARGED)
         return decision

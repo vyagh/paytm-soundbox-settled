@@ -3848,5 +3848,36 @@
   "expect": "held",
   "identity": "verified: year of birth matches",
   "manager": true
+ },
+ {
+  "id": "free-promise-na-then-b",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "nahi, usne to free bola tha",
+    "kind": "na",
+    "reason": "usne to free bola tha",
+    "promise": "free",
+    "upset": true
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches",
+  "manager": true
  }
 ]
