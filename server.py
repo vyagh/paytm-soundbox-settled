@@ -45,8 +45,13 @@ def shops():
             "record": records.record(shop_id),
             "call": call.state() if call else None,
             "link": paytm_mock.live_link(shop_id) if log.path().exists() else None,
+            "round": current_round(),
         })
     return out
+
+
+def current_round():
+    return log.current_round()[0] if log.path().exists() else 1
 
 
 def rows_after(after, table="log", columns=COLUMNS):
@@ -138,7 +143,9 @@ class Handler(BaseHTTPRequestHandler):
         elif len(parts := url.path.split("/")) == 5 and parts[1:3] == ["api", "call"] and parts[4] == "state" \
                 and parts[3] in records.shop_ids():
             call = calls.get(parts[3])
-            self.json(200, call.state() if call else IDLE)
+            self.json(200, {**(call.state() if call else IDLE), "round": current_round()})
+        elif url.path == "/api/round":
+            self.json(200, {"round": current_round()})
         elif len(parts := url.path.split("/")) == 6 and parts[1:3] == ["api", "call"] and parts[4] == "audio":
             call = calls.get(parts[3])
             if call and call.audio and str(call.seq) == parts[5]:
@@ -153,6 +160,11 @@ class Handler(BaseHTTPRequestHandler):
         parts = url.path.split("/")
         if len(parts) == 5 and parts[1:3] == ["api", "consent"]:
             return self.consent(parts[3], parts[4])
+        if url.path == "/api/round/new":
+            try:
+                return self.json(200, {"round": calls.new_round()})
+            except calls.Busy as e:
+                return self.json(409, {"error": str(e)})
         if len(parts) != 5 or parts[1:3] != ["api", "call"] or parts[3] not in records.shop_ids():
             return self.send(404, "text/plain; charset=utf-8", b"not found")
         shop_id, what = parts[3], parts[4]

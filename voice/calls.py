@@ -169,7 +169,7 @@ def start(shop_id, language=None):
         if call and not call.done:
             raise Busy("a call to this shop is already on")
         if log.settled(shop_id):
-            raise Busy("rent already settled for this shop, so there is no second call. Run try.py reset to start over")
+            raise Busy("rent already settled for this shop this round, so there is no second call. Start a new round to call again")
         call = _calls[shop_id] = Call(shop_id, language)
     call.thread.start()
     return call
@@ -177,3 +177,11 @@ def start(shop_id, language=None):
 
 def get(shop_id):
     return _calls.get(shop_id)
+
+
+def new_round():
+    """Start the next demo round, never while a call is on."""
+    with _lock:
+        if any(not call.done for call in _calls.values()):
+            raise Busy("a call is on, start the new round after it")
+        return log.new_round()

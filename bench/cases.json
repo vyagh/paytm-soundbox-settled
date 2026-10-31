@@ -2921,5 +2921,87 @@
   "expect": "held",
   "identity": "failed: not confirmed",
   "recording": true
+ },
+ {
+  "id": "round-two-charges",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true,
+  "new_round": true,
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, theek hai",
+     "kind": "haan"
+    },
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "3456"
+    },
+    {
+     "text": "haan liya tha",
+     "kind": "haan"
+    },
+    {
+     "text": "haan pakka",
+     "kind": "haan"
+    }
+   ],
+   "expect": "charged"
+  },
+  "note": "a new demo round opens his rent again, so the next group can see him charged"
+ },
+ {
+  "id": "round-old-link",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "nahi",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "new_round": true,
+  "old_tap": "keep_plan",
+  "note": "a round-1 WhatsApp tapped in round 2 has expired"
  }
 ]

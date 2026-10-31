@@ -73,8 +73,11 @@ class AlreadySettled(Exception):
 
 
 # The actions that settle a shop's rent. Settled covers the first rent, so each shop
-# gets at most one of these, and add_settle is the only way one is written.
+# gets at most one of these per round, and add_settle is the only way one is written.
 SETTLES = ("charge rent (mock)", "cancel plan (mock)")
+# A demo round stands for a fresh rent cycle: a "round" row on shop ROUNDS starts it,
+# so every shop can be called again while the log stays append-only.
+ROUNDS = "all"
 
 
 def _connect():
@@ -129,18 +132,50 @@ def add_settle(shop, step, **fields):
         db.close()
 
 
+def _round_start(db):
+    return db.execute("SELECT COALESCE(MAX(id), 0) FROM log WHERE shop = ? AND step = 'round'", (ROUNDS,)).fetchone()[0]
+
+
 def _settled(db, shop):
     row = db.execute(
-        f"SELECT * FROM log WHERE shop = ? AND action IN ({', '.join('?' * len(SETTLES))}) ORDER BY id LIMIT 1",
-        [shop, *SETTLES],
+        f"SELECT * FROM log WHERE shop = ? AND id > ? AND action IN ({', '.join('?' * len(SETTLES))}) ORDER BY id LIMIT 1",
+        [shop, _round_start(db), *SETTLES],
     ).fetchone()
     return dict(row) if row else None
 
 
 def settled(shop):
-    """The row that settled this shop's rent (its charge or cancel), or None."""
+    """The row that settled this shop's rent in this round (its charge or cancel), or None."""
     with closing(_connect()) as db:
         return _settled(db, shop)
+
+
+def current_round():
+    """This round's number and the id of the row that started it (0 for round 1)."""
+    with closing(_connect()) as db:
+        start = _round_start(db)
+        n = db.execute("SELECT COUNT(*) FROM log WHERE shop = ? AND step = 'round'", (ROUNDS,)).fetchone()[0]
+        return n + 1, start
+
+
+def new_round():
+    """Start the next round and return its number."""
+    at = datetime.now().isoformat(timespec="seconds")
+    db = _connect()
+    try:
+        db.isolation_level = None
+        db.execute("BEGIN IMMEDIATE")
+        n = db.execute("SELECT COUNT(*) FROM log WHERE shop = ? AND step = 'round'", (ROUNDS,)).fetchone()[0] + 2
+        db.execute("INSERT INTO log (at, shop, step, rule) VALUES (?, ?, 'round', ?)",
+                   (at, ROUNDS, f"round {n}: every shop's rent is open again, older WhatsApp choices expire"))
+        db.execute("COMMIT")
+        return n
+    except BaseException:
+        if db.in_transaction:
+            db.execute("ROLLBACK")
+        raise
+    finally:
+        db.close()
 
 
 def last_step(shop, step):

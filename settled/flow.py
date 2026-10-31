@@ -23,7 +23,7 @@ def run(shop_id, listener, state=None):
     state = state if state is not None else CallState()
     shop = records.load(shop_id)
     if log.settled(shop.id):
-        raise log.AlreadySettled(f"{shop.name}'s rent is already settled, so there is nothing to call about")
+        raise log.AlreadySettled(f"{shop.name}'s rent is already settled this round, so there is nothing to call about")
     try:
         return _run(shop, listener, state)
     finally:

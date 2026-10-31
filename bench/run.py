@@ -7,7 +7,8 @@ gets the bench's fixed app code, 3456. A case with "tap" then taps that choice i
 his WhatsApp through POST /api/consent, on a board started in this process. A case
 with "again" calls the shop a second time in the same log, with its own turns and
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
-call's WhatsApp, which should answer 409.
+call's WhatsApp, which should answer 409. "new_round" starts a demo round through
+POST /api/round/new between the first call and the rest.
 """
 import argparse
 import json
@@ -89,16 +90,29 @@ def tap(board, shop):
     return poster(board, found[0]), found[0]
 
 
-def poster(board, msg):
-    def post(choice):
-        req = urllib.request.Request(f"{board}/api/consent/{msg}/{choice}", data=b"", method="POST")
-        try:
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                return resp.status, json.loads(resp.read())
-        except urllib.error.HTTPError as e:
-            return e.code, json.loads(e.read() or b"{}")
+def post_json(url):
+    req = urllib.request.Request(url, data=b"", method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            return resp.status, json.loads(resp.read())
+    except urllib.error.HTTPError as e:
+        return e.code, json.loads(e.read() or b"{}")
 
-    return post
+
+def doubled(rows, shop):
+    """True when a round has more than one charge or cancel for the shop."""
+    from settled import log
+    settles = [0]
+    for r in rows:
+        if r["shop"] == log.ROUNDS and r["step"] == "round":
+            settles.append(0)
+        elif r["shop"] == shop and r["action"] in log.SETTLES:
+            settles[-1] += 1
+    return max(settles) > 1
+
+
+def poster(board, msg):
+    return lambda choice: post_json(f"{board}/api/consent/{msg}/{choice}")
 
 
 def start_board():
@@ -191,6 +205,10 @@ def main(argv):
                         wrong.append(f"{pickups} pickups after a {case['tap']} tap")
 
             first = log.last_choices(case["shop"])
+            if case.get("new_round"):
+                status, reply = post_json(f"{url}/api/round/new")
+                if status != 200 or reply.get("round") != 2:
+                    wrong.append(f"new round answered {status} {reply}")
             if case.get("again"):
                 later = case["again"]
                 before = len(log.rows(case["shop"]))
@@ -210,8 +228,7 @@ def main(argv):
                     taps += 1
                     if status != 409 or not reply.get("expired"):
                         wrong.append(f"old tap answered {status}")
-            settles = sum(1 for r in log.rows(case["shop"]) if r["action"] in log.SETTLES)
-            double += settles > 1
+            double += doubled(log.rows(), case["shop"])
 
             want = expected_label(case["expect"])
             if got != want:
@@ -241,7 +258,7 @@ def main(argv):
     print(f"charged after na or unsure: {bad}")
     print(f"charged without verified identity: {unverified}")
     print(f"negative actions from the AI: {negative}")
-    print(f"double charges (more than one charge or cancel per shop): {double}")
+    print(f"double charges (more than one charge or cancel per shop in a round): {double}")
     print(f"honest yeses charged: {honest_charged}/{honest}")
     print(f"consent taps through the endpoint: {taps}")
     print(f"cases matching expected outcome: {matched}/{len(cases)}")

@@ -149,10 +149,11 @@ def _serial(shop):
 
 def live_link(shop_id):
     """The one message whose choices he can still tap, or None. It is the latest call's,
-    and only while the shop's rent is undecided: a later call or a settled rent ends it."""
+    in this round, and only while the shop's rent is undecided: a later call, a settled
+    rent or a new round ends it."""
     msg = log.last_choices(shop_id)
     due = log.last_step(shop_id, "due")
-    if not msg or not due or msg["call"] != due["id"] or log.settled(shop_id):
+    if not msg or not due or msg["call"] != due["id"] or due["id"] < log.current_round()[1] or log.settled(shop_id):
         return None
     return msg["id"]
 
