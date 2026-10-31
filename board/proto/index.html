@@ -93,6 +93,12 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .choice:active:not(:disabled){transform:scale(.98)}
 .choice:disabled{cursor:default;color:var(--faint)}
 .choice[aria-pressed="true"]{background:#1f8a4c;color:#fff}
+.callme{display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;margin-top:.5rem;border:0;background:#1f8a4c;color:#fff;font-size:.8125rem;font-weight:600;height:2.3rem;border-radius:.7rem;cursor:pointer;
+  transition:background-color .15s,transform .12s var(--ease)}
+.callme svg{width:.9rem;height:.9rem}
+.callme:hover:not(:disabled){background:#1a7a43}
+.callme:active:not(:disabled){transform:scale(.98)}
+.callme:disabled{cursor:default;background:var(--fill2);color:var(--faint)}
 .wamsg p.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
 .more{border:0;background:none;padding:0;margin-top:.15rem;font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer}
 .more:hover{color:var(--ink2)}
@@ -132,6 +138,8 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .steps .now i{background:var(--accent);color:#fff;box-shadow:0 0 0 .2rem var(--accent-soft)}
 .steps .stop i{background:var(--held-soft);color:var(--held)}
 .steps .stop{color:var(--held)}
+.steps .yr{font-size:.75rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted);background:var(--fill);border-radius:999px;padding:.05rem .45rem}
+.steps .stop .yr{color:var(--held);background:var(--held-soft)}
 .steps .skip{text-decoration:line-through;text-decoration-color:var(--fill2)}
 
 .convo{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;scrollbar-width:thin;padding:.1rem}
@@ -148,8 +156,8 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .kind{display:inline-flex;align-items:center;height:1.4rem;padding:0 .55rem;border-radius:999px;font-size:.75rem;font-weight:650;background:var(--surface);color:var(--ink2)}
 .kind.haan{color:var(--charged)} .kind.na{color:var(--held)}
 .bub.old{padding:.45rem .85rem .5rem}
-.bub.old .native{font-size:.95rem;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.bub.old .gloss,.bub.old .label{display:none}
+.bub.old .native{font-size:.95rem;color:var(--ink2)}
+.bub.old .label{display:none}
 .bub.old .words{font-size:.95rem}
 .bub.old .read{margin-top:.15rem}
 .bub.settled.old{max-width:72%}
@@ -428,6 +436,8 @@ function runOf(key) {
   let s = null;
   for (const r of view()) {
     if (r.shop !== key) continue;
+    /* a second call in the same run is him calling back from the SMS: the conversation starts again */
+    if (r.step === 'calling' && s?.called) s = {status: 'waiting', settled: false, startAt: s.startAt, why: null, turns: [], acts: [], charge: null, pick: null, records: s.records, called: false, rule: null, identity: null, callback: true};
     if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null, identity: null};
     if (FINAL[r.outcome]) {
       s.status = FINAL[r.outcome];
@@ -446,6 +456,8 @@ function runOf(key) {
     if (r.step === 'records checked') s.records = r.reason;
     if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
     if (r.step === 'calling') s.called = true;
+    if ((r.step === 'due' || r.step === 'calling') && /call(ed)?[\s_]?back|call_me/i.test([r.rule, r.action, r.reason].join(' '))) s.callback = true;
+    if (r.step === 'identity' && isYear(r) && /^\d{4}$/.test(r.read_as || '')) s.year = {said: r.read_as, ok: /^verified/i.test(r.rule || '')};
     if (r.step === 'identity') s.idTried = true;
     if (/send code/i.test(r.action || '')) s.codeAt = r.at;
     if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
@@ -548,7 +560,8 @@ const STEPS = [['identity', 'Identity'], ['ask', 'Plan question'], ['readback', 
 const STEP_AT = {consent: 0, identity: 0, ask: 1, readback: 2, followup: 3, done: 3};
 const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.2 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
-const WHY_NOT = {'someone else': 'someone else answered', 'not confirmed': 'no clear answer', 'no code': 'no code given', 'wrong code': 'wrong code'};
+const WHY_NOT = {'someone else': 'someone else answered', 'not confirmed': 'no clear answer', 'no code': 'no code given', 'wrong code': 'wrong code',
+  'no year': 'no year of birth given', 'wrong year': 'year of birth did not match', 'refused': 'he would not say his year of birth'};
 
 function renderSteps(s) {
   const call = s.shop.call || {};
@@ -570,7 +583,8 @@ function renderSteps(s) {
     if (failed && i === 0) kind = 'stop';
     if (ended && i === 3) kind = 'done';
     const mark = kind === 'done' ? TICK : kind === 'stop' ? '!' : i + 1;
-    return `<li class="${kind}"${kind === 'now' ? ' aria-current="step"' : ''}><i>${mark}</i>${name}</li>`;
+    const yr = k === 'identity' && s.year ? ` <span class="yr" title="Year of birth checked in plain code, not AI">${esc(s.year.said)}</span>` : '';
+    return `<li class="${kind}"${kind === 'now' ? ' aria-current="step"' : ''}><i>${mark}</i>${name}${yr}</li>`;
   }).join(''));
 }
 
@@ -663,6 +677,8 @@ const CHOICES = {keep_plan: 'Keep my plan', cheaper_plan: 'Show me a cheaper pla
 const APP_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.5h6v7H3z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 7.5h2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>';
 const taps = {};
 let hangupMissing = false;
+let callbackMissing = false;
+const callMe = m => m.action === 'call_me' || /call_me/.test(m.choices || '') || /\bTap Call me now\b/i.test(m.text);
 
 /* he cuts the call: the server ends it in plain code, nothing is taken */
 $('hangup').onclick = async () => {
@@ -713,6 +729,10 @@ function renderPhone(s) {
     const inText = m.link && m.text.includes(m.link);
     const text = m.text.replace(/^Paytm:\s*/, '').replace(inText ? m.link : /$^/, '').replace(/[\s:]+$/, '');
     let extra = '';
+    if (callMe(m) && !callbackMissing && m === mine[mine.length - 1]) {
+      const busy = !!me(focus).calling || !!call.active;
+      extra = `<button class="callme" type="button" data-callme="${esc(focus)}"${busy ? ' disabled' : ''}>${ICONS.phone}Call me now</button></div>`;
+    }
     if (m === asking) {
       const choices = choicesOf(m);
       const tap = taps[m.id] || {};
@@ -743,6 +763,8 @@ $('phone').addEventListener('click', async e => {
     if (!opened.delete(id)) opened.add(id);
     return render();
   }
+  const back = e.target.closest('.callme');
+  if (back) return back.disabled || callBack(back.dataset.callme);
   const b = e.target.closest('.choice');
   if (!b || b.disabled) return;
   const id = b.dataset.msg;
@@ -771,8 +793,15 @@ function bubbleHim(who, inner, read, old) {
   return `<div class="bub him${old ? ' old' : ''}"><span class="label">${esc(who)}</span>${inner}${read || ''}</div>`;
 }
 
+/* identity rows from the year of birth check, as against the older app code */
+const isYear = r => /year|refused/i.test(r.rule || '');
+
 function readAs(r) {
   if (!r.read_as) return '';
+  if (r.step === 'identity' && isYear(r)) {
+    if (r.read_as === 'wait') return `<p class="read">No year yet, Settled gives him a moment</p>`;
+    return `<p class="read">Year of birth checked in plain code, not AI <span class="kind ${/^verified/i.test(r.rule || '') ? 'haan' : 'na'}">${esc(r.read_as)}</span></p>`;
+  }
   if (r.step === 'identity' && r.read_as === 'wait') return `<p class="read">No code yet, Settled waits while he opens the app</p>`;
   if (r.step === 'identity' && /^\d+$|^no code$/.test(r.read_as)) return `<p class="read">Code read in plain code, not AI <span class="kind ${r.rule === 'verified' ? 'haan' : 'na'}">${esc(r.read_as)}</span></p>`;
   return `<p class="read">AI read it as <span class="kind ${esc(r.read_as)}">${esc(r.read_as)}</span>${r.reason ? `<span>${esc(r.reason)}</span>` : ''}</p>`;
@@ -796,6 +825,7 @@ function renderConvo(s) {
   } else if (!turns.length && !pending) {
     parts.push(`<div class="sys"><b>${active ? 'Calling' : 'Call ended'}</b>${s.records ? `<span>Records checked: ${esc(day(s.records))}</span>` : ''}</div>`);
   }
+  if (s.callback && s.called) parts.unshift(`<div class="sys"><b>He called back</b><span>${esc(shop.owner || 'The shopkeeper')} tapped Call me now on the SMS</span></div>`);
   const total = turns.length + (pending ? 1 : 0);
   turns.forEach((r, i) => {
     const old = i < total - 1;
@@ -805,7 +835,7 @@ function renderConvo(s) {
     parts.push(bubbleHim(`${who} said`, inner, readAs(r), old));
   });
   if (((s.identity && !s.identity.ok) || s.unverified) && !pending) {
-    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity?.why] || s.identity?.why || 'no code given')}. Nothing taken, nothing changed.</span></div>`);
+    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity?.why] || s.identity?.why || 'no clear answer')}. Nothing taken, nothing changed.</span></div>`);
   }
   if (pending) {
     parts.push(bubbleSettled(call.said, shop, false, m.speaking));
@@ -873,18 +903,27 @@ function renderControls(s) {
   playLine(focus, call);
 }
 
+/* every line Settled says plays once, in order: its audio is fetched as soon as the line
+   shows up (the server keeps only the latest), and played after the one before ends */
 function playLine(key, call) {
   const m = me(key);
-  if (!(call.active && call.waiting && m.played !== call.seq)) return;
+  if (call.active) m.tracking = true;
+  if (!m.tracking || !call.seq || m.played === call.seq) return;
   m.played = call.seq;
-  m.note = '';
+  if (call.waiting) m.note = '';
   if (!call.voice) return;
-  m.speaking = true;
-  const audio = new Audio(`/api/call/${key}/audio/${call.seq}`);
-  const done = () => { m.speaking = false; render(); };
-  audio.onended = done;
-  audio.onerror = done;
-  audio.play().catch(done);
+  const url = `/api/call/${key}/audio/${call.seq}`;
+  const got = fetch(url, {cache: 'no-store'}).then(r => r.ok ? r.blob() : null).catch(() => null);
+  m.unplayed = (m.unplayed || 0) + 1;
+  m.voices = (m.voices || Promise.resolve()).then(() => got).then(blob => blob && new Promise(done => {
+    const audio = new Audio(URL.createObjectURL(blob));
+    const end = () => { URL.revokeObjectURL(audio.src); m.speaking = false; render(); done(); };
+    m.speaking = true;
+    render();
+    audio.onended = end;
+    audio.onerror = end;
+    audio.play().catch(end);
+  })).then(() => { m.unplayed--; });
 }
 
 function renderResult(s) {
@@ -933,15 +972,37 @@ function teamLines(s) {
 }
 
 /* call actions */
-$('start').onclick = async () => {
-  const key = focus;
-  const m = me(key);
+function freshCall(m) {
   m.note = '';
   m.played = 0;
+  m.tracking = false;
   m.speaking = false;
   m.heard = null;
   m.micTried = true;
   askMic(m).then(render);
+}
+
+/* he taps Call me now on the SMS: the call starts again as if he rang back */
+async function callBack(key) {
+  const m = me(key);
+  m.calling = true;
+  freshCall(m);
+  render();
+  try {
+    const res = await fetch(`/api/call/${key}/callback`, {method: 'POST'});
+    if (res.status === 404) callbackMissing = true;
+    else if (!res.ok) m.note = (await res.json().catch(() => ({}))).error || 'Could not call back';
+  } catch (e) {
+    m.note = 'Network failed, could not call back';
+  }
+  m.calling = false;
+  await refreshShops().catch(() => render());
+}
+
+$('start').onclick = async () => {
+  const key = focus;
+  const m = me(key);
+  freshCall(m);
   const language = m.lang || SHOPS[key].default;
   try {
     const res = await fetch(`/api/call/${key}/start`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({language})});
@@ -1157,7 +1218,7 @@ async function checkVersion() {
   try {
     const v = await (await fetch('/api/version', {cache: 'no-store'})).text();
     if (seenVersion === undefined) seenVersion = v;
-    const busy = Object.keys(SHOPS).some(k => SHOPS[k].call?.active || live[k]?.rec || live[k]?.sending);
+    const busy = Object.keys(SHOPS).some(k => SHOPS[k].call?.active || live[k]?.rec || live[k]?.sending || live[k]?.unplayed > 0);
     if (v !== seenVersion && !busy) location.reload();
   } catch (e) {}
 }
