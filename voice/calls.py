@@ -10,7 +10,7 @@ import threading
 import time
 
 from ai import reader
-from settled import flow
+from settled import flow, records
 from settled.models import Answer
 
 from . import sarvam, script
@@ -23,8 +23,9 @@ class Busy(Exception):
 
 
 class Call:
-    def __init__(self, shop_id):
+    def __init__(self, shop_id, language):
         self.shop_id = shop_id
+        self.language = language
         self.lock = threading.Lock()
         self.replies = queue.Queue()
         self.seq = 0
@@ -49,7 +50,7 @@ class Call:
                 self.done = True
 
     def _listen(self, shop, said):
-        language = script.LANGUAGES[shop.language]
+        language = script.LANGUAGES[self.language]
         line = language[said]
         try:
             audio = sarvam.speak(line, language["code"], language["voice"])
@@ -123,12 +124,15 @@ _calls = {}
 _lock = threading.Lock()
 
 
-def start(shop_id):
+def start(shop_id, language=None):
+    language = language or records.load(shop_id).language
+    if language not in script.LANGUAGES:
+        raise ValueError(f"no language {language!r}")
     with _lock:
         call = _calls.get(shop_id)
         if call and not call.done:
             raise Busy("a call to this shop is already on")
-        call = _calls[shop_id] = Call(shop_id)
+        call = _calls[shop_id] = Call(shop_id, language)
     call.thread.start()
     return call
 
