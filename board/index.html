@@ -5,107 +5,213 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Settled board</title>
 <style>
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Board Devanagari";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/noto-sans-devanagari.woff2) format("woff2");
+  unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF}
 :root{
-  --bg:#f4efda; --surface:#fbf8ec; --tint:#ede6ca; --line:#ddd5b5;
-  --ink:#24243a; --ink2:#3e3e52; --muted:#67644f;
-  --accent:#3f5a8a; --charged:#466129; --held:#7f5600; --not:#5e5c52; --mock:#9c4d00; --wait:#8a8778;
-  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Nirmala UI",sans-serif;
-  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono",Consolas,Menlo,monospace;
+  /* 1u = .5rem, the 8-point step at the 16px base; the base scales with the screen */
+  --u:.5rem;
+  --bg:#f3f2ee; --surface:#ffffff; --fill:#f1f0ec; --fill2:#e8e6e0; --hair:#e4e2dc;
+  --ink:#16161d; --ink2:#3c3c47; --muted:#64636b; --faint:#8e8d94;
+  --accent:#34528a; --accent-soft:#eaeef6;
+  --charged:#3c6a1f; --charged-soft:#e9f1e0;
+  --held:#9a5c00; --held-soft:#fbf0dc;
+  --not:#55545c; --not-soft:#eeedf0;
+  --rec:#c0283f; --rec-soft:#fbe6e9; --mock:#9a4a00;
+  --sans:"Board Sans","Board Devanagari",system-ui,-apple-system,"Segoe UI","Nirmala UI","Noto Sans",sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --lift:0 1px 2px rgb(20 20 30 / .04),0 12px 32px -12px rgb(20 20 30 / .16);
 }
-*{box-sizing:border-box;margin:0}
-html{font-size:clamp(15px,1.2vw,24px)}
-body{background:var(--bg);color:var(--ink2);font-family:var(--sans);line-height:1.4;padding:1.1rem 1.4rem 2rem;min-height:100vh}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(14px,min(1.12vw,2.05vh),22px)}
+body{background:var(--bg);color:var(--ink2);font-family:var(--sans);line-height:1.45;font-feature-settings:"cv11";-webkit-font-smoothing:antialiased;
+  height:100vh;overflow:auto;display:grid;grid-template-rows:auto auto minmax(9rem,1fr);gap:calc(2*var(--u));padding:calc(2*var(--u)) calc(3*var(--u))}
 q{quotes:"\201C" "\201D"}
+[hidden]{display:none!important}
+.label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.01em;color:var(--muted)}
 
-header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem}
-h1{font-size:1.9rem;color:var(--ink);letter-spacing:-.01em}
-header p{color:var(--muted);font-size:1.05rem}
-.live{margin-left:auto;display:flex;align-items:center;gap:.45rem;font-size:.95rem;font-weight:600;color:var(--charged)}
-.live::before{content:"";width:.7rem;height:.7rem;border-radius:50%;background:currentColor}
-.live.off{color:#a3263a}
+/* header */
+.bar{display:flex;align-items:center;gap:calc(3*var(--u));min-height:calc(5*var(--u))}
+.brand{display:flex;align-items:center;gap:calc(1.5*var(--u))}
+.mark{width:calc(4.5*var(--u));height:calc(4.5*var(--u));flex:none}
+h1{font-size:1.5rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font-weight:700}
+.brand p{font-size:.875rem;color:var(--muted)}
+.how{list-style:none;display:flex;gap:calc(3*var(--u));margin-left:auto;counter-reset:how}
+.how li{counter-increment:how;display:flex;align-items:center;gap:var(--u);font-size:.875rem;font-weight:500;color:var(--ink2)}
+.how li::before{content:counter(how);display:grid;place-items:center;width:calc(2.5*var(--u));height:calc(2.5*var(--u));border-radius:50%;background:var(--fill2);color:var(--ink2);font-size:.7rem;font-weight:700;font-variant-numeric:tabular-nums}
+.live{display:flex;align-items:center;gap:var(--u);font-size:.875rem;font-weight:600;color:var(--charged)}
+.live::before{content:"";width:calc(1*var(--u));height:calc(1*var(--u));border-radius:50%;background:currentColor;box-shadow:0 0 0 .2rem color-mix(in srgb,currentColor 18%,transparent)}
+.live.off{color:var(--rec)}
 
-.shops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-bottom:1.3rem}
-.card{background:var(--surface);border:2px solid var(--line);border-top:.45rem solid var(--wait);border-radius:14px;padding:.9rem 1.1rem 1rem;display:flex;flex-direction:column;gap:.6rem;transition:border-color .4s}
-.card h2{font-size:1.45rem;color:var(--ink);line-height:1.2}
-.card .who{font-size:.95rem;color:var(--muted);font-weight:500}
-.status{align-self:flex-start;font-size:1.5rem;font-weight:700;padding:.2rem .9rem;border-radius:999px;display:flex;align-items:center;gap:.5rem}
-.lines{display:flex;flex-direction:column;gap:.45rem;font-size:1.1rem;color:var(--ink)}
-.lines div{display:grid;grid-template-columns:5.2rem 1fr;gap:.6rem;align-items:baseline}
-.lines span{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-.none{color:var(--wait)}
-.card.flash{animation:flash 1.4s ease-out}
-@keyframes flash{from{background:#fff3c4}to{background:var(--surface)}}
+/* cards */
+.shops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:calc(2*var(--u));align-items:stretch}
+.card{background:var(--surface);border-radius:calc(2.5*var(--u));padding:calc(2.5*var(--u)) calc(3*var(--u)) calc(3*var(--u));
+  display:flex;flex-direction:column;gap:calc(2*var(--u));min-height:30rem;transition:box-shadow .35s var(--ease),transform .35s var(--ease)}
+.card.oncall{box-shadow:var(--lift);transform:translateY(-2px)}
+.top{display:flex;align-items:flex-start;justify-content:space-between;gap:calc(1.5*var(--u));min-height:3.05rem}
+.card h2{font-size:1.375rem;line-height:1.2;color:var(--ink);letter-spacing:-.02em;font-weight:700}
+.card h2 .who{display:block;font-size:.875rem;color:var(--muted);font-weight:500;letter-spacing:0;margin-top:calc(.25*var(--u))}
+.lang{flex:none;appearance:none;font:inherit;font-size:.8125rem;font-weight:600;color:var(--ink2);background:var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M2 5l3-3 3 3M2 9l3 3 3-3' fill='none' stroke='%2364636b' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right calc(1.25*var(--u)) center/.5rem;
+  border:0;border-radius:999px;height:calc(4*var(--u));padding:0 calc(3.5*var(--u)) 0 calc(1.75*var(--u));cursor:pointer;max-width:12rem;transition:background-color .15s}
+.lang:hover{background-color:var(--fill2)}
+.lang:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.lang:disabled{cursor:default;background-image:none;padding-right:calc(1.75*var(--u));color:var(--muted)}
+.status{align-self:flex-start;display:flex;align-items:center;gap:var(--u);font-size:.875rem;font-weight:600;height:calc(3.5*var(--u));padding:0 calc(1.5*var(--u));border-radius:999px;margin-top:calc(-1*var(--u))}
+.status::before{content:"";width:calc(.875*var(--u));height:calc(.875*var(--u));border-radius:50%;background:currentColor}
+.s-waiting{color:var(--muted);background:var(--fill)}
+.s-checking,.s-calling,.s-asking{color:var(--accent);background:var(--accent-soft)}
+.s-charged{color:var(--charged);background:var(--charged-soft)}
+.s-held{color:var(--held);background:var(--held-soft)}
+.s-not{color:var(--not);background:var(--not-soft)}
+.status.rec{color:var(--rec);background:var(--rec-soft)}
+.card[data-phase="done"] .status{display:none}
 
-.s-waiting{color:var(--wait);background:var(--tint)}
-.s-checking,.s-calling,.s-asking{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.s-charged{color:var(--charged);background:color-mix(in srgb,var(--charged) 16%,transparent)}
-.s-held{color:var(--held);background:color-mix(in srgb,var(--held) 18%,transparent)}
-.s-not{color:var(--not);background:color-mix(in srgb,var(--not) 16%,transparent)}
-.s-checking::before,.s-calling::before,.s-asking::before{content:"";width:.55em;height:.55em;border-radius:50%;background:currentColor;animation:pulse 1s ease-in-out infinite alternate}
-@keyframes pulse{from{opacity:1}to{opacity:.2}}
-.card.c-checking,.card.c-calling,.card.c-asking{border-top-color:var(--accent)}
-.card.c-charged{border-top-color:var(--charged)}
-.card.c-held{border-top-color:var(--held)}
-.card.c-not{border-top-color:var(--not)}
+.body{display:flex;flex-direction:column;gap:calc(1.5*var(--u));min-height:0}
+.native{font-size:1.3125rem;line-height:1.45;color:var(--ink);font-weight:500;letter-spacing:-.005em}
+.gloss{font-size:.875rem;line-height:1.45;color:var(--muted);margin-top:calc(.5*var(--u))}
+.preview .label{margin-bottom:calc(.5*var(--u))}
+.preview .native{font-size:1.125rem;color:var(--ink2)}
 
-h3{font-size:1.05rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.5rem}
-.log{background:var(--surface);border:2px solid var(--line);border-radius:14px;overflow:hidden}
-table{width:100%;border-collapse:collapse;font-size:.95rem;table-layout:fixed}
-th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--tint);padding:.5rem .6rem}
-td{padding:.55rem .6rem;border-top:1px solid var(--line);vertical-align:top;color:var(--ink);overflow-wrap:anywhere}
-tr.new td{animation:flash 1.4s ease-out}
-td.t{font-family:var(--mono);color:var(--muted);font-size:.85rem}
-td .sub{display:block;color:var(--ink2);font-size:.88rem;margin-top:.15rem}
-td .reason{display:block;color:var(--muted);font-size:.85rem}
-.o{display:inline-block;font-weight:700;padding:.05rem .55rem;border-radius:999px;white-space:nowrap}
-.o.call,.o.ask{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
-.o.charged{color:var(--charged);background:color-mix(in srgb,var(--charged) 16%,transparent)}
-.o.held{color:var(--held);background:color-mix(in srgb,var(--held) 18%,transparent)}
-.o.not{color:var(--not);background:color-mix(in srgb,var(--not) 16%,transparent)}
-.act{display:block}
-.mock{display:inline-block;margin-left:.35rem;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);border:2px solid var(--mock);border-radius:5px;padding:0 .3rem;vertical-align:.1em}
-.empty td{color:var(--wait);text-align:center;padding:1.5rem}
-.card .top{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem}
-.lang{flex:none;font-size:.85rem;font-weight:700;color:var(--accent);border:2px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:999px;padding:.05rem .6rem;white-space:nowrap;font-family:inherit;background:var(--surface);cursor:pointer}
-.lang:disabled{cursor:default;opacity:1}
-.lines .gloss{display:block;font-size:.85rem;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;margin-top:.1rem}
-.controls{display:flex;flex-direction:column;gap:.5rem;margin-top:auto;padding-top:.3rem}
-.controls[hidden],.controls [hidden]{display:none}
-.btn{font:inherit;font-size:1.05rem;font-weight:700;border-radius:10px;border:2px solid var(--accent);padding:.5rem 1rem;cursor:pointer;background:var(--surface);color:var(--accent)}
+.turn{border-radius:calc(2.25*var(--u));padding:calc(1.5*var(--u)) calc(2*var(--u)) calc(1.75*var(--u))}
+.turn .label{margin-bottom:calc(.5*var(--u));display:flex;align-items:center;gap:var(--u)}
+.arr{font-family:system-ui,sans-serif;font-size:1.1em;line-height:1;color:var(--faint);padding:0 .1em}
+.turn.settled{background:var(--accent-soft);border-top-left-radius:calc(.75*var(--u));margin-right:calc(3*var(--u))}
+.turn.settled .label{color:var(--accent)}
+.turn.him{background:var(--fill);border-top-right-radius:calc(.75*var(--u));margin-left:calc(3*var(--u))}
+.words{font-size:1.3125rem;line-height:1.4;color:var(--ink);font-weight:550;min-height:calc(3.75*var(--u))}
+.words .none{font-size:1rem;font-weight:500;color:var(--faint)}
+.prev{font-size:.8125rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:0 calc(.5*var(--u))}
+.prev b{font-weight:600;color:var(--ink2)}
+.eq{display:inline-flex;gap:2px;align-items:center;height:.75rem}
+.eq i{width:3px;height:100%;background:currentColor;border-radius:2px}
+.meter{display:flex;align-items:center;gap:3px;height:calc(3.75*var(--u))}
+.meter i{flex:1;height:100%;border-radius:3px;background:var(--rec);transform:scaleY(.08);transition:transform 60ms linear}
+
+/* outcome */
+.verdict{display:flex;align-items:center;gap:calc(2*var(--u));color:var(--ink);margin-bottom:calc(.5*var(--u))}
+.verdict svg{width:calc(6*var(--u));height:calc(6*var(--u));flex:none}
+.verdict strong{display:block;font-size:2.5rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums}
+.verdict span{display:block;font-size:.9375rem;font-weight:500;margin-top:calc(.5*var(--u));color:var(--muted)}
+.v-charged svg{color:var(--charged)} .v-charged strong{color:var(--charged)}
+.v-held svg{color:var(--held)} .v-held strong{color:var(--held)}
+.v-not svg{color:var(--not)} .v-not strong{color:var(--not)}
+.facts{display:flex;flex-direction:column;gap:calc(1.5*var(--u));padding-top:calc(2*var(--u));border-top:1px solid var(--hair)}
+.facts p{font-size:.9375rem;line-height:1.45;color:var(--ink)}
+.facts .label{margin-bottom:calc(.25*var(--u))}
+.facts .read{color:var(--muted);font-size:.875rem}
+.acts{list-style:none;display:flex;flex-wrap:wrap;gap:var(--u);margin-top:calc(.5*var(--u))}
+.acts li{display:flex;align-items:center;gap:var(--u);font-size:.875rem;font-weight:550;color:var(--ink2);background:var(--fill);border-radius:999px;height:calc(3.5*var(--u));padding:0 calc(.75*var(--u)) 0 calc(1.5*var(--u))}
+.mock{display:inline-flex;align-items:center;font-size:.625rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);background:#fff;border-radius:999px;height:calc(2.25*var(--u));padding:0 var(--u);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mock) 45%,transparent)}
+
+/* controls */
+.controls{display:flex;flex-direction:column;gap:calc(1.5*var(--u));margin-top:auto}
+.btn{font:inherit;font-weight:600;border:0;border-radius:999px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:var(--u);transition:background-color .15s,transform .12s var(--ease),box-shadow .2s}
+.btn svg{width:1.1em;height:1.1em;flex:none}
 .btn:disabled{opacity:.5;cursor:default}
-.btn.start{align-self:flex-start}
-.btn.talk{background:var(--accent);color:#fff;font-size:1.2rem;padding:.8rem 1rem;touch-action:none;user-select:none;-webkit-user-select:none}
-.btn.talk.on{background:#a3263a;border-color:#a3263a}
-.typed{display:flex;gap:.4rem}
-.typed input{flex:1;min-width:0;font:inherit;font-size:.95rem;padding:.35rem .55rem;border:2px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
-.typed button{font:inherit;font-size:.9rem;font-weight:600;border:2px solid var(--line);border-radius:8px;background:var(--tint);color:var(--ink2);padding:.3rem .7rem;cursor:pointer}
-.note{font-size:.9rem;color:var(--muted);min-height:1.2em}
-col.c-t{width:5.6rem} col.c-shop{width:8.6rem} col.c-what{width:20%} col.c-words{width:16%}
-col.c-read{width:12%} col.c-rule{width:13%} col.c-out{width:8.2rem}
+.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.btn.start{font-size:1rem;height:calc(6*var(--u));padding:0 calc(3*var(--u));background:var(--accent);color:#fff}
+.btn.start:hover{background:#2b4677}
+.btn.start.again{background:var(--accent-soft);color:var(--accent)}
+.btn.start.again:hover{background:#dde4f1}
+.btn.talk{font-size:1.125rem;height:calc(6.5*var(--u));background:var(--accent);color:#fff;touch-action:none;user-select:none;-webkit-user-select:none}
+.btn.talk.on{background:var(--rec);transform:scale(.97);box-shadow:0 0 0 calc(.75*var(--u)) var(--rec-soft)}
+.typed{display:flex;gap:var(--u)}
+.typed input{flex:1;min-width:0;font:inherit;font-size:.9375rem;height:calc(5*var(--u));padding:0 calc(2*var(--u));border:0;border-radius:999px;background:var(--fill);color:var(--ink)}
+.typed input::placeholder{color:var(--faint)}
+.typed input:focus{outline:2px solid var(--accent);outline-offset:0;background:#fff}
+.typed button{font:inherit;font-size:.9375rem;font-weight:600;border:0;border-radius:999px;background:var(--fill2);color:var(--ink2);height:calc(5*var(--u));padding:0 calc(2.25*var(--u));cursor:pointer}
+.typed button:hover{background:#dedcd5}
+.note{font-size:.875rem;color:var(--muted);padding:0 calc(.5*var(--u))}
+.note:empty{display:none}
+.note.warn{color:var(--rec);font-weight:600}
+
+/* log */
+.logwrap{background:var(--surface);border-radius:calc(2.5*var(--u));display:flex;flex-direction:column;min-height:0}
+.loghead{display:flex;align-items:baseline;gap:calc(1.5*var(--u));padding:calc(2*var(--u)) calc(3*var(--u)) var(--u)}
+.loghead h3{font-size:1rem;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.loghead p{font-size:.8125rem;color:var(--muted)}
+.log{list-style:none;overflow:auto;min-height:0;flex:1;padding:0 calc(3*var(--u)) calc(1.5*var(--u))}
+.ev{display:grid;grid-template-columns:calc(9*var(--u)) calc(2*var(--u)) minmax(0,1fr);column-gap:calc(1.5*var(--u))}
+.ev time{font-size:.8125rem;color:var(--faint);font-variant-numeric:tabular-nums;padding-top:calc(1.25*var(--u));text-align:right}
+.ev .dot{position:relative}
+.ev .dot::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:1.5px;transform:translateX(-50%);background:var(--hair)}
+.ev:first-child .dot::before{top:calc(1.9*var(--u))}
+.ev:last-child .dot::before{bottom:auto;height:calc(1.9*var(--u))}
+.ev .dot::after{content:"";position:absolute;left:50%;top:calc(1.4*var(--u));width:calc(1.25*var(--u));height:calc(1.25*var(--u));border-radius:50%;transform:translateX(-50%);background:var(--surface);box-shadow:inset 0 0 0 2px var(--fill2)}
+.ev.e-call .dot::after,.ev.e-ask .dot::after{box-shadow:inset 0 0 0 2px var(--accent)}
+.ev.e-charged .dot::after{background:var(--charged);box-shadow:none}
+.ev.e-held .dot::after{background:var(--held);box-shadow:none}
+.ev.e-not .dot::after{background:var(--not);box-shadow:none}
+.ev-body{padding:var(--u) 0;min-width:0}
+.ev-head{display:flex;align-items:center;gap:var(--u);flex-wrap:wrap;font-size:.9375rem;color:var(--ink);min-height:calc(3*var(--u))}
+.ev-head b{font-weight:600}
+.ev-head .step{color:var(--muted)}
+.ev-detail{font-size:.8125rem;color:var(--muted);margin-top:calc(.25*var(--u));display:flex;flex-wrap:wrap;column-gap:calc(2*var(--u));row-gap:calc(.25*var(--u))}
+.ev-detail q{color:var(--ink);font-weight:550}
+.ev-detail b{font-weight:600;color:var(--ink2)}
+.ev-detail .rule{color:var(--ink2)}
+.ev-detail .act{display:inline-flex;align-items:center;gap:var(--u);color:var(--ink2);font-weight:550}
+.o{display:inline-flex;align-items:center;font-size:.75rem;font-weight:600;height:calc(2.75*var(--u));padding:0 var(--u);border-radius:999px;white-space:nowrap}
+.o.call,.o.ask{color:var(--accent);background:var(--accent-soft)}
+.o.charged{color:var(--charged);background:var(--charged-soft)}
+.o.held{color:var(--held);background:var(--held-soft)}
+.o.not{color:var(--not);background:var(--not-soft)}
+.log .empty{color:var(--faint);text-align:center;padding:calc(3*var(--u)) 0;font-size:.9375rem}
+
+@media (prefers-reduced-motion:no-preference){
+  .status.wait::before{animation:breathe 1.6s ease-in-out infinite}
+  .eq i{animation:eq .7s var(--ease) infinite alternate}
+  .eq i:nth-child(2){animation-delay:-.25s}
+  .eq i:nth-child(3){animation-delay:-.5s}
+  .enter{animation:enter .4s var(--ease)}
+  .ev.new{animation:enter .4s var(--ease)}
+}
+@media (prefers-reduced-motion:reduce){
+  .card,.card.oncall,.btn,.btn.talk.on,.meter i{transition:none;transform:none}
+}
+@keyframes breathe{50%{opacity:.3}}
+@keyframes eq{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes enter{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+@media (max-width:900px){
+  body{height:auto;grid-template-rows:auto}
+  .shops{grid-template-columns:1fr}
+  .how{display:none}
+  .log{max-height:60vh}
+}
 </style>
 </head>
 <body>
-<header>
-  <h1>Settled</h1>
-  <p>First Soundbox rent, checked with the shopkeeper before it is taken</p>
+<header class="bar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#34528a"/><path d="M11 13.5h18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-9l-5.5 4v-4H11a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3z" fill="#fffdf8"/><path d="M15 20.5l3.4 3.2 6.6-6.7" fill="none" stroke="#34528a" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>
+      <h1>Settled</h1>
+      <p>First Soundbox rent, checked with the shopkeeper before it is taken</p>
+    </div>
+  </div>
+  <ol class="how" aria-label="How it works">
+    <li>Asks him in his language</li>
+    <li>AI only sorts his reply</li>
+    <li>Plain rules decide</li>
+  </ol>
   <div class="live off" id="live">connecting</div>
 </header>
 
-<section class="shops" id="shops"></section>
+<main class="shops" id="shops"></main>
 
-<h3>Decision log</h3>
-<div class="log">
-  <table>
-    <colgroup><col class="c-t"><col class="c-shop"><col class="c-what"><col class="c-words"><col class="c-read"><col class="c-rule"><col class="c-out"><col></colgroup>
-    <thead><tr><th>Time</th><th>Shop</th><th>What happened</th><th>His words</th><th>Read as</th><th>Rule</th><th>Outcome</th><th>Action</th></tr></thead>
-    <tbody id="log"></tbody>
-  </table>
-</div>
+<section class="logwrap" aria-label="Decision log">
+  <div class="loghead"><h3>Decision log</h3><p>Every step, with his words, how they were read and the rule that fired</p></div>
+  <ol class="log" id="log"></ol>
+</section>
 
 <script>
 let SHOPS = {};
 const STATUS = {
-  waiting: 'Waiting', checking: 'Checking records', calling: 'Calling', asking: 'Asking again',
+  waiting: 'Ready', checking: 'Checking records', calling: 'On call', asking: 'Asking again',
   charged: 'Charged', held: 'Held', not: 'Not charged'
 };
 const STEPS = {
@@ -117,6 +223,14 @@ const OUTCOMES = {
   'held': ['held', 'Held'], 'not charged': ['not', 'Not charged']
 };
 const MAX_ROWS = 200;
+const BARS = 28;
+const ICONS = {
+  charged: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M12.5 20.5l5 4.8 10-10.3" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  held: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><rect x="14.5" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/><rect x="21.9" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/></svg>',
+  not: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M13 20h14" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5l2.6-.6 1.9 4.4-2 1.7a12 12 0 0 0 5.9 5.9l1.7-2 4.4 1.9-.6 2.6a2 2 0 0 1-2 1.6A16.5 16.5 0 0 1 3.5 5.5a2 2 0 0 1 1.6-2z" fill="currentColor"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+};
 
 let rows = [];
 let lastId = 0;
@@ -125,6 +239,9 @@ let shown = {};
 
 const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
 const time = at => (at || '').split('T').pop().slice(0, 8);
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const arrows = s => esc(s).replace(/→/g, '<span class="arr">→</span>');
+const html = (el, str) => { if (el._html !== str) { el._html = str; el.innerHTML = str; } };
 
 function statusOf(row, prev) {
   switch (row.outcome) {
@@ -149,20 +266,25 @@ function shopState(key) {
   let s;
   for (const r of rows) {
     if (r.shop !== key) continue;
-    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, said: null, heard: null, why: null};
+    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, said: null, heard: null, why: null, turns: [], acts: [], charge: null, records: null, called: false};
     if (FINAL[r.outcome]) {
       s.status = FINAL[r.outcome];
       s.settled = true;
     } else if (!s.settled) {
       s.status = statusOf(r, s.status);
     }
-    if (r.step === 'decided' && r.rule) s.why = r.rule;
+    if (r.step === 'decided' && r.rule) { s.why = r.rule; s.decisive = s.turns[s.turns.length - 1]; }
     if (r.said) {
       s.said = r.said;
       s.heard = r.heard || (r.read_as === 'no answer' ? '' : null);
+      s.turns.push(r);
     }
+    if (r.step === 'records checked') s.records = r.reason;
+    if (r.step === 'calling') s.called = true;
+    if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
+    if (r.step === 'follow-up' && r.outcome === 'charged') s.charge = r.rule;
   }
-  return s || {status: 'waiting', said: null, heard: null, why: null};
+  return s || {status: 'waiting', said: null, heard: null, why: null, turns: [], acts: []};
 }
 
 function card(key) {
@@ -173,10 +295,18 @@ function card(key) {
   el.className = 'card c-waiting';
   el.innerHTML = `<div class="top"><h2></h2><select class="lang" aria-label="Language for the next call"></select></div>
     <div class="status s-waiting"></div>
-    <div class="lines"></div>
+    <div class="body">
+      <section class="preview"><span class="label"></span><p class="native"></p><p class="gloss"></p></section>
+      <section class="convo">
+        <div class="turn settled"><span class="label"></span><p class="native"></p><p class="gloss"></p></div>
+      </section>
+      <div class="prev"></div>
+      <div class="turn him"><span class="label"></span><p class="words"></p><div class="meter" hidden>${'<i></i>'.repeat(BARS)}</div></div>
+      <section class="outcome"></section>
+    </div>
     <div class="controls">
-      <button class="btn start" type="button">Start call</button>
-      <button class="btn talk" type="button" hidden>Hold to speak</button>
+      <button class="btn start" type="button"></button>
+      <button class="btn talk" type="button" hidden></button>
       <form class="typed" hidden><input name="text" placeholder="type instead" autocomplete="off" aria-label="Type his reply instead"><button>Send</button></form>
       <div class="note"></div>
     </div>`;
@@ -201,13 +331,13 @@ function renderShops() {
     shown[key] = s.status;
     if (el.dataset.status !== s.status) {
       el.dataset.status = s.status;
-      el.className = `card c-${s.status}${flash ? ' flash' : ''}`;
+      el.className = `card c-${s.status}`;
     }
-    el.querySelector('h2').innerHTML = `${esc(shop.name)}${shop.owner ? ` <span class="who">${esc(shop.owner)}</span>` : ''}`;
+    html(el.querySelector('h2'), `${esc(shop.name)}${shop.owner ? ` <span class="who">Owner ${esc(shop.owner)}</span>` : ''}`);
     const pick = el.querySelector('.lang');
     if (!pick.options.length) {
       pick.innerHTML = shop.languages.map(l => `<option value="${esc(l.code)}">${esc(l.name)} · ${esc(l.own)}</option>`).join('');
-      pick.onchange = () => { (live[key] || (live[key] = {})).lang = pick.value; };
+      pick.onchange = () => { (live[key] || (live[key] = {})).lang = pick.value; renderShops(); };
     }
     pick.disabled = !!shop.call?.active;
     const lang = shop.call?.active ? shop.language.code : live[key]?.lang || shop.default;
@@ -215,39 +345,123 @@ function renderShops() {
     const st = el.querySelector('.status');
     st.className = `status s-${s.status}`;
     st.textContent = STATUS[s.status];
-    if (shop.call?.active && shop.call.said && shop.call.said !== s.said) {
+
+    const active = !!shop.call?.active;
+    if (active && shop.call.said && shop.call.said !== s.said) {
       s.said = shop.call.said;
       s.heard = null;
     }
-    const native = s.said && shop.lines[s.said];
-    const line = (label, text) => `<div><span>${label}</span>${text ? `<q>${esc(text)}</q>` : `<em class="none">${text === '' ? 'no reply' : 'nothing yet'}</em>`}</div>`;
-    el.querySelector('.lines').innerHTML = s.said || !s.why
-      ? (native ? `<div><span>Settled</span><p><q>${esc(native)}</q><span class="gloss">${esc(s.said)}</span></p></div>` : line('Settled', s.said)) + line('He said', s.heard)
-      : `<div><span>Why</span>${esc(s.why)}</div>`;
-    renderControls(key, el);
+    const phase = active ? 'call' : s.settled ? 'done' : s.said || s.status !== 'waiting' ? 'call' : 'idle';
+    el.dataset.phase = phase;
+    el.classList.toggle('oncall', active);
+    if (flash && phase === 'done') el.querySelector('.outcome').classList.add('enter');
+
+    const ask = Object.keys(shop.lines)[0];
+    const preview = el.querySelector('.preview');
+    preview.hidden = phase !== 'idle';
+    if (phase === 'idle') {
+      const own = pick.value === shop.language.code;
+      const name = shop.languages.find(l => l.code === pick.value)?.name;
+      preview.querySelector('.label').textContent = own ? 'Settled will ask' : `Settled will ask, in ${name}`;
+      preview.querySelector('.native').textContent = own ? shop.lines[ask] : '';
+      preview.querySelector('.native').hidden = !own;
+      preview.querySelector('.gloss').textContent = ask;
+    }
+
+    const showTalk = phase === 'call' && (active || s.said);
+    const convo = el.querySelector('.convo');
+    const him = el.querySelector('.him');
+    convo.hidden = !showTalk || !s.said;
+    him.hidden = !showTalk || !s.said;
+    if (s.said) {
+      const native = shop.lines[s.said];
+      const me = live[key] || {};
+      html(convo.querySelector('.label'), `Settled said${active && me.speaking ? ' <span class="eq" aria-label="speaking"><i></i><i></i><i></i></span>' : ''}`);
+      convo.querySelector('.native').textContent = native || s.said;
+      convo.querySelector('.gloss').textContent = native ? s.said : '';
+    }
+    const prevTurn = s.turns.length && s.turns[s.turns.length - 1].said !== s.said ? s.turns[s.turns.length - 1] : null;
+    const prev = el.querySelector('.prev');
+    prev.hidden = !showTalk || !prevTurn;
+    if (prevTurn) html(prev, `Before this, he said <b>${prevTurn.heard ? `<q>${esc(prevTurn.heard)}</q>` : 'nothing'}</b>, read as ${esc(prevTurn.read_as)}`);
+    s.shop = shop;
+    renderControls(key, el, s);
+    renderOutcome(el, s, phase);
   }
+}
+
+function renderOutcome(el, s, phase) {
+  const box = el.querySelector('.outcome');
+  box.hidden = phase !== 'done';
+  if (phase !== 'done') { box.classList.remove('enter'); return; }
+  const amount = s.charge?.match(/₹\d+/)?.[0];
+  const head = {
+    charged: [`Charged${amount ? ` ${amount}` : ''}`, s.charge || 'Rent taken'],
+    held: ['Held', 'Rent not taken'],
+    not: ['Not charged', s.called ? 'Rent not taken' : 'Rent not taken, no call made']
+  }[s.status];
+  const last = s.decisive;
+  html(box, `<div class="verdict v-${s.status}">${ICONS[s.status]}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
+    <div class="facts">
+      ${s.why ? `<p><span class="label">Rule that fired</span>${arrows(s.why)}</p>` : ''}
+      ${last ? `<p><span class="label">${esc(s.shop.owner || 'He')} said</span>${last.heard ? `<q>${esc(last.heard)}</q>` : 'nothing'} <span class="read">read as ${esc(last.read_as)}${last.reason ? `, ${esc(last.reason)}` : ''}</span></p>` : ''}
+      ${!s.called && s.records ? `<p><span class="label">Records</span>${esc(cap(s.records))}</p>` : ''}
+      ${s.acts.length ? `<div><span class="label">Paytm actions</span><ul class="acts">${s.acts.map(a => `<li>${esc(cap(a))}<span class="mock">mock</span></li>`).join('')}</ul></div>` : ''}
+    </div>`);
 }
 
 const live = {};
 
-function renderControls(key, el) {
+function renderControls(key, el, s) {
   const call = SHOPS[key].call || {};
   const me = live[key] || (live[key] = {});
   const active = !!call.active;
   const listening = active && call.waiting && me.played === call.seq && !me.speaking;
-  el.querySelector('.start').hidden = active;
-  el.querySelector('.start').textContent = call.seq ? 'Call again' : 'Start call';
+  const start = el.querySelector('.start');
+  start.hidden = active;
+  html(start, `${ICONS.phone}${call.seq ? 'Call again' : 'Start call'}`);
+  start.classList.toggle('again', !!call.seq || !!s?.settled);
   const talk = el.querySelector('.talk');
   talk.hidden = !listening || !me.stream;
   talk.disabled = call.hearing || me.sending;
   talk.classList.toggle('on', !!me.rec);
-  talk.textContent = me.rec ? 'Listening… let go to send' : call.hearing || me.sending ? 'Hearing…' : 'Hold to speak';
+  html(talk, `${ICONS.mic}${me.rec ? 'Listening… let go to send' : call.hearing || me.sending ? 'Hearing…' : 'Hold to speak'}`);
   el.querySelector('.typed').hidden = !listening;
+
+  const who = SHOPS[key].owner || 'He';
+  const him = el.querySelector('.him');
+  him.querySelector('.label').textContent = me.rec ? `${who} is speaking` : `${who} said`;
+  him.querySelector('.meter').hidden = !me.rec;
+  const words = him.querySelector('.words');
+  words.hidden = !!me.rec;
+  if (s) {
+    html(words, call.hearing || me.sending ? '<span class="none">Hearing his reply…</span>'
+      : s.heard ? `<q>${esc(s.heard)}</q>`
+      : s.heard === '' ? '<span class="none">No reply</span>'
+      : listening ? '<span class="none">Waiting for his reply…</span>'
+      : '<span class="none">Nothing yet</span>');
+  }
+
+  let now = '';
+  if (active) {
+    if (me.rec) now = 'Recording his reply';
+    else if (me.speaking) now = 'Settled is speaking';
+    else if (call.hearing || me.sending) now = 'Hearing his reply';
+    else if (listening) now = 'Listening';
+    else if (!call.seq) now = s?.status === 'checking' ? 'Checking records' : 'Calling';
+    else if (!call.waiting) now = 'Deciding';
+  }
+  const st = el.querySelector('.status');
+  if (now && s) st.textContent = s.settled ? `${STATUS[s.status]} · ${now}` : now;
+  st.classList.toggle('rec', !!me.rec);
+  st.classList.toggle('wait', listening);
+
   let note = me.note || '';
-  if (active && me.speaking) note = 'Settled is speaking…';
-  else if (active && !call.waiting) note = 'Working…';
+  if (!active && /^Heard: /.test(note)) note = '';
   if (call.problem) note = call.problem;
-  el.querySelector('.note').textContent = note;
+  const noteEl = el.querySelector('.note');
+  noteEl.textContent = note;
+  noteEl.classList.toggle('warn', !!call.problem || /Try again|No mic|Hold the button/.test(note));
 
   if (active && call.waiting && me.played !== call.seq) {
     me.played = call.seq;
@@ -259,7 +473,7 @@ function renderControls(key, el) {
     audio.onended = done;
     audio.onerror = done;
     audio.play().catch(done);
-    renderControls(key, el);
+    renderShops();
   }
 }
 
@@ -290,6 +504,7 @@ function holdStart(key) {
   const rec = new MediaRecorder(me.stream);
   rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
   rec.onstop = () => {
+    meterStop(me);
     const seconds = (performance.now() - me.t0) / 1000;
     me.rec = null;
     if (seconds < 0.4) { me.note = 'Hold the button while you talk'; renderShops(); return; }
@@ -300,6 +515,45 @@ function holdStart(key) {
   me.t0 = performance.now();
   rec.start();
   renderShops();
+  meterStart(me, card(key).querySelector('.meter'));
+}
+
+function meterStart(me, el) {
+  try {
+    const ctx = me.ctx || (me.ctx = new AudioContext());
+    ctx.resume();
+    const src = ctx.createMediaStreamSource(me.stream);
+    const an = ctx.createAnalyser();
+    an.fftSize = 1024;
+    src.connect(an);
+    const buf = new Float32Array(an.fftSize);
+    const bars = [...el.children];
+    const levels = new Array(bars.length).fill(0);
+    let at = 0;
+    const tick = t => {
+      if (t - at > 45) {
+        at = t;
+        an.getFloatTimeDomainData(buf);
+        let sum = 0;
+        for (const v of buf) sum += v * v;
+        const db = 20 * Math.log10(Math.sqrt(sum / buf.length) + 1e-9);
+        levels.shift();
+        levels.push(Math.min(1, Math.max(0, (db + 58) / 46)));
+        bars.forEach((b, i) => { b.style.transform = `scaleY(${(0.08 + levels[i] * 0.92).toFixed(3)})`; });
+      }
+      me.raf = requestAnimationFrame(tick);
+    };
+    me.meter = src;
+    me.raf = requestAnimationFrame(tick);
+  } catch (e) {
+    me.meter = null;
+  }
+}
+
+function meterStop(me) {
+  cancelAnimationFrame(me.raf);
+  me.meter?.disconnect();
+  me.meter = null;
 }
 
 function holdEnd(key) {
@@ -336,19 +590,10 @@ async function refreshShops() {
   renderShops();
 }
 
-function actions(text) {
-  if (!text) return '';
-  return text.split(/\s*;\s*/).filter(Boolean).map(a => {
-    const mock = /\(mock\)/i.test(a);
-    const name = a.replace(/\s*\(mock\)\s*/i, ' ').trim();
-    return `<span class="act">${esc(name)}${mock ? '<span class="mock">mock</span>' : ''}</span>`;
-  }).join('');
-}
-
 function renderLog(freshFrom) {
   const body = document.getElementById('log');
   if (!rows.length) {
-    body.innerHTML = '<tr class="empty"><td colspan="8">No checks yet</td></tr>';
+    body.innerHTML = '<li class="empty">No checks yet. Start a call on any shop.</li>';
     return;
   }
   const prevSaid = {};
@@ -360,16 +605,22 @@ function renderLog(freshFrom) {
   }
   body.innerHTML = rows.slice(-MAX_ROWS).reverse().map(r => {
     const out = OUTCOMES[r.outcome];
-    return `<tr${r.id > freshFrom ? ' class="new"' : ''}>
-      <td class="t">${esc(time(r.at))}</td>
-      <td>${esc(SHOPS[r.shop]?.name || r.shop)}</td>
-      <td>${esc(STEPS[r.step] || r.step)}${newSaid.has(r.id) ? `<span class="sub">Settled: <q>${esc(r.said)}</q></span>` : ''}${!r.read_as && r.reason ? `<span class="sub">${esc(r.reason)}</span>` : ''}</td>
-      <td>${r.heard ? `<q>${esc(r.heard)}</q>` : r.read_as === 'no answer' ? '<em class="none">no reply</em>' : ''}</td>
-      <td>${esc(r.read_as)}${r.read_as && r.reason ? `<span class="reason">${esc(r.reason)}</span>` : ''}</td>
-      <td>${esc(r.rule)}</td>
-      <td>${out ? `<span class="o ${out[0]}">${out[1]}</span>` : esc(r.outcome)}</td>
-      <td>${actions(r.action)}</td>
-    </tr>`;
+    const mock = /\(mock\)/i.test(r.action || '');
+    const act = r.action ? cap(r.action.replace(/\s*\(mock\)\s*/i, ' ').trim()) : '';
+    const detail = [
+      newSaid.has(r.id) ? `<span>Settled asked <q>${esc(r.said)}</q></span>` : '',
+      r.heard ? `<span>He said <q>${esc(r.heard)}</q></span>` : r.read_as === 'no answer' ? '<span>No reply</span>' : '',
+      r.read_as ? `<span>Read as <b>${esc(r.read_as)}</b>${r.reason ? `, ${esc(r.reason)}` : ''}</span>` : r.reason ? `<span>${esc(cap(r.reason))}</span>` : '',
+      r.rule ? `<span class="rule">Rule: ${arrows(r.rule)}</span>` : '',
+      act ? `<span class="act">${esc(act)}${mock ? '<span class="mock">mock</span>' : ''}</span>` : ''
+    ].filter(Boolean).join('');
+    return `<li class="ev${out ? ` e-${out[0]}` : ''}${r.id > freshFrom ? ' new' : ''}">
+      <time>${esc(time(r.at))}</time><span class="dot"></span>
+      <div class="ev-body">
+        <div class="ev-head"><b>${esc(SHOPS[r.shop]?.name || r.shop)}</b><span class="step">${esc(STEPS[r.step] || r.step)}</span>${out ? `<span class="o ${out[0]}">${out[1]}</span>` : r.outcome ? esc(r.outcome) : ''}</div>
+        ${detail ? `<div class="ev-detail">${detail}</div>` : ''}
+      </div>
+    </li>`;
   }).join('');
 }
 
@@ -407,10 +658,10 @@ async function poll() {
     }
     await refreshShops();
     live.className = 'live';
-    live.textContent = 'live';
+    live.textContent = 'Live';
   } catch (e) {
     live.className = 'live off';
-    live.textContent = 'not connected';
+    live.textContent = 'Not connected';
   }
   setTimeout(poll, 1000);
 }
