@@ -453,6 +453,7 @@ function render() {
   renderResult(s);
   renderTexts(s);
   syncClips();
+  tellScene(focus);
   html($('fresh'), fresh ? 'Show all' : 'Fresh board');
   html($('fresh-note'), fresh ? `Showing calls from ${esc(fresh.t)}. The log keeps every row.` : 'Every call is logged. Fresh board clears the view for the next group.');
 }
@@ -512,7 +513,7 @@ function renderScene(s) {
     if (frame.dataset.src !== src) {
       frame.dataset.src = src;
       frame.classList.remove('ready');
-      frame.onload = () => frame.classList.add('ready');
+      frame.onload = () => { frame.classList.add('ready'); frame._told = null; tellScene(focus); };
       frame.src = src;
     }
   }
@@ -599,6 +600,19 @@ $('phone').addEventListener('click', async e => {
   tap.busy = false;
   await refreshShops().catch(() => render());
 });
+
+/* the scene can't hear the mic or the line playing here, so tell it */
+function tellScene(key, level) {
+  const frame = $('frame');
+  if (!sceneUp || key !== focus || !frame.contentWindow) return;
+  const m = me(key);
+  const msg = {type: 'settled-scene', shop: key, speaking: !!m.speaking, rec: !!m.rec, level: m.rec ? level ?? m.level ?? 0 : 0};
+  const sig = `${msg.shop}:${msg.speaking}:${msg.rec}:${msg.level.toFixed(2)}`;
+  if (frame._told === sig) return;
+  frame._told = sig;
+  m.level = msg.level;
+  frame.contentWindow.postMessage(msg, location.origin);
+}
 
 function bubbleSettled(said, shop, old, speaking) {
   const native = shop.lines[said];
@@ -841,10 +855,10 @@ function holdStart(key) {
   m.t0 = performance.now();
   rec.start();
   render();
-  meterStart(m, $('meter'));
+  meterStart(key, m, $('meter'));
 }
 
-function meterStart(m, el) {
+function meterStart(key, m, el) {
   if (!el) return;
   try {
     const ctx = m.ctx || (m.ctx = new AudioContext());
@@ -867,6 +881,7 @@ function meterStart(m, el) {
         levels.shift();
         levels.push(Math.min(1, Math.max(0, (db + 58) / 46)));
         bars.forEach((b, i) => { b.style.transform = `scaleY(${(0.08 + levels[i] * 0.92).toFixed(3)})`; });
+        tellScene(key, levels[levels.length - 1]);
       }
       m.raf = requestAnimationFrame(tick);
     };
