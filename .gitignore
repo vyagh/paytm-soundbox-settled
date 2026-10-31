@@ -1,3 +1,4 @@
 settled.db
 __pycache__/
 .venv/
+bench/cost.log
