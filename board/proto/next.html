@@ -187,7 +187,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .gate.fail p{color:var(--held)}
 .team{display:flex;flex-direction:column;gap:.25rem;padding-top:.75rem;border-top:1px solid var(--hair);flex:none}
 .team .label{display:flex;align-items:center;gap:.45rem}
-.team p{font-size:.875rem;line-height:1.35;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team p{font-size:.875rem;line-height:1.35;color:var(--ink2);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .team b{font-weight:650;color:var(--ink)}
 .mock{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);background:#fff;border-radius:999px;height:1.2rem;padding:0 .45rem;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mock) 40%,transparent)}
 .demo{display:flex;flex-direction:column;gap:.15rem;padding-top:.7rem;border-top:1px solid var(--hair);flex:none}
@@ -859,10 +859,10 @@ function renderResult(s) {
         : first ? `AI understood ${first}` : onB ? 'Offered when he asked' : 'Asked from his sign-up record')
         + (questions ? `, ${questions} question${questions > 1 ? 's' : ''} answered` : '')},
     {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : (first && first !== 'haan') || tapOnly ? 'skip' : step === 'readback' ? 'now' : 'todo',
-      p: second ? `AI understood ${second}` : tapOnly ? 'Not on the call, only his tap starts Plan B' : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
+      p: second ? `AI understood ${second}` : tapOnly ? 'Not on the call, only his tap starts Plan B' : first && first !== 'haan' ? '' : `${rent} a month, read back to him`}
   ];
-  if (s.tap) gates.push({t: s.tap.said || 'His choice', by: ['tap'], state: 'pass', p: 'His tap in WhatsApp, after the call'});
-  for (const g of gates) if (s.settled && g.state === 'todo') { g.state = 'skip'; g.p = noCall ? 'No call made' : 'Not reached'; }
+  if (s.tap) gates.push({t: s.tap.said || 'His choice', by: ['tap'], state: 'pass', p: tapOnly ? '' : 'His tap in WhatsApp, after the call'});
+  for (const g of gates) if (s.settled && g.state === 'todo') { g.state = 'skip'; g.p = ''; }
 
   const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0];
   const kind = s.unverified || s.ended ? 'not' : s.settled ? s.status : 'wait';
@@ -886,7 +886,7 @@ function renderResult(s) {
       <strong>${head[0]}</strong><span class="now">${esc(head[1])}</span>${rule}</div>
     <ol class="gates" aria-label="Checks before rent is taken">${gates.map(g => `<li class="gate ${g.state}"${g.state === 'now' ? ' aria-current="step"' : ''}>
       <span class="ic">${g.state === 'pass' ? TICK : g.state === 'fail' ? CROSS : g.state === 'skip' ? DASH : ''}</span>
-      <span class="t"><span>${esc(g.t)}</span>${g.by.map(b => BY[b]).join('')}</span><p>${esc(g.p)}</p></li>`).join('')}</ol>
+      <span class="t"><span>${esc(g.t)}</span>${g.by.map(b => BY[b]).join('')}</span>${g.p ? `<p>${esc(g.p)}</p>` : ''}</li>`).join('')}</ol>
     ${team ? `<div class="team"><span class="label">Paytm team gets <span class="mock">mock</span></span>${team}</div>` : ''}
     ${demoRecord(shop)}
     <div class="legend"><p>${BY.ai}only sorts what he says</p><p>${BY.code}decides the money</p><p>${BY.tap}alone changes his plan</p></div>`);
@@ -896,7 +896,7 @@ function demoRecord(shop) {
   const r = shop.record || {}, su = r.signup;
   const signed = (shop.plans || []).find(p => p.id === su?.plan);
   const others = (shop.plans || []).filter(p => p !== signed).map(p => `${esc(p.name)} ₹${p.price}`);
-  const rows = [r.shows && `<b>${esc(r.shows)}</b>`,
+  const rows = [r.shows && `Set up to show <b>${esc(r.shows)}</b>`,
     [esc(r.owner || shop.owner), r.born && `born ${r.born}`, su?.salesman?.name && `salesman ${esc(su.salesman.name)}`].filter(Boolean).join(' · '),
     su ? [`Signed ${esc(signed?.name || su.plan)} ₹${su.price} a month`, ...others].join(' · ') : 'No sign-up on record'].filter(Boolean);
   return `<div class="demo"><span class="label">Demo record <span class="mock">mock</span></span>${rows.map(x => `<p>${x}</p>`).join('')}</div>`;
