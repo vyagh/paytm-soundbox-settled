@@ -224,6 +224,12 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .texthead{display:flex;align-items:baseline;justify-content:space-between;padding:1rem 1.4rem .6rem}
 .texthead h3{font-size:.75rem;font-weight:600;color:var(--muted)}
 .texthead p{font-size:.75rem;color:var(--faint)}
+.hangup{display:inline-flex;align-items:center;gap:.4rem;border:0;border-radius:999px;background:var(--rec);color:#fff;font-size:.75rem;font-weight:650;height:1.9rem;padding:0 .8rem 0 .6rem;cursor:pointer;
+  transition:background-color .15s,transform .12s var(--ease)}
+.hangup svg{width:1.1rem;height:1.1rem}
+.hangup:hover{background:#b8202f}
+.hangup:active{transform:scale(.96)}
+.hangup:disabled{opacity:.6;cursor:default}
 
 /* his voice */
 .clip{--p:0;flex:none;display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;font-weight:600;color:var(--accent);background:none;border:0;border-radius:999px;cursor:pointer;padding:0}
@@ -346,7 +352,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
   <aside class="side">
     <section class="panel result" id="result" aria-label="Result"></section>
     <section class="panel phonepanel" aria-label="His phone">
-      <div class="texthead"><h3 id="phone-title">His phone</h3><p>Mock, nothing is sent</p></div>
+      <div class="texthead"><h3 id="phone-title">His phone</h3><p id="phone-note">Mock, nothing is sent</p><button class="hangup" type="button" id="hangup" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9c-2.6 0-5 .6-7.2 1.7-.6.3-.9.9-.9 1.5v2.4c0 .7.6 1.2 1.3 1.1l2.9-.5c.6-.1 1-.6 1-1.2v-1.7c1.9-.6 3.9-.6 5.8 0V14c0 .6.4 1.1 1 1.2l2.9.5c.7.1 1.3-.4 1.3-1.1v-2.4c0-.6-.3-1.2-.9-1.5C17 9.6 14.6 9 12 9z" fill="currentColor"/></svg>Hang up</button></div>
       <div class="screen" id="phone"></div>
     </section>
   </aside>
@@ -461,6 +467,8 @@ function runOf(key) {
     if (r.step === 'consent' && r.rule) s.recording = !/no recording/i.test(r.rule);
     if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
     if (r.step === 'calling') s.called = true;
+    if (r.step === 'identity') s.idTried = true;
+    if (/send code/i.test(r.action || '')) s.codeAt = r.at;
     if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
     if (r.step === 'follow-up' && r.outcome === 'charged') s.charge = r.rule;
     if (r.step === 'follow-up' && /confirm by SMS/i.test(r.action || '')) s.pick = r.rule;
@@ -469,6 +477,14 @@ function runOf(key) {
     s.msgs = viewMsgs().filter(m => m.shop === key && m.at >= s.startAt);
     const call = SHOPS[key]?.call;
     if (call?.active && s.recording === null && call.step && call.step !== 'consent' && typeof call.recording === 'boolean') s.recording = call.recording;
+    /* a call that stopped without a decided row still ended: nothing was taken */
+    if (!call?.active && s.called && !s.settled) {
+      s.settled = true;
+      s.status = 'held';
+      s.ended = true;
+      if (!s.why) s.why = s.idTried && !s.identity?.ok ? 'not verified → nothing changes' : 'call ended before a decision → nothing taken';
+    }
+    s.unverified = s.settled && s.called && s.idTried && !s.identity?.ok && !s.tap;
   }
   return s || {status: 'waiting', settled: false, turns: [], acts: [], msgs: []};
 }
@@ -486,6 +502,8 @@ function statusLine(key, s) {
     if (!call.seq) return ['on', 'Checking records'];
     return ['on', 'Deciding'];
   }
+  if (s.unverified) return ['not', 'Not verified, nothing changed'];
+  if (s.ended) return ['not', 'Call ended, nothing taken'];
   if (s.status === 'charged') return ['charged', `Charged ${amount}`.trim()];
   if (s.status === 'held') return ['held', 'Held'];
   if (s.status === 'not') return ['not', 'Not charged'];
@@ -563,7 +581,7 @@ function renderSteps(s) {
   else if (s.settled && (s.recording !== null || s.identity)) at = 4;
   if (at < 0 && !(call.active && call.step)) { box.hidden = true; return; }
   box.hidden = false;
-  const failed = s.identity && !s.identity.ok;
+  const failed = (s.identity && !s.identity.ok) || s.unverified;
   const ended = at === 4 && !call.active;
   html(box, STEPS.map(([k, name], i) => {
     let kind = i < at ? 'done' : i === at ? 'now' : '';
@@ -590,32 +608,33 @@ function renderMoney(s) {
   const box = $('money');
   const price = shop.record?.signup?.price;
   const amount = (s.status === 'charged' && (s.charge || s.why || '').match(/₹\s?\d+/)?.[0]) || (price ? `₹${price}` : '₹—');
-  const dest = s.settled ? {charged: 'paytm', held: 'held', not: 'back', cancelled: 'back'}[s.status] || 'start' : 'start';
+  const dest = !s.settled ? 'start' : s.unverified || s.ended ? 'back' : {charged: 'paytm', held: 'held', not: 'back', cancelled: 'back'}[s.status] || 'start';
   const verified = !!s.identity?.ok;
-  const failed = s.identity && !s.identity.ok;
+  const failed = (s.identity && !s.identity.ok) || s.unverified;
   const noCall = s.settled && !s.called;
   const read = s.asked?.length ? s.asked[s.asked.length - 1].read_as : null;
   const tapped = !!s.tap;
 
   let ai, aiKind = '';
   if (noCall) ai = '<p class="idle">Not asked, no call made</p>';
-  else if (failed) { ai = `<p>Not verified, no money can move</p>`; aiKind = 'shut'; }
-  else if (!verified) { ai = `<p class="idle">${s.startAt || call.active ? 'Not verified yet, money stays locked' : 'Waits for his answer'}</p>`; aiKind = s.startAt || call.active ? 'shut' : ''; }
+  else if (failed) { ai = `<p>Not verified</p>`; aiKind = 'shut'; }
+  else if (s.ended && !read) { ai = '<p>Call ended before his answer</p>'; aiKind = 'shut'; }
+  else if (!verified) { ai = `<p class="idle">${s.startAt || call.active ? 'Not verified yet' : 'Waits for his answer'}</p>`; aiKind = s.startAt || call.active ? 'shut' : ''; }
   else if (!read) ai = '<p class="idle">Listening for his answer</p>';
   else { ai = `<p><span class="kind ${esc(read)}">${esc(read)}</span>${read === 'haan' && s.asked.length > 1 ? 'twice' : ''}</p>`; aiKind = 'open'; }
 
   let code, codeKind = '';
   const rule = s.why ? cap(s.why.split('→').pop().split(',')[0].replace(/\s*\([^)]*\)/g, '').trim()) : '';
   if (tapped) { code = `<p>${esc(s.tap.said || 'his choice')}</p>`; codeKind = 'open'; }
+  else if (failed || s.ended) { code = '<p>Nothing taken</p>'; codeKind = 'shut'; }
   else if (s.settled && rule) { code = `<p>${esc(rule)}</p>`; codeKind = 'open'; }
-  else if (failed) { code = '<p>Nothing moves</p>'; codeKind = 'shut'; }
   else code = '<p class="idle">Decides once he answers</p>';
 
   const by = tapped ? 'by his tap' : 'by plain code';
   const subs = {
     paytm: dest === 'paytm' ? `${amount} a month, ${by}` : 'Only haan twice, or his tap',
     held: dest === 'held' ? (s.msgs.some(m => m.channel === 'WhatsApp' && m.choices) ? 'Nothing taken, waits for his tap' : 'Nothing taken, a person calls') : 'Nothing taken, a person decides',
-    back: dest === 'back' ? (s.status === 'cancelled' ? 'Cancelled by his tap, pickup booked' : noCall ? 'Box never delivered' : 'Stays with him') : 'Stays with him'
+    back: dest === 'back' ? (s.status === 'cancelled' ? 'Cancelled by his tap, pickup booked' : noCall ? 'Box never delivered' : s.unverified ? 'Not verified, nothing changed' : s.ended ? 'Call ended, nothing changed' : 'Stays with him') : 'Stays with him'
   };
   const sig = [focus, dest, amount, ai, aiKind, code, codeKind, subs.paytm, subs.held, subs.back].join('|');
   if (box._sig !== sig) {
@@ -666,6 +685,24 @@ addEventListener('resize', () => { for (const k in coinAt) coinAt[k].to = null; 
 const CHOICES = {keep_plan: 'Keep my plan', cheaper_plan: 'Show me a cheaper plan', cancel: 'Cancel'};
 const APP_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.5h6v7H3z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 7.5h2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>';
 const taps = {};
+let hangupMissing = true;
+
+/* he cuts the call: the server ends it in plain code, nothing is taken */
+$('hangup').onclick = async () => {
+  const key = focus;
+  const m = me(key);
+  m.hanging = true;
+  render();
+  try {
+    const res = await fetch(`/api/call/${key}/hangup`, {method: 'POST'});
+    if (res.status === 404) hangupMissing = true;
+    else if (!res.ok) m.note = (await res.json().catch(() => ({}))).error || 'Could not hang up';
+  } catch (e) {
+    m.note = 'Network failed, could not hang up';
+  }
+  m.hanging = false;
+  await refreshShops().catch(() => render());
+};
 const opened = new Set();
 
 function choicesOf(m) {
@@ -678,6 +715,10 @@ function choicesOf(m) {
 
 function renderPhone(s) {
   const call = s.shop.call || {};
+  const hang = $('hangup');
+  hang.hidden = !call.active || hangupMissing;
+  hang.disabled = !!me(focus).hanging;
+  $('phone-note').hidden = !hang.hidden;
   const who = s.shop.owner || 'the shopkeeper';
   html($('phone-title'), `${esc(s.shop.owner ? s.shop.owner.split(' ')[0] + "'s" : 'His')} phone`);
   const mine = s.msgs.filter(m => m.to_whom === 'shopkeeper');
@@ -686,6 +727,9 @@ function renderPhone(s) {
   if (call.active && call.step === 'identity' && call.app_code) {
     parts.push(`<div class="notif top pop"><div class="app"><i>${APP_ICON}</i>Paytm<time>now</time></div>
       <p>Your Settled verification code: <span class="code">${esc(call.app_code)}</span></p></div>`);
+  } else if (s.codeAt) {
+    parts.push(`<div class="notif"><div class="app"><i>${APP_ICON}</i>Paytm<time>${esc(clock(s.codeAt))}</time></div>
+      <p>Your Settled verification code: <span class="code">••••</span></p></div>`);
   }
   for (const m of mine) {
     const wa = m.channel === 'WhatsApp';
@@ -783,8 +827,8 @@ function renderConvo(s) {
     const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q>${s.recording === false ? '' : clipBtn(clipUrl(r.clip), old)}</p>` : `<p class="words"><span class="none">No reply</span></p>`;
     parts.push(bubbleHim(`${who} said`, inner, readAs(r), old));
   });
-  if (s.identity && !s.identity.ok && !pending) {
-    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity.why] || s.identity.why)}. Nothing taken, nothing changed.</span></div>`);
+  if (((s.identity && !s.identity.ok) || s.unverified) && !pending) {
+    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity?.why] || s.identity?.why || 'no code given')}. Nothing taken, nothing changed.</span></div>`);
   }
   if (pending) {
     parts.push(bubbleSettled(call.said, shop, false, m.speaking));
@@ -877,12 +921,14 @@ function renderResult(s) {
         : s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices)) ? '₹0 taken. Callback promised, only his tap changes the plan'
         : '₹0 taken, ₹125 a month on hold'],
       not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made'],
-      cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp, pickup booked']
-    }[s.status];
+      cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp, pickup booked'],
+      unverified: ['Not verified', '₹0 taken, nothing changed. Paytm calls the registered number'],
+      ended: ['Call ended', '₹0 taken, nothing changed. Paytm calls again']
+    }[s.unverified ? 'unverified' : s.ended ? 'ended' : s.status];
     const fresh = box.dataset.v !== `${focus}:${s.status}:${s.startAt}`;
     box.dataset.v = `${focus}:${s.status}:${s.startAt}`;
     html(box, `<h3>Result</h3>
-      <div class="verdict v-${s.status}${fresh ? ' pop' : ''}">${ICONS[s.status] || ICONS.not}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
+      <div class="verdict v-${s.unverified || s.ended ? 'not' : s.status}${fresh ? ' pop' : ''}">${ICONS[s.unverified || s.ended ? 'not' : s.status] || ICONS.not}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
       <div class="facts">
         ${s.why ? `<p><span class="label">Rule that fired</span>${arrows(s.why)}</p>` : ''}
         ${!s.called && s.records ? `<p><span class="label">Records</span>${esc(cap(day(s.records)))}</p>` : ''}
