@@ -1,0 +1,190 @@
+case                      shop    expected        got             identity                
+yes-yes-1                 gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+yes-yes-2                 sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+yes-yes-3                 gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+yes-yes-4                 sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+yes-yes-5                 gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+yes-yes-6                 sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+yes-yes-7                 gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+no-1                      gupta   held            held            verified: year of birth matches
+no-silent-after           sharma  held            held            verified: year of birth matches
+no-reason-1               gupta   held            held            verified: year of birth matches
+no-reason-2               sharma  held            held            verified: year of birth matches
+no-reason-3               gupta   held            held            verified: year of birth matches
+no-then-b-1               gupta   held            held            verified: year of birth matches
+no-then-b-2               sharma  held            held            verified: year of birth matches
+no-then-b-3               sharma  held            held            verified: year of birth matches
+no-then-a                 gupta   held            held            verified: year of birth matches
+no-then-a-125             gupta   held            held            verified: year of birth matches
+no-then-haan-no-plan      sharma  held            held            verified: year of birth matches
+no-then-question          gupta   held            held            verified: year of birth matches
+but-1                     gupta   held            held            verified: year of birth matches
+but-2                     sharma  held            held            verified: year of birth matches
+but-3                     gupta   held            held            verified: year of birth matches
+but-4                     sharma  held            held            verified: year of birth matches
+other-price-1             gupta   held            held            verified: year of birth matches
+other-price-2             sharma  held            held            verified: year of birth matches
+confused-1                gupta   held            held            verified: year of birth matches
+confused-2                sharma  held            held            verified: year of birth matches
+questions-1               gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+questions-2               sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+questions-3               gupta   held            held            verified: year of birth matches
+silence-1                 sharma  held            held            verified: year of birth matches
+silence-2                 gupta   held            held            verified: year of birth matches
+someone-else-1            gupta   held            held            failed: someone else    
+someone-else-2            sharma  held            held            failed: someone else    
+someone-else-3            gupta   held            held            failed: someone else    
+someone-else-4            sharma  held            held            verified: year of birth matches
+salesman-twice            sharma  held            held            failed: someone else    
+doubt-at-readback-1       gupta   held            held            verified: year of birth matches
+doubt-at-readback-2       sharma  held            held            verified: year of birth matches
+yes-then-no               sharma  held            held            verified: year of birth matches
+yes-then-question         gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+yes-then-silence          sharma  held            held            verified: year of birth matches
+mixed-1                   gupta   held            held            verified: year of birth matches
+mixed-2                   sharma  held            held            verified: year of birth matches
+mixed-3                   gupta   held            held            verified: year of birth matches
+ta-yes-yes                gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+ta-no-reason              sharma  held            held            verified: year of birth matches
+ta-but                    gupta   held            held            verified: year of birth matches
+te-yes-yes                sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+te-no-reason              gupta   held            held            verified: year of birth matches
+te-someone-else           sharma  held            held            failed: someone else    
+bn-yes-yes                gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+bn-no-reason              sharma  held            held            verified: year of birth matches
+bn-but                    gupta   held            held            verified: year of birth matches
+mr-yes-yes                sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+mr-no-reason              gupta   held            held            verified: year of birth matches
+mr-but                    sharma  held            held            verified: year of birth matches
+kn-yes-yes                gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+kn-no-reason              sharma  held            held            verified: year of birth matches
+kn-but                    gupta   held            held            verified: year of birth matches
+gu-yes-yes                sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+gu-no-reason              gupta   held            held            verified: year of birth matches
+gu-someone-else           sharma  held            held            failed: someone else    
+en-yes-yes                gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+en-no-reason              sharma  held            held            verified: year of birth matches
+en-but                    gupta   held            held            verified: year of birth matches
+ml-yes-yes                sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+ml-no-reason              gupta   held            held            verified: year of birth matches
+ml-someone-else           sharma  held            held            failed: someone else    
+or-yes-yes                gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+or-no-reason              sharma  held            held            verified: year of birth matches
+or-but                    gupta   held            held            verified: year of birth matches
+pa-yes-yes                sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+pa-no-reason              gupta   held            held            verified: year of birth matches
+pa-someone-else           sharma  held            held            failed: someone else    
+verma-not-delivered       verma   not charged     not charged     -                       
+gupta-returned            gupta   not charged     not charged     -                       
+gupta-returned-says-yes   gupta   not charged     not charged     -                       
+wrong-person              sharma  held            held            failed: someone else    
+family-son                sharma  held            held            failed: someone else    
+family-wife-haan          gupta   held            held            failed: someone else    
+owner-asks-who            gupta   held            held            failed: not confirmed   
+wrong-year                sharma  held            held            failed: wrong year      
+wrong-year-close          gupta   held            held            failed: wrong year      
+wrong-year-then-right     gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+no-year-then-right        gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-refused              sharma  held            held            failed: refused         
+year-silent               gupta   held            held            failed: no year         
+year-hindi-words          gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-devanagari           sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+year-in-a-sentence        gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+angry-na                  sharma  held            held            verified: year of birth matches
+box-wapas-at-ask          gupta   held            held            verified: year of birth matches
+box-wapas-at-readback     sharma  held            held            verified: year of birth matches
+hmm-at-ask                gupta   held            held            verified: year of birth matches
+tap-cancel                sharma  cancelled       cancelled       verified: year of birth matches
+tap-cheaper               sharma  charged:plan-b  charged:plan-b  verified: year of birth matches
+tap-keep                  gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+tap-then-call-again       gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+call-again-then-old-tap   sharma  held            held            verified: year of birth matches
+two-holds-old-tap         gupta   held            held            verified: year of birth matches
+year-ek-minute            gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-pause                sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+year-san                  gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-san-devanagari       sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+year-twice                gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-two-digits           sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+year-wrong-then-right     gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-three-wrong          sharma  held            held            failed: wrong year      
+year-near-miss            gupta   held            held            failed: wrong year      
+name-garbled-then-haan    sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+name-unclear-twice        gupta   held            held            failed: not confirmed   
+round-two-charges         sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+round-old-link            gupta   held            held            verified: year of birth matches
+failed-call-keeps-choices gupta   held            held            verified: year of birth matches
+wrong-year-keeps-choices  sharma  held            held            verified: year of birth matches
+year-declined-hindi       gupta   held            held            failed: refused         
+year-who-first            sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+name-who-first            gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-ask-cap              sharma  held            held            failed: no year         
+year-ask-cap-silence      gupta   held            held            failed: no year         
+hangup-at-ask             sharma  held            held            verified: year of birth matches
+hangup-keeps-choices      gupta   held            held            verified: year of birth matches
+busy-at-year              gupta   held            held            busy → call back later  
+busy-at-ask               gupta   held            held            verified: year of birth matches
+year-english              sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+refused-keeps-choices     gupta   held            held            verified: year of birth matches
+silence-keeps-choices     sharma  held            held            verified: year of birth matches
+busy-at-greeting          sharma  held            held            busy → call back later  
+busy-at-ask-plain         sharma  held            held            verified: year of birth matches
+year-english-gupta        gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+year-wrong-spoken         sharma  held            held            failed: wrong year      
+scared-lootega            gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+scared-fraud              sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+scared-then-refuses       gupta   held            held            failed: refused         
+scared-three-times        sharma  held            held            failed: no year         
+who-kis-liye              gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+who-hindi-ai              sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+refuse-ai                 gupta   held            held            failed: refused         
+angry-ai                  sharma  held            held            failed: angry           
+busy-ai                   gupta   held            held            busy → call back later  
+wait-ai                   sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+question-at-year          gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+other-then-wrong          sharma  held            held            failed: wrong year      
+son-then-callback         gupta   held            held            failed: someone else    
+refused-then-callback     sharma  held            held            failed: refused         
+callback-wrong-year       gupta   held            held            failed: someone else    
+cut-sends-call-me         sharma  held            held            verified: year of birth matches
+his-cheaper-at-readback   gupta   charged:plan-b  charged:plan-b  verified: year of birth matches
+cheaper-at-ask            sharma  charged:plan-b  charged:plan-b  verified: year of birth matches
+cheaper-then-na           gupta   held            held            verified: year of birth matches
+cheaper-then-unsure       gupta   held            held            verified: year of birth matches
+price-at-b-offer          gupta   charged:plan-b  charged:plan-b  verified: year of birth matches
+two-questions-then-yes    sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+hidden-charge-then-yes    gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+how-cut-and-stop-then-yes sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+three-questions           gupta   held            held            verified: year of birth matches
+soch-ke-batata            gupta   held            held            verified: year of birth matches
+his-promise-then-b        gupta   charged:plan-b  charged:plan-b  verified: year of birth matches
+his-promise-then-na       gupta   held            held            verified: year of birth matches
+his-promise-then-unsure   gupta   held            held            verified: year of birth matches
+free-promise-na           sharma  held            held            verified: year of birth matches
+upset-na-apology          gupta   held            held            verified: year of birth matches
+plain-na-callback         sharma  held            held            verified: year of birth matches
+promise-at-b-not-again    gupta   held            held            verified: year of birth matches
+free-promise-na-then-b    sharma  charged:plan-b  charged:plan-b  verified: year of birth matches
+bare-haan-at-name         gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+bare-boliye-at-name       sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+year-two-then-four        gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+who-then-name             gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+hands-over-1              sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+hands-over-2              gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+hands-over-once           sharma  held            held            failed: someone else    
+haan-then-complaint       sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
+haan-then-question        gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+haan-but-not-him          gupta   held            held            failed: not confirmed   
+robot-at-name             gupta   held            held            asked if it's a robot or for a person → a person calls back
+robot-at-ask              sharma  held            held            verified: year of birth matches
+machine-is-the-box        gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
+
+charged after na or unsure: 0
+charged without verified identity: 0
+negative actions from the AI: 0
+plan changed on the call, not by his tap: 0
+double charges (more than one charge or cancel per shop in a round): 0
+honest yeses charged: 40/40
+consent taps through the endpoint: 17
+cases matching expected outcome: 179/179
+lines read differently from their label: 0
