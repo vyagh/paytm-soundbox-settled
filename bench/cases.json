@@ -3600,6 +3600,74 @@
   ]
  },
  {
+  "id": "hidden-charge-then-yes",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "Haan, I took it, but 125 monthly fixed hai na? koi hidden charge to nahi?",
+    "kind": "question",
+    "topic": "extra"
+   },
+   {
+    "text": "ठीक है, हाँ लिया था",
+    "kind": "haan"
+   },
+   {
+    "text": "हाँ ठीक है",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_EXTRA"
+  ]
+ },
+ {
+  "id": "how-cut-and-stop-then-yes",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "ये किराया हर महीने कटेगा कि साल में एक बार? पैसे कहाँ से कटेंगे?",
+    "kind": "question",
+    "topic": "how"
+   },
+   {
+    "text": "अच्छा, और बंद करना हो तो कैसे करूँगा?",
+    "kind": "question",
+    "topic": "stop"
+   },
+   {
+    "text": "ठीक है, हाँ लिया था",
+    "kind": "haan"
+   },
+   {
+    "text": "हाँ ठीक है",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_HOW",
+   "A_STOP"
+  ]
+ },
+ {
   "id": "three-questions",
   "shop": "gupta",
   "turns": [
