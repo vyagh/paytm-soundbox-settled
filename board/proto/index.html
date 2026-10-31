@@ -101,6 +101,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .tapnote.warn{color:var(--rec)}
 .railfoot{margin-top:auto;display:flex;flex-direction:column;gap:.6rem;padding:0 .75rem .25rem}
 .railfoot p{font-size:.75rem;color:var(--faint);line-height:1.4}
+.railfoot .warn{color:var(--rec)}
 .ghost{align-self:flex-start;border:0;background:var(--fill2);color:var(--ink2);font-size:.75rem;font-weight:600;height:1.9rem;padding:0 .85rem;border-radius:999px;cursor:pointer;transition:background-color .15s}
 .ghost:hover{background:#dcdce2}
 
@@ -237,6 +238,49 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .clip.small .ring::before{width:1.25rem;height:1.25rem}
 .clip.small svg{width:.55rem;height:.55rem}
 
+/* where his rent goes: AI reads, plain code and his tap move it */
+.money{position:relative;flex:none;height:9.4rem;display:grid;grid-template-columns:6rem minmax(0,1fr) 2.4rem 14rem;align-items:center;
+  background:var(--fill);border-radius:1rem;padding:.6rem 1rem .6rem .9rem}
+.mstart{display:flex;flex-direction:column;align-items:center;gap:.35rem;text-align:center}
+.mstart b{font-size:.75rem;font-weight:650;color:var(--ink)}
+.mstart span{font-size:.68rem;color:var(--muted);line-height:1.25}
+.dock{width:2.7rem;height:2.7rem;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1.5px var(--fill2);background:rgb(255 255 255 / .55)}
+.gate{display:flex;flex-direction:column;gap:.45rem;padding:0 .2rem 0 .6rem;min-width:0}
+.gate em{font-style:normal;font-size:.72rem;color:var(--muted);text-align:center}
+.gate em b{font-weight:650;color:var(--ink2)}
+.locks{position:relative;display:flex;align-items:center;gap:.6rem}
+.locks::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--fill2);border-radius:2px}
+.gate.go .locks::before{background:linear-gradient(90deg,var(--fill2),var(--c,var(--accent)))}
+.lock{position:relative;flex:1 1 0;min-width:0;background:var(--surface);border-radius:.85rem;padding:.5rem .7rem .55rem;box-shadow:0 1px 2px rgb(20 20 40 / .06);
+  display:grid;grid-template-columns:1.6rem minmax(0,1fr);column-gap:.5rem;align-items:center;transition:box-shadow .3s var(--ease)}
+.lock .ic{grid-row:span 2;display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--fill);color:var(--faint)}
+.lock .ic svg{width:.85rem;height:.85rem}
+.lock small{font-size:.68rem;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lock p{font-size:.8125rem;font-weight:600;color:var(--ink);line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.lock p.idle{color:var(--faint);font-weight:500}
+.lock .kind{height:1.25rem;background:var(--fill);margin-right:.25rem}
+.lock.open .ic{background:var(--charged-soft);color:var(--charged)}
+.lock.shut .ic{background:var(--held-soft);color:var(--held)}
+.lock.shut{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--held) 30%,transparent)}
+.fork{width:100%;height:100%;overflow:visible}
+.fork path{fill:none;stroke:var(--fill2);stroke-width:2;stroke-linecap:round;vector-effect:non-scaling-stroke;transition:stroke .4s}
+.fork path.on{stroke:var(--c)}
+.dests{display:flex;flex-direction:column;justify-content:space-between;height:100%;padding:.1rem 0}
+.dest{display:grid;grid-template-columns:2.7rem minmax(0,1fr);column-gap:.6rem;align-items:center;opacity:.55;transition:opacity .4s}
+.dest.on{opacity:1}
+.dest b{display:block;font-size:.8125rem;font-weight:650;color:var(--c)}
+.dest span{display:block;font-size:.68rem;color:var(--muted);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dest .dock{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 35%,transparent)}
+.dest.held .dock{background:repeating-linear-gradient(135deg,var(--held-soft) 0 4px,#fff 4px 8px)}
+.coin{position:absolute;left:0;top:0;width:2.7rem;height:2.7rem;border-radius:50%;display:grid;place-items:center;z-index:1;
+  font-size:.75rem;font-weight:750;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink);background:#fff;
+  box-shadow:inset 0 0 0 2px var(--ink),0 3px 10px -3px rgb(20 20 40 / .35);will-change:transform}
+.coin.c-charged{background:var(--charged);color:#fff;box-shadow:0 3px 10px -3px rgb(30 125 60 / .6)}
+.coin.c-held{background:#fff;color:var(--held);box-shadow:inset 0 0 0 2px var(--held),0 3px 10px -3px rgb(178 83 0 / .4)}
+.coin.c-back{background:#fff;color:var(--not);box-shadow:inset 0 0 0 2px var(--not),0 3px 10px -3px rgb(20 20 40 / .25)}
+@media (prefers-reduced-motion:no-preference){
+  .coin.moving{transition:transform .9s var(--ease),background-color .4s .6s,color .4s .6s,box-shadow .4s .6s}
+}
 @media (prefers-reduced-motion:no-preference){
   .pill.breathe::before{animation:breathe 1.6s ease-in-out infinite}
   .eq i{animation:eq .7s var(--ease) infinite alternate}
@@ -288,6 +332,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
       <div class="pill" id="pill"></div>
     </div>
     <ol class="steps" id="steps" aria-label="Steps of the call" hidden></ol>
+    <div class="money" id="money" aria-label="Where his rent goes"></div>
     <div class="convo" id="convo"></div>
     <div class="controls" id="controls">
       <select class="lang" id="lang" aria-label="Language for the next call"></select>
@@ -363,7 +408,34 @@ function setFresh(on) {
   render();
 }
 
-$('fresh').onclick = () => setFresh(!fresh);
+/* a new demo round resets every shop on the server, so each can be called again; the log keeps every row */
+let roundNote = '';
+let seenRound = null;
+$('fresh').onclick = async () => {
+  if (fresh) return setFresh(false);
+  roundNote = '';
+  try {
+    const res = await fetch('/api/round/new', {method: 'POST'});
+    if (res.ok) seenRound = (await res.json()).round;
+    else if (res.status !== 404) roundNote = (await res.json().catch(() => ({}))).error || 'Could not start a new round';
+  } catch (e) {
+    roundNote = 'Network failed, try again';
+  }
+  if (roundNote) return render();
+  for (const k in coinAt) delete coinAt[k];
+  setFresh(true);
+};
+
+function watchRound(list) {
+  const round = Math.max(0, ...list.map(x => x.round || 0));
+  if (!round) return;
+  if (seenRound !== null && round > seenRound && !fresh) {
+    for (const k in coinAt) delete coinAt[k];
+    seenRound = round;
+    setFresh(true);
+  }
+  seenRound = Math.max(seenRound ?? 0, round);
+}
 
 /* one shop's latest run, read from its log rows */
 function runOf(key) {
@@ -384,7 +456,7 @@ function runOf(key) {
     }
     if (r.said) s.turns.push(r);
     if (r.step === 'answered' && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
-    if (r.step === 'tap' && r.rule) { s.why = r.rule; s.pinned = true; }
+    if (r.step === 'tap' && r.rule) { s.why = r.rule; s.pinned = true; s.tap = {said: (r.heard || '').replace(/^tapped:\s*/, ''), outcome: r.outcome}; }
     if (r.step === 'records checked') s.records = r.reason;
     if (r.step === 'consent' && r.rule) s.recording = !/no recording/i.test(r.rule);
     if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
@@ -430,13 +502,14 @@ function render() {
   s.shop = SHOPS[focus];
   renderHead(s);
   renderSteps(s);
+  renderMoney(s);
   renderPhone(s);
   renderConvo(s);
   renderControls(s);
   renderResult(s);
   syncClips();
-  html($('fresh'), fresh ? 'Show all' : 'Fresh board');
-  html($('fresh-note'), fresh ? `Showing calls from ${esc(fresh.t)}. The log keeps every row.` : 'Every call is logged. Fresh board clears the view for the next group.');
+  html($('fresh'), fresh ? 'Show all' : 'New demo round');
+  html($('fresh-note'), roundNote ? `<span class="warn">${esc(roundNote)}</span>` : fresh ? `New round from ${esc(fresh.t)}. The log keeps every row.` : 'Every call is logged. A new round makes every shop ready to call again.');
 }
 
 function renderRail(keys) {
@@ -505,6 +578,89 @@ function renderSteps(s) {
     return `<li class="${kind}"${kind === 'now' ? ' aria-current="step"' : ''}><i>${mark}</i>${name}</li>`;
   }).join(''));
 }
+
+/* where his rent goes. The AI only reads his answer; plain code, or his own tap, moves the money */
+const LOCK_SHUT = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.6 0V7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+const LOCK_OPEN = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.5-.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const DEST_C = {paytm: 'var(--charged)', held: 'var(--held)', back: 'var(--not)'};
+
+function renderMoney(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const box = $('money');
+  const price = shop.record?.signup?.price;
+  const amount = (s.status === 'charged' && (s.charge || s.why || '').match(/₹\s?\d+/)?.[0]) || (price ? `₹${price}` : '₹—');
+  const dest = s.settled ? {charged: 'paytm', held: 'held', not: 'back', cancelled: 'back'}[s.status] || 'start' : 'start';
+  const verified = !!s.identity?.ok;
+  const failed = s.identity && !s.identity.ok;
+  const noCall = s.settled && !s.called;
+  const read = s.asked?.length ? s.asked[s.asked.length - 1].read_as : null;
+  const tapped = !!s.tap;
+
+  let ai, aiKind = '';
+  if (noCall) ai = '<p class="idle">Not asked, no call made</p>';
+  else if (failed) { ai = `<p>Not verified, no money can move</p>`; aiKind = 'shut'; }
+  else if (!verified) { ai = `<p class="idle">${s.startAt || call.active ? 'Not verified yet, money stays locked' : 'Waits for his answer'}</p>`; aiKind = s.startAt || call.active ? 'shut' : ''; }
+  else if (!read) ai = '<p class="idle">Listening for his answer</p>';
+  else { ai = `<p><span class="kind ${esc(read)}">${esc(read)}</span>${read === 'haan' && s.asked.length > 1 ? 'twice' : ''}</p>`; aiKind = 'open'; }
+
+  let code, codeKind = '';
+  const rule = s.why ? cap(s.why.split('→').pop().split(',')[0].replace(/\s*\([^)]*\)/g, '').trim()) : '';
+  if (tapped) { code = `<p>${esc(s.tap.said || 'his choice')}</p>`; codeKind = 'open'; }
+  else if (s.settled && rule) { code = `<p>${esc(rule)}</p>`; codeKind = 'open'; }
+  else if (failed) { code = '<p>Nothing moves</p>'; codeKind = 'shut'; }
+  else code = '<p class="idle">Decides once he answers</p>';
+
+  const by = tapped ? 'by his tap' : 'by plain code';
+  const subs = {
+    paytm: dest === 'paytm' ? `${amount} a month, ${by}` : 'Only haan twice, or his tap',
+    held: dest === 'held' ? (s.msgs.some(m => m.channel === 'WhatsApp' && m.choices) ? 'Nothing taken, waits for his tap' : 'Nothing taken, a person calls') : 'Nothing taken, a person decides',
+    back: dest === 'back' ? (s.status === 'cancelled' ? 'Cancelled by his tap, pickup booked' : noCall ? 'Box never delivered' : 'Stays with him') : 'Stays with him'
+  };
+  const sig = [focus, dest, amount, ai, aiKind, code, codeKind, subs.paytm, subs.held, subs.back].join('|');
+  if (box._sig !== sig) {
+    const c = DEST_C[dest] || 'var(--accent)';
+    box._sig = sig;
+    box.innerHTML = `
+      <div class="mstart"><span class="dock" data-dock="start"></span><b>His rent</b><span>${esc(shop.owner ? shop.owner.split(' ')[0] : 'Shop')}, from 1 Nov</span></div>
+      <div class="gate${dest !== 'start' ? ' go' : ''}" style="--c:${c}"><div class="locks">
+        <div class="lock ${aiKind}"><span class="ic">${aiKind === 'open' ? LOCK_OPEN : LOCK_SHUT}</span><small>AI read his answer</small>${ai}</div>
+        <div class="lock ${codeKind}"><span class="ic">${codeKind === 'open' ? LOCK_OPEN : LOCK_SHUT}</span><small>${tapped ? 'His own tap in WhatsApp' : 'Plain code decided'}</small>${code}</div>
+      </div><em>The AI only reads. <b>Plain code or his own tap moves the money.</b></em></div>
+      <svg class="fork" viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true">
+        ${['paytm', 'held', 'back'].map((d, i) => `<path class="${d === dest ? 'on' : ''}" style="--c:${DEST_C[d]}" d="M0 50 C 22 50, 18 ${[12, 50, 88][i]}, 40 ${[12, 50, 88][i]}"/>`).join('')}
+      </svg>
+      <div class="dests">
+        <div class="dest${dest === 'paytm' ? ' on' : ''}" style="--c:var(--charged)"><span class="dock" data-dock="paytm"></span><div><b>Paytm, charged</b><span>${esc(subs.paytm)}</span></div></div>
+        <div class="dest held${dest === 'held' ? ' on' : ''}" style="--c:var(--held)"><span class="dock" data-dock="held"></span><div><b>Held</b><span>${esc(subs.held)}</span></div></div>
+        <div class="dest${dest === 'back' ? ' on' : ''}" style="--c:var(--not)"><span class="dock" data-dock="back"></span><div><b>Not taken</b><span>${esc(subs.back)}</span></div></div>
+      </div>
+      <div class="coin" id="coin"></div>`;
+  }
+  const coin = $('coin');
+  coin.textContent = amount;
+  coin.className = `coin${dest !== 'start' ? ` c-${dest === 'paytm' ? 'charged' : dest}` : ''}`;
+  placeCoin(box, coin, dest);
+}
+
+/* the coin keeps its last place per shop, so it only moves when the rule or his tap moves it */
+const coinAt = {};
+function placeCoin(box, coin, dest) {
+  const dock = box.querySelector(`[data-dock="${dest}"]`);
+  if (!dock) return;
+  const b = box.getBoundingClientRect(), d = dock.getBoundingClientRect();
+  const to = `translate(${(d.left - b.left).toFixed(1)}px,${(d.top - b.top).toFixed(1)}px)`;
+  const was = coinAt[focus];
+  if (was && was.dest !== dest && was.to) {
+    coin.classList.remove('moving');
+    coin.style.transform = was.to;
+    coin.getBoundingClientRect();
+    coin.classList.add('moving');
+  }
+  coin.style.transform = to;
+  coinAt[focus] = {dest, to};
+}
+addEventListener('resize', () => { for (const k in coinAt) coinAt[k].to = null; render(); });
 
 /* his phone: the Paytm code during identity, the WhatsApp choices after a na */
 const CHOICES = {keep_plan: 'Keep my plan', cheaper_plan: 'Show me a cheaper plan', cancel: 'Cancel'};
@@ -932,6 +1088,7 @@ async function refreshShops() {
   if (!res.ok) throw new Error(res.status);
   const list = await res.json();
   SHOPS = Object.fromEntries(list.map(s => [s.id, s]));
+  watchRound(list);
   if (!focus) {
     let saved = null;
     try { saved = localStorage.getItem('settled-focus'); } catch (e) {}
