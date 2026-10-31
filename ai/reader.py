@@ -73,14 +73,14 @@ def intent(text, said):
         return "other"
 
 
-def _ask(text, said, system=SYSTEM, max_tokens=200):
+def _ask(text, said, system=SYSTEM, max_tokens=200, user=None):
     if spent() >= CAP:
         raise RuntimeError("spend cap reached")
     body = {
         "model": MODEL,
         "messages": [
             {"role": "system", "content": system},
-            {"role": "user", "content": f"Agent: {said}\nHe: {text}"},
+            {"role": "user", "content": user or f"Agent: {said}\nHe: {text}"},
         ],
         "temperature": 0,
         "max_tokens": max_tokens,
