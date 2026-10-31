@@ -13,18 +13,18 @@
 # (2026-10-31).
 from datetime import date
 
-CONSENT = "Namaste, this is Paytm, calling about your Soundbox. This call is being recorded, is that okay?"
+CONSENT = "Namaste, this is Paytm. This call is being recorded, is that okay?"
 NAME_RECORDED = "Thank you. Am I speaking with {owner}?"
-NAME_UNRECORDED = "Okay, this call will not be recorded. Am I speaking with {owner}?"
-CODE = "To confirm it's you, a 4-digit code has just come on your Paytm app. Please tell me the code."
+NAME_UNRECORDED = "Okay, no recording. Am I speaking with {owner}?"
+CODE = "A 4-digit code has come on your Paytm app. Please tell me the code."
 ASK = "{salesman} gave you the ₹{price} a month plan on {signed}, starting {starts}. Is this the plan you took?"
-READ_BACK = "So ₹{price} every month, from {starts}. Shall I confirm it?"
-CHARGED = "Thank you. Your plan starts on {starts}, and you will get an SMS too. Have a good day."
-FOLLOW_UP = ("Sorry for the trouble. Nothing will be taken now. A Paytm person will call you with the right offer, "
-             "and we are sending the details on WhatsApp. Thank you.")
-GOODBYE_OTHER = "No problem. Please tell {owner} that Paytm called. We will talk to them later. Thank you."
+READ_BACK = "So ₹{price} every month from {starts}. Shall I confirm it?"
+CHARGED = "Thank you. Your plan starts on {starts}, and an SMS is on its way."
+FOLLOW_UP = ("Sorry for the trouble. Nothing will be taken now. Our team will call you with the right offer, "
+             "and we are sending the details on WhatsApp.")
+GOODBYE_OTHER = "No problem. Please tell {owner} that Paytm called. Thank you."
 GOODBYE_UNVERIFIED = ("Sorry, we could not confirm who we are speaking with, so nothing has changed. "
-                      "A Paytm person will call the registered number. Thank you.")
+                      "Our team will call the registered number.")
 
 LINES = (CONSENT, NAME_RECORDED, NAME_UNRECORDED, CODE, ASK, READ_BACK, CHARGED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED)
 # Lines that take no reply: Settled says them and the call goes on or ends.
@@ -35,16 +35,16 @@ LANGUAGES = {
     "hi": {
         "name": "Hindi", "own": "हिन्दी", "code": "hi-IN", "voice": "shubh",
         "months": "जनवरी फ़रवरी मार्च अप्रैल मई जून जुलाई अगस्त सितंबर अक्टूबर नवंबर दिसंबर",
-        CONSENT: "नमस्ते जी, मैं पेटीएम से बोल रहा हूँ, आपके साउंडबॉक्स के बारे में. यह कॉल रिकॉर्ड हो रही है, ठीक है?",
-        NAME_RECORDED: "धन्यवाद जी. क्या मैं {owner} जी से बात कर रहा हूँ?",
-        NAME_UNRECORDED: "ठीक है, यह कॉल रिकॉर्ड नहीं होगी. क्या मैं {owner} जी से बात कर रहा हूँ?",
-        CODE: "पहचान पक्की करने के लिए, आपके पेटीएम ऐप पर अभी एक चार अंकों का कोड आया है. वो कोड बता दीजिए.",
+        CONSENT: "नमस्ते जी, पेटीएम से बोल रहा हूँ. यह कॉल रिकॉर्ड हो रही है, ठीक है?",
+        NAME_RECORDED: "धन्यवाद. क्या मैं {owner} जी से बात कर रहा हूँ?",
+        NAME_UNRECORDED: "ठीक है, रिकॉर्डिंग नहीं होगी. क्या मैं {owner} जी से बात कर रहा हूँ?",
+        CODE: "आपके पेटीएम ऐप पर एक चार अंकों का कोड आया है, वो बता दीजिए.",
         ASK: "{salesman} ने {signed} को आपको {price} रुपये महीने वाला प्लान दिया था, {starts} से. क्या आपने यही प्लान लिया था?",
-        READ_BACK: "तो {starts} से हर महीने {price} रुपये लगेंगे. यह पक्का कर दूँ?",
-        CHARGED: "बहुत धन्यवाद. आपका प्लान {starts} से चालू होगा, एसएमएस भी आ जाएगा. आपका दिन शुभ हो.",
-        FOLLOW_UP: "माफ़ कीजिए, आपको परेशानी हुई. अभी कुछ नहीं कटेगा. पेटीएम की टीम आपको सही ऑफ़र के साथ कॉल करेगी, और पूरी जानकारी व्हाट्सऐप पर भेज रहे हैं. धन्यवाद.",
-        GOODBYE_OTHER: "कोई बात नहीं. {owner} जी को बता दीजिए कि पेटीएम से कॉल आया था, हम उनसे बाद में बात कर लेंगे. धन्यवाद.",
-        GOODBYE_UNVERIFIED: "माफ़ कीजिए, हम पहचान पक्की नहीं कर पाए, इसलिए अभी कुछ नहीं बदला है. पेटीएम की टीम रजिस्टर्ड नंबर पर बात करेगी. धन्यवाद.",
+        READ_BACK: "तो {starts} से हर महीने {price} रुपये. पक्का कर दूँ?",
+        CHARGED: "धन्यवाद जी. प्लान {starts} से चालू होगा, एसएमएस भी आ जाएगा.",
+        FOLLOW_UP: "माफ़ कीजिए, आपको परेशानी हुई. अभी कुछ नहीं कटेगा. हमारी टीम सही ऑफ़र के साथ आपको कॉल करेगी, और जानकारी व्हाट्सऐप पर भेज रहे हैं.",
+        GOODBYE_OTHER: "कोई बात नहीं. {owner} जी को बता दीजिए कि पेटीएम से कॉल आया था. धन्यवाद.",
+        GOODBYE_UNVERIFIED: "माफ़ कीजिए, पहचान पक्की नहीं हुई, इसलिए कुछ नहीं बदला. हमारी टीम रजिस्टर्ड नंबर पर बात करेगी.",
     },
     "bn": {
         "name": "Bengali", "own": "বাংলা", "code": "bn-IN", "voice": "rehan",
