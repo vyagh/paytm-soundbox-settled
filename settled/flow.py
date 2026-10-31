@@ -53,7 +53,7 @@ def _after_na(shop, answers, listener):
         paytm_mock.book_pickup(shop)
     else:
         paytm_mock.send_plan_details(shop)
-    return decide(shop, answers[:1])
+    return decide(shop, answers[:-1])
 
 
 def _ask(shop, said, listener):

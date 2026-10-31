@@ -1,0 +1,630 @@
+[
+ {
+  "id": "yes-yes-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "yes-yes-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan ji, Anil aaya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "ji haan, theek hai",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "yes-yes-3",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "yes-yes-4",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "ha liya tha maine",
+    "kind": "haan"
+   },
+   {
+    "text": "pakka, kat jaane do",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "yes-yes-5",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan haan, sab theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "yes-yes-6",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "arre haan bhai, kab se bol rahe ho, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "yes-yes-7",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "ji haan... haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "no-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "na, humne koi plan nahi liya",
+    "kind": "na"
+   },
+   {
+    "text": "nahi, box le jao",
+    "kind": "na"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "no-silent-after",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "na bhaiya, nahi chahiye",
+    "kind": "na"
+   },
+   {
+    "text": "",
+    "kind": "no answer"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "no-reason-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "na bhaiya, usne ₹1 bola tha",
+    "kind": "na",
+    "reason": "salesman said ₹1"
+   },
+   {
+    "text": "nahi rehne do",
+    "kind": "na"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "no-reason-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "nahi, Anil ne bola tha free hai",
+    "kind": "na",
+    "reason": "salesman said free"
+   },
+   {
+    "text": "pata nahi, sochna padega",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "no-reason-3",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "na, dukaan mein chal hi nahi raha ye",
+    "kind": "na",
+    "reason": "box not working"
+   },
+   {
+    "text": "box wapas le jao",
+    "kind": "na"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "no-then-b-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na"
+   },
+   {
+    "text": "Plan B de do, 79 wala",
+    "kind": "haan",
+    "plan": "plan-b"
+   }
+  ],
+  "expect": "charged:plan-b"
+ },
+ {
+  "id": "no-then-b-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "nahi, ye nahi chahiye",
+    "kind": "na"
+   },
+   {
+    "text": "accha 79 wala chalega",
+    "kind": "haan",
+    "plan": "plan-b"
+   }
+  ],
+  "expect": "charged:plan-b"
+ },
+ {
+  "id": "no-then-b-3",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "na, usne ₹1 bola tha",
+    "kind": "na",
+    "reason": "salesman said ₹1"
+   },
+   {
+    "text": "79 wala hai to de do",
+    "kind": "haan",
+    "plan": "plan-b"
+   }
+  ],
+  "expect": "charged:plan-b"
+ },
+ {
+  "id": "no-then-a",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "na, mehenga lag raha hai",
+    "kind": "na"
+   },
+   {
+    "text": "chalo Plan A hi theek hai",
+    "kind": "haan",
+    "plan": "plan-a"
+   }
+  ],
+  "expect": "charged:plan-a"
+ },
+ {
+  "id": "no-then-haan-no-plan",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "na, pata nahi kya hai ye",
+    "kind": "na"
+   },
+   {
+    "text": "haan samjhao",
+    "kind": "haan"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "no-then-question",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "na bhaiya",
+    "kind": "na"
+   },
+   {
+    "text": "plan kaun kaun se hain?",
+    "kind": "question"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "but-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan, par ₹1 bola tha",
+    "kind": "unsure",
+    "reason": "said ₹1"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "but-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan lekin pehle mahine free tha na?",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "but-3",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan ji, bas rate thoda kam karo",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "but-4",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan haan, par ye box kharab hai",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "other-price-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan 79 mein de do to le lunga",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "other-price-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan, ₹100 mein hua tha na?",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "confused-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "kya? kaunsa plan? samajh nahi aaya",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "confused-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "hello? kaun bol raha hai?",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "questions-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "ye plan kya hai?",
+    "kind": "question"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "questions-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "kitna katega mahine ka?",
+    "kind": "question"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "questions-3",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "kisne bola ye? Anil kaun?",
+    "kind": "question"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "silence-1",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "",
+    "kind": "no answer"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "silence-2",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "",
+    "kind": "no answer"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "someone-else-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "main to naukar hoon, malik bahar gaye hain",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "someone-else-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "papa nahi hain, main unka beta bol raha hoon",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "someone-else-3",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan main Anil bol raha hoon, haan bol do",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "someone-else-4",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "bhaiya dukaan pe customer hai, baad mein call karo",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "doubt-at-readback-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "ek minute, 125? mujhe to kam bola tha",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "doubt-at-readback-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan haan",
+    "kind": "haan"
+   },
+   {
+    "text": "pakka? ruko main pooch ke batata hoon",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "yes-then-no",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "na na, ruko, rehne do",
+    "kind": "na"
+   },
+   {
+    "text": "nahi, box wapas le jao",
+    "kind": "na"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "yes-then-question",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "kya matlab pakka?",
+    "kind": "question"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "yes-then-silence",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "",
+    "kind": "no answer"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "mixed-1",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan na, pata nahi",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "mixed-2",
+  "shop": "sharma",
+  "note": "",
+  "turns": [
+   {
+    "text": "na na, haan le lunga",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "mixed-3",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "haan to bola tha, par kitna bola tha yaad nahi",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ }
+]
