@@ -9,8 +9,8 @@ def run(shop_id, listener):
     shop = records.load(shop_id)
     log.add(shop.id, "due", rule=f"first rent due {shop.signup['starts']}" if shop.signup else None)
 
+    log.add(shop.id, "records checked", reason=_records_seen(shop))
     decision = decide(shop, [])
-    log.add(shop.id, "records checked", rule=decision.rule, outcome=decision.outcome)
     if decision.outcome != "call":
         _decided(shop, decision)
         if decision.outcome == "held":
@@ -60,6 +60,26 @@ def _ask(shop, said, listener):
     answer = listener(shop, said)
     log.add(shop.id, "answered", said=said, heard=answer.words, read_as=answer.kind, reason=answer.reason)
     return answer
+
+
+def _records_seen(shop):
+    seen = []
+    if shop.signup:
+        s = shop.signup
+        seen.append(f"signed up for ₹{s['price']} a {s['per']} from {s['starts']}")
+    else:
+        seen.append("no sign-up record")
+    if shop.delivery is None:
+        seen.append("no delivery record")
+    elif shop.delivery.get("delivered"):
+        seen.append(f"box delivered {shop.delivery.get('on')}")
+    else:
+        seen.append("box not delivered")
+    if shop.returned is None:
+        seen.append("no return record")
+    elif shop.returned.get("returned"):
+        seen.append("box returned")
+    return ", ".join(seen)
 
 
 def _decided(shop, decision):

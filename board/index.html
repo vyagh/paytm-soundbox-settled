@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settled board</title>
+<style>
+:root{
+  --bg:#f4efda; --surface:#fbf8ec; --tint:#ede6ca; --line:#ddd5b5;
+  --ink:#24243a; --ink2:#3e3e52; --muted:#67644f;
+  --accent:#3f5a8a; --charged:#466129; --held:#7f5600; --not:#5e5c52; --mock:#9c4d00; --wait:#8a8778;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans","Nirmala UI",sans-serif;
+  --mono:ui-monospace,"SFMono-Regular","Cascadia Mono",Consolas,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0}
+html{font-size:clamp(15px,1.2vw,24px)}
+body{background:var(--bg);color:var(--ink2);font-family:var(--sans);line-height:1.4;padding:1.1rem 1.4rem 2rem;min-height:100vh}
+q{quotes:"\201C" "\201D"}
+
+header{display:flex;align-items:baseline;gap:1rem;margin-bottom:1rem}
+h1{font-size:1.9rem;color:var(--ink);letter-spacing:-.01em}
+header p{color:var(--muted);font-size:1.05rem}
+.live{margin-left:auto;display:flex;align-items:center;gap:.45rem;font-size:.95rem;font-weight:600;color:var(--charged)}
+.live::before{content:"";width:.7rem;height:.7rem;border-radius:50%;background:currentColor}
+.live.off{color:#a3263a}
+
+.shops{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem;margin-bottom:1.3rem}
+.card{background:var(--surface);border:2px solid var(--line);border-top:.45rem solid var(--wait);border-radius:14px;padding:.9rem 1.1rem 1rem;display:flex;flex-direction:column;gap:.6rem;transition:border-color .4s}
+.card h2{font-size:1.45rem;color:var(--ink);line-height:1.2}
+.card .who{font-size:.95rem;color:var(--muted);font-weight:500}
+.status{align-self:flex-start;font-size:1.5rem;font-weight:700;padding:.2rem .9rem;border-radius:999px;display:flex;align-items:center;gap:.5rem}
+.lines{display:flex;flex-direction:column;gap:.45rem;font-size:1.1rem;color:var(--ink)}
+.lines div{display:grid;grid-template-columns:5.2rem 1fr;gap:.6rem;align-items:baseline}
+.lines span{font-size:.8rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.none{color:var(--wait)}
+.card.flash{animation:flash 1.4s ease-out}
+@keyframes flash{from{background:#fff3c4}to{background:var(--surface)}}
+
+.s-waiting{color:var(--wait);background:var(--tint)}
+.s-checking,.s-calling,.s-asking{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.s-charged{color:var(--charged);background:color-mix(in srgb,var(--charged) 16%,transparent)}
+.s-held{color:var(--held);background:color-mix(in srgb,var(--held) 18%,transparent)}
+.s-not{color:var(--not);background:color-mix(in srgb,var(--not) 16%,transparent)}
+.s-checking::before,.s-calling::before,.s-asking::before{content:"";width:.55em;height:.55em;border-radius:50%;background:currentColor;animation:pulse 1s ease-in-out infinite alternate}
+@keyframes pulse{from{opacity:1}to{opacity:.2}}
+.card.c-checking,.card.c-calling,.card.c-asking{border-top-color:var(--accent)}
+.card.c-charged{border-top-color:var(--charged)}
+.card.c-held{border-top-color:var(--held)}
+.card.c-not{border-top-color:var(--not)}
+
+h3{font-size:1.05rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin-bottom:.5rem}
+.log{background:var(--surface);border:2px solid var(--line);border-radius:14px;overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:.95rem;table-layout:fixed}
+th{text-align:left;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--tint);padding:.5rem .6rem}
+td{padding:.55rem .6rem;border-top:1px solid var(--line);vertical-align:top;color:var(--ink);overflow-wrap:anywhere}
+tr.new td{animation:flash 1.4s ease-out}
+td.t{font-family:var(--mono);color:var(--muted);font-size:.85rem}
+td .sub{display:block;color:var(--ink2);font-size:.88rem;margin-top:.15rem}
+td .reason{display:block;color:var(--muted);font-size:.85rem}
+.o{display:inline-block;font-weight:700;padding:.05rem .55rem;border-radius:999px;white-space:nowrap}
+.o.call,.o.ask{color:var(--accent);background:color-mix(in srgb,var(--accent) 14%,transparent)}
+.o.charged{color:var(--charged);background:color-mix(in srgb,var(--charged) 16%,transparent)}
+.o.held{color:var(--held);background:color-mix(in srgb,var(--held) 18%,transparent)}
+.o.not{color:var(--not);background:color-mix(in srgb,var(--not) 16%,transparent)}
+.act{display:block}
+.mock{display:inline-block;margin-left:.35rem;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);border:2px solid var(--mock);border-radius:5px;padding:0 .3rem;vertical-align:.1em}
+.empty td{color:var(--wait);text-align:center;padding:1.5rem}
+col.c-t{width:5.6rem} col.c-shop{width:8.6rem} col.c-what{width:20%} col.c-words{width:16%}
+col.c-read{width:12%} col.c-rule{width:13%} col.c-out{width:8.2rem}
+</style>
+</head>
+<body>
+<header>
+  <h1>Settled</h1>
+  <p>First Soundbox rent, checked with the shopkeeper before it is taken</p>
+  <div class="live off" id="live">connecting</div>
+</header>
+
+<section class="shops" id="shops"></section>
+
+<h3>Decision log</h3>
+<div class="log">
+  <table>
+    <colgroup><col class="c-t"><col class="c-shop"><col class="c-what"><col class="c-words"><col class="c-read"><col class="c-rule"><col class="c-out"><col></colgroup>
+    <thead><tr><th>Time</th><th>Shop</th><th>What happened</th><th>His words</th><th>Read as</th><th>Rule</th><th>Outcome</th><th>Action</th></tr></thead>
+    <tbody id="log"></tbody>
+  </table>
+</div>
+
+<script>
+const SHOPS = {
+  gupta: {name: 'Gupta Kirana', who: ''},
+  sharma: {name: 'Sharma Store', who: 'Ramesh'},
+  verma: {name: 'Verma Dairy', who: ''}
+};
+const STATUS = {
+  waiting: 'Waiting', checking: 'Checking records', calling: 'Calling', asking: 'Asking again',
+  charged: 'Charged', held: 'Held', not: 'Not charged'
+};
+const STEPS = {
+  'due': 'Rent due', 'records checked': 'Records checked', 'calling': 'Calling',
+  'answered': 'Answered', 'decided': 'Decided', 'follow-up': 'Follow-up'
+};
+const OUTCOMES = {
+  'call': ['call', 'Call'], 'ask again': ['ask', 'Ask again'], 'charged': ['charged', 'Charged'],
+  'held': ['held', 'Held'], 'not charged': ['not', 'Not charged']
+};
+const MAX_ROWS = 200;
+
+let rows = [];
+let lastId = 0;
+let lastAt = null;
+let shown = {};
+
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const time = at => (at || '').split('T').pop().slice(0, 8);
+
+function statusOf(row, prev) {
+  switch (row.outcome) {
+    case 'charged': return 'charged';
+    case 'held': return 'held';
+    case 'not charged': return 'not';
+    case 'ask again': return 'asking';
+    case 'call': return 'calling';
+  }
+  switch (row.step) {
+    case 'due': return 'waiting';
+    case 'records checked': return 'checking';
+    case 'calling':
+    case 'answered': return 'calling';
+  }
+  return prev;
+}
+
+const FINAL = {'charged': 'charged', 'held': 'held', 'not charged': 'not'};
+
+function shopState(key) {
+  let s;
+  for (const r of rows) {
+    if (r.shop !== key) continue;
+    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, said: null, heard: null, why: null};
+    if (FINAL[r.outcome]) {
+      s.status = FINAL[r.outcome];
+      s.settled = true;
+    } else if (!s.settled) {
+      s.status = statusOf(r, s.status);
+    }
+    if (r.step === 'decided' && r.rule) s.why = r.rule;
+    if (r.said) {
+      s.said = r.said;
+      s.heard = r.heard || (r.read_as === 'no answer' ? '' : null);
+    }
+  }
+  return s || {status: 'waiting', said: null, heard: null, why: null};
+}
+
+function renderShops() {
+  const box = document.getElementById('shops');
+  box.innerHTML = Object.entries(SHOPS).map(([key, shop]) => {
+    const s = shopState(key);
+    const flash = shown[key] && shown[key] !== s.status ? ' flash' : '';
+    shown[key] = s.status;
+    const line = (label, text) => `<div><span>${label}</span>${text ? `<q>${esc(text)}</q>` : `<em class="none">${text === '' ? 'no reply' : 'nothing yet'}</em>`}</div>`;
+    return `<article class="card c-${s.status}${flash}">
+      <h2>${esc(shop.name)}${shop.who ? ` <span class="who">${esc(shop.who)}</span>` : ''}</h2>
+      <div class="status s-${s.status}">${STATUS[s.status]}</div>
+      <div class="lines">${s.said || !s.why
+        ? line('Settled', s.said) + line('He said', s.heard)
+        : `<div><span>Why</span>${esc(s.why)}</div>`}</div>
+    </article>`;
+  }).join('');
+}
+
+function actions(text) {
+  if (!text) return '';
+  return text.split(/\s*;\s*/).filter(Boolean).map(a => {
+    const mock = /\(mock\)/i.test(a);
+    const name = a.replace(/\s*\(mock\)\s*/i, ' ').trim();
+    return `<span class="act">${esc(name)}${mock ? '<span class="mock">mock</span>' : ''}</span>`;
+  }).join('');
+}
+
+function renderLog(freshFrom) {
+  const body = document.getElementById('log');
+  if (!rows.length) {
+    body.innerHTML = '<tr class="empty"><td colspan="8">No checks yet</td></tr>';
+    return;
+  }
+  const prevSaid = {};
+  const newSaid = new Set();
+  for (const r of rows) {
+    if (r.said && r.said !== prevSaid[r.shop]) newSaid.add(r.id);
+    if (r.step === 'due') delete prevSaid[r.shop];
+    if (r.said) prevSaid[r.shop] = r.said;
+  }
+  body.innerHTML = rows.slice(-MAX_ROWS).reverse().map(r => {
+    const out = OUTCOMES[r.outcome];
+    return `<tr${r.id > freshFrom ? ' class="new"' : ''}>
+      <td class="t">${esc(time(r.at))}</td>
+      <td>${esc(SHOPS[r.shop]?.name || r.shop)}</td>
+      <td>${esc(STEPS[r.step] || r.step)}${newSaid.has(r.id) ? `<span class="sub">Settled: <q>${esc(r.said)}</q></span>` : ''}${!r.read_as && r.reason ? `<span class="sub">${esc(r.reason)}</span>` : ''}</td>
+      <td>${r.heard ? `<q>${esc(r.heard)}</q>` : r.read_as === 'no answer' ? '<em class="none">no reply</em>' : ''}</td>
+      <td>${esc(r.read_as)}${r.read_as && r.reason ? `<span class="reason">${esc(r.reason)}</span>` : ''}</td>
+      <td>${esc(r.rule)}</td>
+      <td>${out ? `<span class="o ${out[0]}">${out[1]}</span>` : esc(r.outcome)}</td>
+      <td>${actions(r.action)}</td>
+    </tr>`;
+  }).join('');
+}
+
+async function fetchAfter(id) {
+  const res = await fetch(`/api/log?after=${id}`, {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+
+async function poll() {
+  const live = document.getElementById('live');
+  try {
+    let got = await fetchAfter(Math.max(lastId - 1, 0));
+    let freshFrom = lastId || Infinity;
+    let reset = false;
+    if (lastId > 0) {
+      const anchor = got[0];
+      if (!anchor || anchor.id !== lastId || anchor.at !== lastAt) {
+        reset = true;
+        rows = [];
+        shown = {};
+        freshFrom = Infinity;
+        got = await fetchAfter(0);
+      } else {
+        got = got.slice(1);
+      }
+    }
+    if (got.length || reset) {
+      rows = rows.concat(got);
+      const last = rows[rows.length - 1];
+      lastId = last ? last.id : 0;
+      lastAt = last ? last.at : null;
+      renderShops();
+      renderLog(freshFrom);
+    }
+    live.className = 'live';
+    live.textContent = 'live';
+  } catch (e) {
+    live.className = 'live off';
+    live.textContent = 'not connected';
+  }
+  setTimeout(poll, 1000);
+}
+
+renderShops();
+renderLog(0);
+poll();
+</script>
+</body>
+</html>
