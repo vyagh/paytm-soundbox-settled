@@ -474,8 +474,8 @@ function statusLine(key, s) {
   }
   if (s.unverified) return ['not', 'Not verified, nothing changed'];
   if (s.ended) return ['not', 'Call ended, nothing taken'];
-  if (s.status === 'charged') return ['charged', `Charged ${amount}`.trim()];
-  if (s.status === 'held') return ['held', 'Held'];
+  if (s.status === 'charged') return ['charged', [`Charged ${amount}`.trim(), (s.charge || '').match(/Plan \w+/)?.[0]].filter(Boolean).join(', ')];
+  if (s.status === 'held') return ['held', ['Held', (s.why || '').match(/Plan \w+ waits for his tap/)?.[0]].filter(Boolean).join(', ')];
   if (s.status === 'not') return ['not', 'Not charged'];
   if (s.status === 'cancelled') return ['cancelled', 'Cancelled by his tap'];
   return ['', 'Ready'];
@@ -830,12 +830,15 @@ function renderResult(s) {
   const asked = s.asked || [];
   const noCall = s.settled && !s.called;
   const failedId = (s.identity && !s.identity.ok) || s.unverified;
-  const replies = asked.filter(r => !/^question/.test(r.read_as || ''));
-  const backs = replies.filter(r => /Shall I confirm it\?$/.test(r.said || ''));
-  const back = backs[backs.length - 1];
-  const plan = replies.slice(0, back ? replies.indexOf(back) : replies.length).filter(r => !backs.includes(r)).pop();
-  const first = plan?.read_as, second = back?.read_as;
-  const offered = ((back || plan)?.said || '').match(/₹\s?\d+/g)?.pop() || rent;
+  /* a Plan B offer moves the two haans to Plan B: its lines carry its price, questions are answered, not counted */
+  const bPrice = (shop.plans || []).find(p => price && p.price < price)?.price;
+  const isB = r => bPrice && (r.said || '').includes(`₹${bPrice}`);
+  const onB = asked.some(isB);
+  const pool = asked.filter(r => !!isB(r) === onB && !/^question/.test(r.read_as || ''));
+  const questions = asked.filter(r => /^question/.test(r.read_as || '')).length;
+  const plan = onB ? `Plan B at ₹${bPrice}` : `the ${rent} plan`;
+  const first = pool[0]?.read_as, second = pool[1]?.read_as;
+  const waits = s.settled && s.status === 'held' && (s.why || '').match(/Plan \w+ waits for his tap/)?.[0];
 
   const gates = [
     {t: 'Records in order', by: ['code'], state: noCall ? 'fail' : s.records ? 'pass' : call.active ? 'now' : 'todo',
@@ -844,10 +847,11 @@ function renderResult(s) {
       state: s.identity?.ok ? 'pass' : failedId ? 'fail' : step === 'identity' ? 'now' : 'todo',
       p: s.identity?.ok ? `Said it's him, born ${s.year?.said || 'as on record'}` : failedId ? cap(WHY_NOT[s.identity?.why] || s.identity?.why || 'not confirmed')
         : s.nameOk ? `Said it's him, now his year of birth` : 'His name, then his year of birth'},
-    {t: `Haan to the ${offered} plan`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
-      p: first ? `AI understood ${first}` : 'Asked from his sign-up record'},
-    {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : first && first !== 'haan' ? 'skip' : step === 'readback' ? 'now' : 'todo',
-      p: second ? `AI understood ${second}` : first && first !== 'haan' ? 'Not asked after that' : `${offered} a month, read back to him`}
+    {t: `Haan to ${plan}`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
+      p: (first ? `AI understood ${first}` : onB ? 'Offered when he asked' : 'Asked from his sign-up record')
+        + (questions ? `, ${questions} question${questions > 1 ? 's' : ''} answered` : '')},
+    {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : (first && first !== 'haan') || waits ? 'skip' : step === 'readback' ? 'now' : 'todo',
+      p: second ? `AI understood ${second}` : waits ? 'Not on the call, only his tap starts Plan B' : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
   ];
   if (s.tap) gates.push({t: s.tap.said || 'His choice', by: ['tap'], state: 'pass', p: 'His tap in WhatsApp, after the call'});
   for (const g of gates) if (s.settled && g.state === 'todo') { g.state = 'skip'; g.p = noCall ? 'No call made' : 'Not reached'; }
@@ -857,8 +861,8 @@ function renderResult(s) {
   const choices = s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices));
   const head = {
     wait: [`${rent}<small>a month</small>`, call.active ? 'Nothing taken during the call' : 'Nothing taken yet'],
-    charged: [`Charged ${amount || ''}`.trim(), s.tap ? 'By his tap, from 1 Nov' : 'By plain code, from 1 Nov'],
-    held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : choices ? '₹0 taken. Only his tap changes the plan' : '₹0 taken, a person follows up'],
+    charged: [[`Charged ${amount || ''}`.trim(), (s.charge || '').match(/Plan \w+/)?.[0]].filter(Boolean).join(', '), s.tap ? 'By his tap, from 1 Nov' : 'By plain code, from 1 Nov'],
+    held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : waits ? `₹0 taken. ${waits}` : choices ? '₹0 taken. Only his tap changes the plan' : '₹0 taken, a person follows up'],
     not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made'],
     cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp'],
     unverified: ['Nothing changed', '₹0 taken. Paytm calls the registered number'],

@@ -3430,16 +3430,14 @@
    {
     "text": "haan",
     "kind": "haan"
-   },
-   {
-    "text": "haan, pakka",
-    "kind": "haan"
    }
   ],
-  "expect": "held",
+  "tap": "cheaper_plan",
+  "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
   "manager": false,
-  "ends": "CALLBACK"
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "cheaper-at-ask",
@@ -3460,16 +3458,13 @@
    {
     "text": "haan, wahi de do",
     "kind": "haan"
-   },
-   {
-    "text": "haan ji",
-    "kind": "haan"
    }
   ],
+  "tap": "cheaper_plan",
   "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
-  "tap": "cheaper_plan",
-  "note": "haan twice to Plan B holds the rent on the call; his tap starts it"
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "cheaper-then-na",
@@ -3518,10 +3513,6 @@
     "topic": "cheaper"
    },
    {
-    "text": "haan",
-    "kind": "haan"
-   },
-   {
     "text": "pata nahi, soch ke batata hoon",
     "kind": "unsure",
     "reason": "soch ke batata hoon"
@@ -3533,7 +3524,7 @@
   "manager": false
  },
  {
-  "id": "price-at-b-readback",
+  "id": "price-at-b-offer",
   "shop": "gupta",
   "turns": [
    {
@@ -3549,10 +3540,6 @@
     "topic": "cheaper"
    },
    {
-    "text": "haan",
-    "kind": "haan"
-   },
-   {
     "text": "kitna bola?",
     "kind": "question",
     "topic": "price"
@@ -3562,9 +3549,11 @@
     "kind": "haan"
    }
   ],
-  "expect": "held",
+  "tap": "cheaper_plan",
+  "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
-  "ends": "CALLBACK"
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "two-questions-then-yes",
@@ -3601,6 +3590,74 @@
   "answered": [
    "A_START",
    "A_WHO"
+  ]
+ },
+ {
+  "id": "hidden-charge-then-yes",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "Haan, I took it, but 125 monthly fixed hai na? koi hidden charge to nahi?",
+    "kind": "question",
+    "topic": "extra"
+   },
+   {
+    "text": "ठीक है, हाँ लिया था",
+    "kind": "haan"
+   },
+   {
+    "text": "हाँ ठीक है",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_EXTRA"
+  ]
+ },
+ {
+  "id": "how-cut-and-stop-then-yes",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "ये किराया हर महीने कटेगा कि साल में एक बार? पैसे कहाँ से कटेंगे?",
+    "kind": "question",
+    "topic": "how"
+   },
+   {
+    "text": "अच्छा, और बंद करना हो तो कैसे करूँगा?",
+    "kind": "question",
+    "topic": "stop"
+   },
+   {
+    "text": "ठीक है, हाँ लिया था",
+    "kind": "haan"
+   },
+   {
+    "text": "हाँ ठीक है",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_HOW",
+   "A_STOP"
   ]
  },
  {
@@ -3682,17 +3739,14 @@
    {
     "text": "haan, ye theek hai",
     "kind": "haan"
-   },
-   {
-    "text": "haan, pakka",
-    "kind": "haan"
    }
   ],
+  "tap": "cheaper_plan",
   "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
   "manager": true,
-  "tap": "cheaper_plan",
-  "note": "haan twice to Plan B holds the rent on the call; his tap starts it"
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "his-promise-then-na",
@@ -3768,10 +3822,6 @@
     "reason": "usne to free bola tha",
     "promise": "free",
     "upset": true
-   },
-   {
-    "text": "haan",
-    "kind": "haan"
    },
    {
     "text": "nahi",
@@ -3856,6 +3906,382 @@
   "manager": true
  },
  {
+  "id": "free-promise-na-then-b",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "nahi, usne to free bola tha",
+    "kind": "na",
+    "reason": "usne to free bola tha",
+    "promise": "free",
+    "upset": true
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "tap": "cheaper_plan",
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches",
+  "manager": true,
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
+ },
+ {
+  "id": "bare-haan-at-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "हाँ",
+    "kind": "unsure",
+    "speaker": "unclear",
+    "reason": "garbled reply"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true
+ },
+ {
+  "id": "bare-boliye-at-name",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "जी, बोलिए",
+    "kind": "unsure",
+    "speaker": "unclear"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true
+ },
+ {
+  "id": "year-two-then-four",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "78... 1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true
+ },
+ {
+  "id": "who-then-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "aap kaun bol rahe ho?",
+    "kind": "question"
+   },
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "asked": [
+   "NAME_AFTER_WHO"
+  ],
+  "honest": true
+ },
+ {
+  "id": "hands-over-1",
+  "shop": "sharma",
+  "note": "his son picks up and hands the phone to him",
+  "turns": [
+   {
+    "text": "हैलो, मैं बेटा बोल रहा हूँ, रुकिए पापा को देता हूँ",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "haan ji, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "ON_THE_LINE"
+  ]
+ },
+ {
+  "id": "hands-over-2",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "ek minute papa ko deta hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "ON_THE_LINE"
+  ]
+ },
+ {
+  "id": "hands-over-once",
+  "shop": "sharma",
+  "note": "the son comes back instead, and the owner is asked for only once more",
+  "turns": [
+   {
+    "text": "ruko, papa ko bulata hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "papa nahi mil rahe, ruko main dekhta hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: someone else",
+  "retry": true,
+  "answered": [
+   "ON_THE_LINE"
+  ],
+  "unread": 1
+ },
+ {
+  "id": "haan-then-complaint",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "हाँ, अच्छा सुनो, कल का पेमेंट अभी तक बैंक में नहीं आया",
+    "kind": "unsure",
+    "reason": "कल का पेमेंट अभी तक बैंक में नहीं आया"
+   },
+   {
+    "text": "1984",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true,
+  "note": "a haan with more words after it is him; the year still guards the money"
+ },
+ {
+  "id": "haan-then-question",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "हां जी, बोलिए क्या बात है",
+    "kind": "unsure"
+   },
+   {
+    "text": "1978",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true
+ },
+ {
+  "id": "haan-but-not-him",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan, par main nahi hoon",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan, par main nahi hoon",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: not confirmed",
+  "call_me": true,
+  "retry": true,
+  "note": "a haan with a but after it is not taken as him"
+ },
+ {
+  "id": "robot-at-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "are you a robot? कोई इंसान से बात कराओ",
+    "kind": "question",
+    "topic": "who"
+   },
+   {
+    "text": "are you a robot? कोई इंसान से बात कराओ",
+    "kind": "question",
+    "topic": "who"
+   }
+  ],
+  "expect": "held",
+  "identity": "asked if it's a robot or for a person → a person calls back",
+  "retry": true,
+  "answered": [
+   "AUTOMATED"
+  ],
+  "unread": 1,
+  "note": "told it's an automated call, a person calls him back, nothing changed"
+ },
+ {
+  "id": "robot-at-ask",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "ye recording hai kya? mujhe insaan se baat karni hai",
+    "kind": "question",
+    "topic": "other"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "retry": true,
+  "answered": [
+   "AUTOMATED"
+  ]
+ },
+ {
+  "id": "machine-is-the-box",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha, machine chal rahi hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true,
+  "note": "the Soundbox is a machine to him: not a robot question"
+ },
+ {
   "id": "ai-one-rupee-b-held",
   "shop": "gupta",
   "turns": [
@@ -3882,23 +4308,16 @@
     "kind": "haan",
     "next": "read_back",
     "say": ""
-   },
-   {
-    "text": "haan, pakka",
-    "kind": "haan",
-    "next": "confirm",
-    "say": ""
    }
   ],
   "expect": "held",
   "identity": "verified: year of birth matches",
   "manager": true,
-  "ends": "CALLBACK",
+  "ends": "TAP_B",
   "ai_said": 1,
-  "note": "his ₹1 sentence as typed: the AI's sorry, then Plan B offered; two haans hold the rent for his tap",
+  "note": "his ₹1 sentence as typed: the AI's sorry, then Plan B offered; a haan holds the rent for his tap",
   "asked": [
-   "OFFER_AGAIN",
-   "READ_BACK_B"
+   "OFFER_AGAIN"
   ]
  },
  {
@@ -3927,12 +4346,6 @@
     "text": "haan, ye theek hai",
     "kind": "haan",
     "next": "read_back",
-    "say": ""
-   },
-   {
-    "text": "haan, pakka",
-    "kind": "haan",
-    "next": "confirm",
     "say": ""
    }
   ],
@@ -4140,12 +4553,6 @@
     "kind": "haan",
     "next": "read_back",
     "say": ""
-   },
-   {
-    "text": "haan ji",
-    "kind": "haan",
-    "next": "confirm",
-    "say": ""
    }
   ],
   "tap": "cheaper_plan",
@@ -4153,7 +4560,7 @@
   "identity": "verified: year of birth matches",
   "ai_said": 1,
   "manager": true,
-  "note": "haan twice to Plan B after a na takes nothing on the call; his tap does"
+  "note": "a haan to Plan B after a na takes nothing on the call; his tap does"
  },
  {
   "id": "ai-name-who",
@@ -4309,22 +4716,15 @@
     "kind": "haan",
     "next": "read_back",
     "say": ""
-   },
-   {
-    "text": "haan ji",
-    "kind": "haan",
-    "next": "confirm",
-    "say": ""
    }
   ],
   "expect": "held",
   "identity": "verified: year of birth matches",
   "ai_said": 0,
-  "ends": "CALLBACK",
+  "ends": "TAP_B",
   "manager": false,
   "asked": [
-   "OFFER_B",
-   "READ_BACK_B"
+   "OFFER_B"
   ]
  },
  {

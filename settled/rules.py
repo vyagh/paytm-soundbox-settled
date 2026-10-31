@@ -9,6 +9,24 @@ from .year import refused, spoken
 BUSY = ("busy", "bizi", "baad mein", "baad me ", "bad mein", "baad main", "call later", "later call", "call back",
         "callback", "phir se call", "phir call", "fir call", "dobara call", "free nahi", "time nahi",
         "बिज़ी", "बिजी", "व्यस्त", "बाद में", "बाद मे ", "फ्री नहीं", "टाइम नहीं", "फिर से कॉल", "दोबारा कॉल")
+# He hands the phone to the owner. Matched in plain code at the name question: Settled says it's on
+# the line and asks for the owner once more.
+HANDOVER = ("deta hoon", "deta hu", "deti hoon", "deti hu", "de raha hoon", "de rahi hoon", "bulata hoon", "bulata hu",
+            "bulati hoon", "bula raha", "bula rahi", "rukiye", "rukie", "ruko", "ek minute", "ek minat", "one minute",
+            "hold on", "line pe rahiye", "देता हूँ", "देता हु", "देती हूँ", "दे रहा हूँ", "दे रही हूँ", "बुलाता हूँ",
+            "बुलाती हूँ", "बुला रहा", "बुला रही", "रुकिए", "रुकिये", "रुको", "एक मिनट", "होल्ड", "लाइन पर रहिए")
+# He asks if this is a machine, or to talk to a person. Matched in plain code at every step: Settled
+# says it's an automated call and a person calls him back. Never "machine" alone: the Soundbox is one.
+ROBOT = ("robot", "bot ", "recording", "insaan", "insan", "human", "real person", "asli aadmi", "aadmi se baat",
+         "kisi aadmi", "रोबोट", "बॉट", "रिकॉर्डिंग", "इंसान", "इन्सान", "असली आदमी", "आदमी से बात", "किसी आदमी")
+# A bare yes to "am I speaking with him": confirmed in plain code, before the AI reads it,
+# which takes a lone "हाँ" for a garbled scrap.
+YES_WORDS = {"haan", "han", "haa", "ha", "ji", "jee", "yes", "yeah", "boliye", "bolie", "speaking", "हा", "जी", "बोलिए",
+             "बोलिये"}
+YES_PHRASES = ("bol raha hoon", "bol raha hu", "bol rha hu", "बोल रहा हू", "बोल रहा हु")
+# A haan with more words after it, read as from him, is still him, unless the words hold a "but" or a hand-over to someone else.
+NOT_HIM = {"par", "pr", "lekin", "magar", "but", "papa", "beta", "deta", "bulata", "पर", "लेकिन", "मगर", "पापा", "बेटा",
+           "देता", "बुलाता"}
 from .models import Decision
 from .records import missing
 
@@ -27,13 +45,38 @@ def name(answer, first=True):
     the identity rule that ends the call. Only a clear someone else ends it at once."""
     if refused(answer.words):
         return "failed: refused"
+    if bare_yes(answer.words):
+        return None
     if answer.kind == "haan" and answer.speaker == "shopkeeper":
         return None
+    if first and handover(answer.words):
+        return "ask again"
     if answer.kind == "na" or answer.speaker == "someone else":
         return "failed: someone else"
+    if answer.speaker == "shopkeeper" and yes_first(answer.words):
+        return None
     if first and answer.kind != "no answer":
         return "ask again"
     return "failed: not confirmed"
+
+
+def bare_yes(text):
+    said = spoken(text)
+    if not said.strip():
+        return False
+    for phrase in YES_PHRASES:
+        said = said.replace(spoken(phrase), " ")
+    return set(said.split()) <= YES_WORDS
+
+
+def handover(text):
+    """True when he says he's handing the phone to someone, or asks to hold."""
+    return any(spoken(phrase) in spoken(text) for phrase in HANDOVER)
+
+
+def yes_first(text):
+    words = spoken(text).split()
+    return bool(words) and words[0] in YES_WORDS and not any(w in NOT_HIM or w.startswith(("ruk", "रुक")) for w in words)
 
 
 def unverified(rule):
@@ -48,12 +91,12 @@ def decide(shop, answers, verified):
     """The money, from his answers on the plan question, the read-back and any Plan B offer.
 
     answers holds (plan, Answer) pairs, each answer to a line about that plan. The only
-    write straight from what the AI read is a charge, after haan twice to the plan he
-    signed from the verified owner, with no na or unsure about it. Haan twice to the
-    cheaper plan holds the rent: only his tap in WhatsApp starts it. A question gets an
+    write straight from what the AI read is a charge of the plan he signed, after haan
+    twice from the verified owner, with no na or unsure about it. A question gets an
     answer and the line asked again, up to QUESTIONS. A na or doubt that rests on a
-    salesman's promise gets the cheaper plan offered once. Everything else holds the
-    rent for a person, and a cancel, pickup or plan change waits for his own tap in WhatsApp.
+    salesman's promise gets the cheaper plan offered once, and a haan to it holds the
+    rent until his tap in WhatsApp. Everything else holds the rent for a person, and a
+    cancel, pickup or plan change waits for his own tap in WhatsApp.
     """
     before = before_call(shop)
     if before.outcome != "call":
@@ -72,11 +115,10 @@ def decide(shop, answers, verified):
             if questions > QUESTIONS:
                 return Decision("held", f"{questions} questions → nothing taken, a person calls back")
             continue
+        if answer.kind == "haan" and plan != signed:
+            return Decision("held", f"haan to {plan.name} → nothing taken, {plan.name} waits for his tap", plan)
         if answer.kind == "haan":
             haans[plan.id] = haans.get(plan.id, 0) + 1
-            if haans[plan.id] == 2 and plan != signed:
-                return Decision("held", f"haan, then haan again to {plan.name} → nothing changes on the call, "
-                                        f"his tap in WhatsApp starts it", plan)
             if haans[plan.id] == 2:
                 return Decision("charged", f"haan, then haan again → charged at ₹{plan.price} ({plan.name})", plan)
             continue
@@ -217,3 +259,10 @@ def _amounts(text):
         run = []
     digits = [str(int("".join(str(unicodedata.digit(c)) for c in m))) for m in re.findall(r"\d+", text)]
     return amounts, digits
+def robot(text):
+    """True when he asks if he's talking to a machine, or asks for a person."""
+    return any(spoken(phrase) in spoken(text) for phrase in ROBOT)
+
+
+def person_later():
+    return Decision("held", "asked if it's a robot or for a person → nothing changed, a person calls back")

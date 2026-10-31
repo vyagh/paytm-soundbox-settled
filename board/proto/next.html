@@ -92,7 +92,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .convo::-webkit-scrollbar{display:none}
 .convo.scrolled{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 3rem);mask-image:linear-gradient(to bottom,transparent 0,#000 3rem)}
 .convo>:first-child{margin-top:auto}
-.convo>.preview:only-child{margin:auto 0}
+.convo>.preview:only-child,.convo>.sys:only-child{margin:auto 0}
 .bub{max-width:84%;border-radius:1.3rem;padding:.8rem 1.15rem .9rem;flex:none}
 .bub .label{margin-bottom:.2rem;display:flex;align-items:center;gap:.5rem;font-size:.875rem}
 .bub.settled{align-self:flex-start;background:var(--accent-soft);border-top-left-radius:.45rem}
@@ -100,7 +100,7 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .bub.him{align-self:flex-end;background:var(--fill);border-top-right-radius:.45rem;min-width:17rem}
 .bub.him .label{color:var(--ink2)}
 .native{font-size:1.25rem;line-height:1.45;color:var(--ink);font-weight:500}
-.gloss{font-size:1rem;line-height:1.4;color:var(--muted);margin-top:.2rem}
+.gloss{font-size:1rem;line-height:1.4;color:var(--ink2);margin-top:.2rem}
 .words{font-size:1.3rem;line-height:1.38;color:var(--ink);font-weight:600}
 .words .none{font-size:1.05rem;font-weight:500;color:var(--faint)}
 .read{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--hair);font-size:1rem;font-weight:500;color:var(--ink2)}
@@ -110,8 +110,10 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .kind.na,.kind.bad{color:var(--held);background:var(--held-soft)}
 .bub.old{padding:.6rem 1rem .65rem}
 .bub.old .label{display:none}
+.bub.old.other .label{display:flex}
+.bub.old.other .read .why{display:block}
 .bub.old .native{font-size:1.05rem;color:var(--ink2)}
-.bub.old .gloss{font-size:.875rem}
+.bub.old .gloss{font-size:.875rem;color:var(--muted)}
 .bub.old .words{font-size:1.05rem;color:var(--ink2)}
 .bub.old .read{margin-top:.35rem;padding-top:.35rem;font-size:.875rem}
 .bub.old .kind{height:1.35rem;font-size:.875rem}
@@ -153,9 +155,9 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .note span{display:block}
 
 /* the money: one verdict, and the checks plain code needs before it takes rent */
-.ledger{display:flex;flex-direction:column;padding:1.15rem 1.4rem 1.1rem;gap:.9rem;overflow:hidden}
+.ledger{display:flex;flex-direction:column;padding:1.15rem 1.4rem 1.1rem;gap:.75rem;overflow:hidden}
 .verdict{display:flex;flex-direction:column;gap:.3rem;flex:none}
-.verdict strong{display:block;font-size:2.15rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.verdict strong{display:block;font-size:1.95rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
 .verdict strong small{font-size:1rem;font-weight:550;letter-spacing:0;color:var(--muted);margin-left:.35rem}
 .verdict .now{font-size:1rem;font-weight:600;color:var(--muted)}
 .verdict .rule{display:flex;align-items:baseline;gap:.5rem;font-size:.9375rem;line-height:1.4;color:var(--ink2);margin-top:.3rem}
@@ -164,9 +166,9 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .v-held strong,.v-held .now{color:var(--held)}
 .v-not strong,.v-cancelled strong{color:var(--not)}
 .arr{width:.95em;height:.6em;color:var(--muted);vertical-align:.05em;margin:0 .1em}
-.gates{list-style:none;display:flex;flex-direction:column;flex:none;padding-top:.9rem;border-top:1px solid var(--hair)}
+.gates{list-style:none;display:flex;flex-direction:column;flex:none;padding-top:.75rem;border-top:1px solid var(--hair)}
 .gates h3{margin-bottom:.6rem}
-.gate{position:relative;display:grid;grid-template-columns:1.6rem minmax(0,1fr);column-gap:.75rem;padding-bottom:.7rem}
+.gate{position:relative;display:grid;grid-template-columns:1.6rem minmax(0,1fr);column-gap:.75rem;padding-bottom:.6rem}
 .gate:last-child{padding-bottom:0}
 .gate:not(:last-child)::after{content:"";position:absolute;left:.8rem;top:1.75rem;bottom:.1rem;width:2px;margin-left:-1px;background:var(--fill2);border-radius:2px}
 .gate.pass:not(:last-child)::after{background:color-mix(in srgb,var(--charged) 35%,transparent)}
@@ -183,14 +185,17 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .gate.skip .t span{text-decoration:line-through;text-decoration-color:var(--faint)}
 .gate p{grid-column:2;font-size:.875rem;line-height:1.35;color:var(--muted);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
 .gate.fail p{color:var(--held)}
-.team{display:flex;flex-direction:column;gap:.35rem;padding-top:.9rem;border-top:1px solid var(--hair);min-height:0;overflow:hidden}
+.team{display:flex;flex-direction:column;gap:.25rem;padding-top:.75rem;border-top:1px solid var(--hair);flex:none}
 .team .label{display:flex;align-items:center;gap:.45rem}
 .team p{font-size:.875rem;line-height:1.35;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .team b{font-weight:650;color:var(--ink)}
 .mock{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);background:#fff;border-radius:999px;height:1.2rem;padding:0 .45rem;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mock) 40%,transparent)}
-.legend{margin-top:auto;display:flex;flex-direction:column;gap:.3rem;padding-top:.8rem;border-top:1px solid var(--hair);flex:none}
-.legend p{display:flex;align-items:center;gap:.55rem;font-size:.875rem;color:var(--ink2)}
-.legend .by{min-width:4.6rem;justify-content:center}
+.demo{display:flex;flex-direction:column;gap:.15rem;padding-top:.7rem;border-top:1px solid var(--hair);flex:none}
+.demo .label{display:flex;align-items:center;gap:.45rem}
+.demo p{font-size:.8125rem;line-height:1.3;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.demo b{font-weight:650;color:var(--ink)}
+.legend{margin-top:auto;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;padding-top:.7rem;border-top:1px solid var(--hair);flex:none}
+.legend p{display:flex;flex-direction:column;align-items:flex-start;gap:.25rem;font-size:.8125rem;line-height:1.25;color:var(--ink2)}
 
 /* his phone */
 .phonecol{display:flex;flex-direction:column;gap:.55rem;min-height:0}
@@ -470,8 +475,8 @@ function statusLine(key, s) {
   }
   if (s.unverified) return ['not', 'Not verified, nothing changed'];
   if (s.ended) return ['not', 'Call ended, nothing taken'];
-  if (s.status === 'charged') return ['charged', `Charged ${amount}`.trim()];
-  if (s.status === 'held') return ['held', 'Held'];
+  if (s.status === 'charged') return ['charged', [`Charged ${amount}`.trim(), (s.charge || '').match(/Plan \w+/)?.[0]].filter(Boolean).join(', ')];
+  if (s.status === 'held') return ['held', ['Held', (s.why || '').match(/Plan \w+ waits for his tap/)?.[0]].filter(Boolean).join(', ')];
   if (s.status === 'not') return ['not', 'Not charged'];
   if (s.status === 'cancelled') return ['cancelled', 'Cancelled by his tap'];
   return ['', 'Ready'];
@@ -669,8 +674,8 @@ function bubbleSettled(said, shop, old, speaking) {
     <p class="native">${esc(native || said)}</p>${native && native !== said ? `<p class="gloss">${esc(said)}</p>` : ''}</div>`;
 }
 
-function bubbleHim(who, inner, read, old) {
-  return `<div class="bub him${old ? ' old' : ''}"><span class="label">${esc(who)}</span>${inner}${read || ''}</div>`;
+function bubbleHim(who, inner, read, old, other) {
+  return `<div class="bub him${old ? ' old' : ''}${other ? ' other' : ''}"><span class="label">${esc(who)}</span>${inner}${read || ''}</div>`;
 }
 
 /* identity rows from the year of birth check, as against the older app code */
@@ -684,6 +689,8 @@ function readAs(r) {
     const ok = /^verified/i.test(r.rule || '');
     return `<p class="read"><span class="by code">Code</span>Year of birth <span class="kind ${ok ? 'ok' : 'bad'}">${esc(r.read_as)}</span>${ok ? 'matches his record' : ''}</p>`;
   }
+  if (r.step === 'identity' && /someone else/i.test(r.rule || ''))
+    return `<p class="read"><span class="by ai">AI</span>understood <span class="kind bad">not ${esc(SHOPS[r.shop]?.owner || 'him')}</span>${r.reason ? `<span class="why">${esc(cap(r.reason))}</span>` : ''}</p>`;
   const said = (r.heard || '').toLowerCase();
   const why = r.reason && !said.includes(r.reason.slice(0, 24).toLowerCase()) ? `<span class="why">${esc(r.reason)}</span>` : '';
   return `<p class="read"><span class="by ai">AI</span>understood <span class="kind ${esc(r.read_as)}">${esc(r.read_as)}</span>${why}</p>`;
@@ -714,7 +721,8 @@ function renderConvo(s) {
     parts.push(bubbleSettled(r.said, shop, old, false));
     if (r.step === 'said') return;
     const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q></p>` : `<p class="words"><span class="none">No reply</span></p>`;
-    parts.push(bubbleHim(who, inner, readAs(r), old));
+    const other = r.step === 'identity' && /someone else/i.test(r.rule || '');
+    parts.push(bubbleHim(other ? 'Someone else' : who, inner, readAs(r), old, other));
   });
   if (((s.identity && !s.identity.ok) || s.unverified) && !pending) {
     parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity?.why] || s.identity?.why || 'no clear answer')}. Nothing taken, nothing changed.</span></div>`);
@@ -826,19 +834,28 @@ function renderResult(s) {
   const asked = s.asked || [];
   const noCall = s.settled && !s.called;
   const failedId = (s.identity && !s.identity.ok) || s.unverified;
-  const first = asked[0]?.read_as, second = asked[1]?.read_as;
+  /* a Plan B offer moves the two haans to Plan B: its lines carry its price, questions are answered, not counted */
+  const bPrice = (shop.plans || []).find(p => price && p.price < price)?.price;
+  const isB = r => bPrice && (r.said || '').includes(`₹${bPrice}`);
+  const onB = asked.some(isB);
+  const pool = asked.filter(r => !!isB(r) === onB && !/^question/.test(r.read_as || ''));
+  const questions = asked.filter(r => /^question/.test(r.read_as || '')).length;
+  const plan = onB ? `Plan B at ₹${bPrice}` : `the ${rent} plan`;
+  const first = pool[0]?.read_as, second = pool[1]?.read_as;
+  const waits = s.settled && s.status === 'held' && (s.why || '').match(/Plan \w+ waits for his tap/)?.[0];
 
   const gates = [
     {t: 'Records in order', by: ['code'], state: noCall ? 'fail' : s.records ? 'pass' : call.active ? 'now' : 'todo',
-      p: s.records ? cap(day(s.records).replace(/ for ₹\s?\d+ a month from [^,]+/, '')) : 'Sign-up, delivery and return'},
+      p: s.records ? cap(day(s.records).replace(/ for ₹\s?\d+ a month from [^,]+/, '').replace(/ by [^,]+,/, ',')) : 'Sign-up, delivery and return'},
     {t: `It's ${shop.owner || 'the shopkeeper'}`, by: ['ai', 'code'],
       state: s.identity?.ok ? 'pass' : failedId ? 'fail' : step === 'identity' ? 'now' : 'todo',
       p: s.identity?.ok ? `Said it's him, born ${s.year?.said || 'as on record'}` : failedId ? cap(WHY_NOT[s.identity?.why] || s.identity?.why || 'not confirmed')
         : s.nameOk ? `Said it's him, now his year of birth` : 'His name, then his year of birth'},
-    {t: `Haan to the ${rent} plan`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
-      p: first ? `AI understood ${first}` : 'Asked from his sign-up record'},
-    {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : first && first !== 'haan' ? 'skip' : step === 'readback' ? 'now' : 'todo',
-      p: second ? `AI understood ${second}` : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
+    {t: `Haan to ${plan}`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
+      p: (first ? `AI understood ${first}` : onB ? 'Offered when he asked' : 'Asked from his sign-up record')
+        + (questions ? `, ${questions} question${questions > 1 ? 's' : ''} answered` : '')},
+    {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : (first && first !== 'haan') || waits ? 'skip' : step === 'readback' ? 'now' : 'todo',
+      p: second ? `AI understood ${second}` : waits ? 'Not on the call, only his tap starts Plan B' : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
   ];
   if (s.tap) gates.push({t: s.tap.said || 'His choice', by: ['tap'], state: 'pass', p: 'His tap in WhatsApp, after the call'});
   for (const g of gates) if (s.settled && g.state === 'todo') { g.state = 'skip'; g.p = noCall ? 'No call made' : 'Not reached'; }
@@ -848,8 +865,8 @@ function renderResult(s) {
   const choices = s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices));
   const head = {
     wait: [`${rent}<small>a month</small>`, call.active ? 'Nothing taken during the call' : 'Nothing taken yet'],
-    charged: [`Charged ${amount || ''}`.trim(), s.tap ? 'By his tap, from 1 Nov' : 'By plain code, from 1 Nov'],
-    held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : choices ? '₹0 taken. Only his tap changes the plan' : '₹0 taken, a person follows up'],
+    charged: [[`Charged ${amount || ''}`.trim(), (s.charge || '').match(/Plan \w+/)?.[0]].filter(Boolean).join(', '), s.tap ? 'By his tap, from 1 Nov' : 'By plain code, from 1 Nov'],
+    held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : waits ? `₹0 taken. ${waits}` : choices ? '₹0 taken. Only his tap changes the plan' : '₹0 taken, a person follows up'],
     not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made'],
     cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp'],
     unverified: ['Nothing changed', '₹0 taken. Paytm calls the registered number'],
@@ -867,7 +884,18 @@ function renderResult(s) {
       <span class="ic">${g.state === 'pass' ? TICK : g.state === 'fail' ? CROSS : g.state === 'skip' ? DASH : ''}</span>
       <span class="t"><span>${esc(g.t)}</span>${g.by.map(b => BY[b]).join('')}</span><p>${esc(g.p)}</p></li>`).join('')}</ol>
     ${team ? `<div class="team"><span class="label">Paytm team gets <span class="mock">mock</span></span>${team}</div>` : ''}
-    <div class="legend"><p>${BY.ai}only sorts what he says</p><p>${BY.code}decides the money</p><p>${BY.tap}is the only way to change his plan</p></div>`);
+    ${demoRecord(shop)}
+    <div class="legend"><p>${BY.ai}only sorts what he says</p><p>${BY.code}decides the money</p><p>${BY.tap}alone changes his plan</p></div>`);
+}
+
+function demoRecord(shop) {
+  const r = shop.record || {}, su = r.signup;
+  const signed = (shop.plans || []).find(p => p.id === su?.plan);
+  const others = (shop.plans || []).filter(p => p !== signed).map(p => `${esc(p.name)} ₹${p.price}`);
+  const rows = [r.shows && `<b>${esc(r.shows)}</b>`,
+    [esc(r.owner || shop.owner), r.born && `born ${r.born}`, su?.salesman?.name && `salesman ${esc(su.salesman.name)}`].filter(Boolean).join(' · '),
+    su ? [`Signed ${esc(signed?.name || su.plan)} ₹${su.price} a month`, ...others].join(' · ') : 'No sign-up on record'].filter(Boolean);
+  return `<div class="demo"><span class="label">Demo record <span class="mock">mock</span></span>${rows.map(x => `<p>${x}</p>`).join('')}</div>`;
 }
 
 const TEAM = {manager: 'Manager', support: 'Support'};

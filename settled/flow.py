@@ -2,10 +2,12 @@ import re
 import time
 
 from voice import script
-from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, CALL_LATER, CALLBACK, CHARGED,
-                          CLOSING, DECLINED, FACTS, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING,
-                          NAME_AGAIN, NAME_SHORT, OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE,
-                          READ_BACK, READ_BACK_B, REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
+from voice.script import (A_CHARGE, A_EXTRA, A_HOW, A_OTHER, A_PRICE, A_START, A_STOP, A_WHO, ASK, ASK_AGAIN, AUTOMATED,
+                          CALL_LATER, CALLBACK, CHARGED, CLOSING, DECLINED, FACTS, FOLLOW_UP, GOODBYE_OTHER,
+                          GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO, NAME_AGAIN, NAME_SHORT, OFFER_AGAIN, OFFER_B,
+                          ON_THE_LINE,
+                          PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, REASSURE, SOFT, TAP_B, WHO_WHY, YEAR,
+                          YEAR_AGAIN, YEAR_WAIT, YEAR_WRONG)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -21,9 +23,11 @@ EXPLAIN = {"scared": REASSURE, "who": WHO_WHY}
 EXPLAINED = {"scared": "reassured, ", "who": "said who's calling, "}
 # A question at the plan or the read-back, as the AI read it, to the line that answers it.
 # Plain code says the line, then asks the same thing again.
-ANSWERS = {"price": A_PRICE, "start": A_START, "charge": A_CHARGE, "who": A_WHO, "other": A_OTHER}
+ANSWERS = {"price": A_PRICE, "start": A_START, "charge": A_CHARGE, "who": A_WHO, "other": A_OTHER, "extra": A_EXTRA,
+           "how": A_HOW, "stop": A_STOP}
 TOPICS = {"cheaper": "cheaper plan", "price": "price", "start": "start date", "charge": "what the charge is",
-          "who": "who's calling", "other": "other"}
+          "who": "who's calling", "other": "other", "extra": "hidden charge", "how": "how the rent is taken",
+          "stop": "how to stop it"}
 # A salesman's promise his na or doubt rests on, to the line that owns it and offers the cheaper plan.
 PROMISES = {"one rupee": PROMISE_ONE, "free": PROMISE_FREE, "lower price": PROMISE_LOWER}
 OFFERS = (OFFER_B, OFFER_AGAIN, *PROMISES.values())
@@ -39,6 +43,10 @@ class _Busy(Exception):
     def __init__(self, line, answer):
         super().__init__(line)
         self.line, self.answer = line, answer
+
+
+class _Robot(_Busy):
+    """He asked if this is a machine, or for a person."""
 
 
 def run(shop_id, listener, state=None, callback=False):
@@ -80,6 +88,14 @@ def _run(shop, listener, state, callback=False):
     log.add(shop.id, "calling", rule="callback: he tapped Call me now or called the number back" if callback else None)
     try:
         return _call(shop, _busy_aware(listener), state)
+    except _Robot as asked:
+        step = "answered" if state.step in ("ask", "readback") else state.step
+        _log_reply(shop, state, step, asked.line, asked.answer, rule="asked if it's a robot or for a person → a person calls back")
+        decision = _decided(shop, rules.person_later())
+        paytm_mock.tell_call_later(shop)
+        paytm_mock.book_retry(shop, "a person calls him back")
+        _say(shop, listener, AUTOMATED)
+        return decision
     except _Busy as busy:
         step = "answered" if state.step in ("ask", "readback") else state.step
         _log_reply(shop, state, step, busy.line, busy.answer, rule="busy → call back later")
@@ -96,6 +112,8 @@ def _busy_aware(listener):
         if not wait:
             return listener(shop, line, wait=False)
         answer = listener(shop, line)
+        if rules.robot(answer.words):
+            raise _Robot(line, answer)
         if rules.busy(answer.words):
             raise _Busy(line, answer)
         return answer
@@ -110,16 +128,19 @@ def _call(shop, listener, state):
     unused = _checked(shop, state, reply, reply.kind)
     failed = rules.name(reply)
     if failed == "ask again":
-        asked_who = reply.kind == "question" or year.asks_who(reply.words)
+        handed = rules.handover(reply.words)
+        asked_who = not handed and (reply.kind == "question" or year.asks_who(reply.words))
         _log_reply(shop, state, "identity", line, reply, rule=_noted(
-            "asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more", unused))
-        if reply.say:
+                   "handing the phone over → on the line, asked once more" if handed else
+                   "asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more",
+                   unused))
+        if handed:
+            _say(shop, listener, ON_THE_LINE)
+        elif reply.say:
             _say(shop, listener, script.Fresh(reply.say))
-            line = NAME_SHORT
-        else:
-            if asked_who:
-                _say(shop, listener, WHO_WHY)
-            line = NAME_AGAIN
+        elif asked_who:
+            _say(shop, listener, WHO_WHY)
+        line = GREETING if handed else NAME_SHORT if reply.say else NAME_AFTER_WHO if asked_who else NAME_AGAIN
         reply = listener(shop, line)
         unused = _checked(shop, state, reply, reply.kind)
         failed = rules.name(reply, first=False)
@@ -164,7 +185,13 @@ def _call(shop, listener, state):
     paytm_mock.hold_rent(shop)
     if told:
         paytm_mock.tell_manager(shop, told.reason, _read_as(told))
-    paytm_mock.send_choices(shop, state.call)
+    # a haan to the cheaper plan on the call: its choice goes first, and only his tap starts it
+    wants = decision.plan if last.kind == "haan" and decision.plan != signed else None
+    paytm_mock.send_choices(shop, state.call, wants)
+    if wants:
+        _say(shop, listener, TAP_B)
+        _say(shop, listener, CLOSING)
+        return decision
     paytm_mock.open_ticket(shop, decision.rule, "na" if last.kind == "na" else "unclear")
     # the apology only for anger, a complaint or distress; calm doubt gets time to think
     if last.say:
@@ -202,12 +229,11 @@ def _plan(shop, state, listener):
                 plan, line = shop.cheaper(signed), OFFER_AGAIN if answer.say else OFFER_B
                 state.step = "ask"
                 continue
-            if not answer.say and answer.topic in ANSWERS and not (answer.topic == "price" and plan != signed):
+            if not answer.say and answer.topic in ANSWERS and not (answer.topic in ("price", "extra") and plan != signed):
                 _say(shop, listener, ANSWERS[answer.topic])
             line = AGAIN.get(line, line)
         elif answer.kind == "haan":
-            plan = decision.plan
-            line = READ_BACK if plan == signed else READ_BACK_B
+            line = READ_BACK
             state.step = "readback"
         else:
             plan, offered = decision.plan, True
