@@ -1678,6 +1678,62 @@
   "retry": true
  },
  {
+  "id": "wrong-year-then-right",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "मेरा हुआ था … जी 2004"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2,
+  "year_wrong": 1
+ },
+ {
+  "id": "no-year-then-right",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "hmm"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2,
+  "year_wrong": 0
+ },
+ {
   "id": "year-refused",
   "shop": "sharma",
   "turns": [

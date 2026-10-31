@@ -2,7 +2,7 @@ import time
 
 from voice import script
 from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED,
-                          GREETING, NAME_AGAIN, READ_BACK, REASSURE, WHO_WHY, YEAR, YEAR_AGAIN,
+                          GREETING, NAME_AGAIN, READ_BACK, REASSURE, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG,
                           YEAR_WAIT)
 
 from . import log, paytm_mock, records, rules, year
@@ -189,7 +189,7 @@ def _year(shop, state, listener):
             _say(shop, listener, EXPLAIN[rule])
             line = YEAR
         else:
-            line = YEAR_WAIT if waited else YEAR_AGAIN
+            line = YEAR_WAIT if waited else YEAR_WRONG if rule == "failed: wrong year" else YEAR_AGAIN
     return last, not heard
 
 

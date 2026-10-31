@@ -9,7 +9,8 @@ with "again" calls the shop a second time in the same log, with its own turns an
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
 call's WhatsApp, which should answer 409 unless it gives another "status".
 A turn at the year question may carry the "intent" the AI would read in it.
-"year_asks" checks how many times the year was asked, and "unread" how many of his
+"year_asks" checks how many times the year was asked, "year_wrong" how many of those
+said the year didn't match, and "unread" how many of his
 turns the call never got to. A turn {"hangup": true} is him hanging up there, and
 "retry" says a retry call should be booked, as after a cut line or silence, and
 "call_me" whether an SMS with a Call me now button went out. "callback" on "again"
@@ -260,6 +261,9 @@ def main(argv):
             asked = sum(1 for said, _ in heard if said in script.YEAR_LINES)
             if "year_asks" in case and asked != case["year_asks"]:
                 wrong.append(f"year asked {asked} times")
+            told = sum(1 for said, _ in heard if said == script.YEAR_WRONG)
+            if "year_wrong" in case and told != case["year_wrong"]:
+                wrong.append(f"year didn't match said {told} times")
             matched += not wrong
             if case.get("honest"):
                 honest += 1
