@@ -3986,5 +3986,78 @@
    "NAME_AFTER_WHO"
   ],
   "honest": true
+ },
+ {
+  "id": "haan-then-complaint",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "हाँ, अच्छा सुनो, कल का पेमेंट अभी तक बैंक में नहीं आया",
+    "kind": "unsure",
+    "reason": "कल का पेमेंट अभी तक बैंक में नहीं आया"
+   },
+   {
+    "text": "1984",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true,
+  "note": "a haan with more words after it is him; the year still guards the money"
+ },
+ {
+  "id": "haan-then-question",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "हां जी, बोलिए क्या बात है",
+    "kind": "unsure"
+   },
+   {
+    "text": "1978",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true
+ },
+ {
+  "id": "haan-but-not-him",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan, par main nahi hoon",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan, par main nahi hoon",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: not confirmed",
+  "call_me": true,
+  "retry": true,
+  "note": "a haan with a but after it is not taken as him"
  }
 ]

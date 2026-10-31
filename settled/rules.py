@@ -10,6 +10,9 @@ BUSY = ("busy", "bizi", "baad mein", "baad me ", "bad mein", "baad main", "call 
 YES_WORDS = {"haan", "han", "haa", "ha", "ji", "jee", "yes", "yeah", "boliye", "bolie", "speaking", "हा", "जी", "बोलिए",
              "बोलिये"}
 YES_PHRASES = ("bol raha hoon", "bol raha hu", "bol rha hu", "बोल रहा हू", "बोल रहा हु")
+# A haan with more words after it, read as from him, is still him, unless the words hold a "but" or a hand-over to someone else.
+NOT_HIM = {"par", "pr", "lekin", "magar", "but", "papa", "beta", "deta", "bulata", "पर", "लेकिन", "मगर", "पापा", "बेटा",
+           "देता", "बुलाता"}
 from .models import Decision
 from .records import missing
 
@@ -34,6 +37,8 @@ def name(answer, first=True):
         return None
     if answer.kind == "na" or answer.speaker == "someone else":
         return "failed: someone else"
+    if answer.speaker == "shopkeeper" and yes_first(answer.words):
+        return None
     if first and answer.kind != "no answer":
         return "ask again"
     return "failed: not confirmed"
@@ -46,6 +51,11 @@ def bare_yes(text):
     for phrase in YES_PHRASES:
         said = said.replace(spoken(phrase), " ")
     return set(said.split()) <= YES_WORDS
+
+
+def yes_first(text):
+    words = spoken(text).split()
+    return bool(words) and words[0] in YES_WORDS and not any(w in NOT_HIM or w.startswith(("ruk", "रुक")) for w in words)
 
 
 def unverified(rule):
