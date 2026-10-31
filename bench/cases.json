@@ -3854,5 +3854,537 @@
   "expect": "held",
   "identity": "verified: year of birth matches",
   "manager": true
+ },
+ {
+  "id": "ai-one-rupee-b-held",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "हाँ लिया तो था, पर ये तो तुम झूठ बोल रहे हो। जो सेल्समैन आया था वो एक रुपया बता के गया था, आप एक सौ पच्चीस बोल रहे हो। ये कोई बात थोड़ी हुई?",
+    "kind": "unsure",
+    "reason": "सेल्समैन एक रुपया बता के गया था",
+    "promise": "one rupee",
+    "upset": true,
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, सेल्समैन ने आपको एक रुपया बताया था, ये गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं।"
+   },
+   {
+    "text": "haan, ye theek hai",
+    "kind": "haan",
+    "next": "read_back",
+    "say": ""
+   },
+   {
+    "text": "haan, pakka",
+    "kind": "haan",
+    "next": "confirm",
+    "say": ""
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "manager": true,
+  "ends": "CALLBACK",
+  "ai_said": 1,
+  "note": "his ₹1 sentence as typed: the AI's sorry, then Plan B offered; two haans hold the rent for his tap",
+  "asked": [
+   "OFFER_AGAIN",
+   "READ_BACK_B"
+  ]
+ },
+ {
+  "id": "ai-one-rupee-b-tap",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "हाँ लिया तो था, पर ये तो तुम झूठ बोल रहे हो। जो सेल्समैन आया था वो एक रुपया बता के गया था, आप एक सौ पच्चीस बोल रहे हो। ये कोई बात थोड़ी हुई?",
+    "kind": "unsure",
+    "reason": "सेल्समैन एक रुपया बता के गया था",
+    "promise": "one rupee",
+    "upset": true,
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, सेल्समैन ने आपको एक रुपया बताया था, ये गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं।"
+   },
+   {
+    "text": "haan, ye theek hai",
+    "kind": "haan",
+    "next": "read_back",
+    "say": ""
+   },
+   {
+    "text": "haan, pakka",
+    "kind": "haan",
+    "next": "confirm",
+    "say": ""
+   }
+  ],
+  "tap": "cheaper_plan",
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches",
+  "manager": true,
+  "ai_said": 1,
+  "note": "his tap in WhatsApp after the call starts Plan B at ₹79"
+ },
+ {
+  "id": "ai-confirm-at-ask",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan",
+    "next": "confirm",
+    "say": ""
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan",
+    "next": "confirm",
+    "say": ""
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches",
+  "ai_said": 0,
+  "note": "confirm isn't allowed at the plan question: the price is still read back first"
+ },
+ {
+  "id": "ai-otp-falls-back",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "tum fraud ho kya? paise kaatoge?",
+    "intent": "scared",
+    "next": "ask_year",
+    "say": "घबराइए मत जी, बस अपना OTP बता दीजिए।"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches",
+  "ai_said": 0,
+  "answered": [
+   "REASSURE"
+  ],
+  "year_asks": 2,
+  "note": "an AI line asking for an OTP is never said; the fixed reassurance is"
+ },
+ {
+  "id": "ai-wrong-amount",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "kitna lagega mahine ka?",
+    "kind": "question",
+    "topic": "price",
+    "next": "answer",
+    "say": "किराया सिर्फ़ 99 रुपये महीना है जी।"
+   },
+   {
+    "text": "haan theek hai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "ai_said": 0,
+  "answered": [
+   "A_PRICE"
+  ],
+  "note": "an amount not in his record falls back to the fixed price line"
+ },
+ {
+  "id": "ai-box-wapas",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "nahi chahiye, le jao isko",
+    "kind": "na",
+    "reason": "nahi chahiye",
+    "next": "end",
+    "say": "ठीक है जी, हम बॉक्स वापस ले लेंगे।"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ai_said": 0,
+  "ends": "CALLBACK",
+  "manager": true,
+  "note": "an AI line promising to take the box back is never said"
+ },
+ {
+  "id": "ai-na-offer-then-na",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na",
+    "reason": "125 bahut zyada hai",
+    "next": "offer_plan_b",
+    "say": "समझ सकता हूँ जी, अभी कुछ नहीं कटेगा।"
+   },
+   {
+    "text": "nahi, rehne do",
+    "kind": "na",
+    "next": "end",
+    "say": "कोई बात नहीं जी, आपकी बात नोट कर ली है।"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ai_said": 2,
+  "ends": "FACTS",
+  "manager": true,
+  "note": "after a na the AI may offer Plan B; a second na ends with the fixed facts",
+  "asked": [
+   "OFFER_AGAIN"
+  ]
+ },
+ {
+  "id": "ai-na-offer-tap",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na",
+    "reason": "125 bahut zyada hai",
+    "next": "offer_plan_b",
+    "say": "समझ सकता हूँ जी, अभी कुछ नहीं कटेगा।"
+   },
+   {
+    "text": "haan, wo theek hai",
+    "kind": "haan",
+    "next": "read_back",
+    "say": ""
+   },
+   {
+    "text": "haan ji",
+    "kind": "haan",
+    "next": "confirm",
+    "say": ""
+   }
+  ],
+  "tap": "cheaper_plan",
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches",
+  "ai_said": 1,
+  "manager": true,
+  "note": "haan twice to Plan B after a na takes nothing on the call; his tap does"
+ },
+ {
+  "id": "ai-name-who",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "kaun bol raha hai?",
+    "kind": "question",
+    "next": "ask_name",
+    "say": "मैं Paytm से बोल रहा हूँ जी, आपके साउंडबॉक्स के बारे में।"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches",
+  "ai_said": 1,
+  "asked": [
+   "NAME_SHORT"
+  ]
+ },
+ {
+  "id": "ai-year-angry",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "kya bakwaas hai, roz roz call karte ho",
+    "intent": "angry",
+    "next": "end",
+    "say": "माफ़ कीजिए जी, आपको परेशान करना हमारा इरादा नहीं था।"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: angry",
+  "ai_said": 1,
+  "answered": [
+   "DECLINED"
+  ]
+ },
+ {
+  "id": "ai-year-who",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "pehle batao kaun ho aap",
+    "intent": "who",
+    "next": "ask_year",
+    "say": "मैं Paytm से बोल रहा हूँ जी, आपके साउंडबॉक्स के किराये के बारे में।"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "ai_said": 1,
+  "year_asks": 2
+ },
+ {
+  "id": "ai-answers-start",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "ye kab se katega?",
+    "kind": "question",
+    "topic": "start",
+    "next": "answer",
+    "say": "किराया 1 नवंबर से शुरू होगा जी, उससे पहले कुछ नहीं कटेगा।"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "ai_said": 1,
+  "asked": [
+   "ASK_AGAIN"
+  ]
+ },
+ {
+  "id": "ai-cheaper-empty-say",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "koi sasta plan hai kya?",
+    "kind": "question",
+    "topic": "cheaper",
+    "next": "offer_plan_b",
+    "say": ""
+   },
+   {
+    "text": "haan, wahi de do",
+    "kind": "haan",
+    "next": "read_back",
+    "say": ""
+   },
+   {
+    "text": "haan ji",
+    "kind": "haan",
+    "next": "confirm",
+    "say": ""
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ai_said": 0,
+  "ends": "CALLBACK",
+  "manager": false,
+  "asked": [
+   "OFFER_B",
+   "READ_BACK_B"
+  ]
+ },
+ {
+  "id": "ai-empty-na",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "nahi liya maine",
+    "kind": "na",
+    "next": "end",
+    "say": ""
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ai_said": 0,
+  "ends": "CALLBACK",
+  "manager": true,
+  "note": "an empty AI line where one is needed takes the fixed ending"
+ },
+ {
+  "id": "ai-offer-at-b",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan",
+    "next": "ask_year",
+    "say": ""
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "koi sasta plan hai kya?",
+    "kind": "question",
+    "topic": "cheaper",
+    "next": "offer_plan_b",
+    "say": ""
+   },
+   {
+    "text": "ye bhi zyada hai",
+    "kind": "na",
+    "next": "offer_plan_b",
+    "say": "समझ सकता हूँ जी।"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ai_said": 0,
+  "ends": "CALLBACK",
+  "note": "Plan B is offered once: a second offer isn't allowed"
  }
 ]

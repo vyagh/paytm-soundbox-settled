@@ -8,7 +8,8 @@ his WhatsApp through POST /api/consent, on a board started in this process. A ca
 with "again" calls the shop a second time in the same log, with its own turns and
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
 call's WhatsApp, which should answer 409 unless it gives another "status".
-A turn at the year question may carry the "intent" the AI would read in it.
+A turn at the year question may carry the "intent" the AI would read in it, and any
+turn the "say" and "next" the AI would write; a turn without them takes the fixed lines.
 "year_asks" checks how many times the year was asked, "year_wrong" how many of those
 said the year didn't match, and "unread" how many of his
 turns the call never got to. A turn {"hangup": true} is him hanging up there, and
@@ -17,7 +18,8 @@ lines that should be said, and "manager" whether his manager got a WhatsApp.
 "retry" says a retry call should be booked, as after a cut line or silence, and
 "call_me" whether an SMS with a Call me now button went out. "callback" on "again"
 makes the second call one he started. "new_round" starts a demo round through
-POST /api/round/new between the first call and the rest.
+POST /api/round/new between the first call and the rest. "ai_said" counts the lines
+the AI wrote that were said, and "asked" names lines that should be asked.
 """
 import argparse
 import json
@@ -44,7 +46,8 @@ def typed_reader(case):
         from settled.models import Answer
         turn = labelled[text]
         return Answer(turn["kind"], text, reason=turn.get("reason"), speaker=turn.get("speaker", "shopkeeper"),
-                      topic=turn.get("topic"), promise=turn.get("promise"), upset=turn.get("upset", False))
+                      topic=turn.get("topic"), promise=turn.get("promise"), upset=turn.get("upset", False),
+                      say=turn.get("say"), next=turn.get("next"))
 
     return read
 
@@ -79,7 +82,7 @@ def play(case, read):
         if not text.strip():
             answer = Answer("no answer", "")
         elif said in script.YEAR_LINES:
-            answer = Answer("unsure", text, intent=turn.get("intent"))
+            answer = Answer("unsure", text, intent=turn.get("intent"), say=turn.get("say"), next=turn.get("next"))
         else:
             answer = read(text, script.english(said, shop))
         heard.append((said, answer))
@@ -275,9 +278,15 @@ def main(argv):
                 ending = spoken[-2] if len(spoken) > 1 else None
                 if ending != getattr(script, case["ends"]):
                     wrong.append(f"ended on {next((k for k in dir(script) if getattr(script, k) == ending), ending)}")
+            fresh = sum(1 for line in spoken if isinstance(line, script.Fresh))
+            if "ai_said" in case and fresh != case["ai_said"]:
+                wrong.append(f"{fresh} AI lines said")
             for line in case.get("answered", []):
                 if getattr(script, line) not in spoken:
                     wrong.append(f"{line} not said")
+            for line in case.get("asked", []):
+                if getattr(script, line) not in [said for said, _ in heard]:
+                    wrong.append(f"{line} not asked")
             with sqlite3.connect(log.path()) as db:
                 manager = bool(db.execute("SELECT id FROM messages WHERE shop = ? AND to_whom = 'manager'", (case["shop"],)).fetchall())
             if manager != case.get("manager", manager):
