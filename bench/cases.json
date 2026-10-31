@@ -4280,5 +4280,73 @@
   "identity": "verified: year of birth matches",
   "honest": true,
   "note": "the Soundbox is a machine to him: not a robot question"
+ },
+ {
+  "id": "complaint-not-rent",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "अरे वो किराया बाद में देखेंगे, पहले ये बताओ कल का पैसा क्यों नहीं आया?",
+    "kind": "question",
+    "topic": "support",
+    "upset": true
+   },
+   {
+    "text": "haan ji, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "SUPPORT"
+  ],
+  "asked": [
+   "ASK_AGAIN"
+  ],
+  "note": "a complaint about something else is not busy: it goes to support and the plan is asked once more"
+ },
+ {
+  "id": "complaint-twice",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "mera UPI ka paisa nahi aaya",
+    "kind": "question",
+    "topic": "support",
+    "upset": true
+   },
+   {
+    "text": "pehle mera UPI ka paisa dilao",
+    "kind": "question",
+    "topic": "support",
+    "upset": true
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "SUPPORT"
+  ],
+  "ends": "FOLLOW_UP",
+  "note": "the plan is asked once more after a complaint, a second complaint holds the rent for a person"
  }
 ]

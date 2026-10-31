@@ -104,10 +104,13 @@ def decide(shop, answers, verified):
 
     signed = shop.plan(shop.signup["plan"])
     cheaper = shop.cheaper(signed)
-    haans, questions, offered = {}, 0, False
+    haans, questions, offered, complaints = {}, 0, False, 0
     for plan, answer in answers:
         if answer.kind == "question":
             questions += 1
+            complaints += answer.topic == "support"
+            if complaints > 1:
+                return Decision("held", "a complaint again, not about the rent → nothing taken, a person calls back")
             if questions > QUESTIONS:
                 return Decision("held", f"{questions} questions → nothing taken, a person calls back")
             continue
