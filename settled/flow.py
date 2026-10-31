@@ -47,8 +47,8 @@ def _after_na(shop, answers, listener):
 
     if reply.plan:
         decision = _decided(shop, decide(shop, answers))
-        if decision.outcome == "charged":
-            paytm_mock.charge_rent(shop, decision.plan, picked=True)
+        if decision.plan:
+            paytm_mock.ask_sms_confirm(shop, decision.plan)
         return decision
 
     decision = decide(shop, answers[:-1])

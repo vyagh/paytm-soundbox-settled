@@ -30,7 +30,7 @@ def decide(shop, answers):
             plan = shop.plan(picked)
             if plan is None:
                 return Decision("held", f"picked {picked!r}, not in the plan record → held")
-            return Decision("charged", f"picked {plan.name} after na → charged at ₹{plan.price}", plan)
+            return Decision("held", f"picked {plan.name} after na → held, he confirms by SMS", plan)
         return Decision("held", "na → hold")
 
     return _held(first)

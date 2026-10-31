@@ -39,13 +39,18 @@ def _his_words(answer):
     return f'"{words}"' if words else "nothing clear"
 
 
-def charge_rent(shop, plan, picked=False):
+def charge_rent(shop, plan):
     yes = log.last_answer(shop.id)
     when = f" at {_clock(yes['at'])}" if yes else ""
-    lead = f"You picked {plan.name}. " if picked else ""
-    _sms(shop, f"{lead}Your Soundbox rent for {shop.name} is ₹{plan.price}/month ({plan.name}) from {_starts(shop)}. "
+    _sms(shop, f"Your Soundbox rent for {shop.name} is ₹{plan.price}/month ({plan.name}) from {_starts(shop)}. "
                f"Your yes on our call{when} is recorded. Not right? Reply NO to this SMS and we will stop it.")
     return _act(shop, "charge rent", outcome="charged", rule=f"₹{plan.price} a month, {plan.name}")
+
+
+def ask_sms_confirm(shop, plan):
+    _sms(shop, f"You picked {plan.name} on our call: ₹{plan.price}/month from {_starts(shop)}. "
+               f"Reply YES to this SMS to start it. Nothing is taken until you do.")
+    return _act(shop, "ask him to confirm by SMS", rule=f"₹{plan.price} a month, {plan.name}")
 
 
 def hold_rent(shop, tell=None):

@@ -216,7 +216,7 @@
     "plan": "plan-b"
    }
   ],
-  "expect": "charged:plan-b"
+  "expect": "held"
  },
  {
   "id": "no-then-b-2",
@@ -233,7 +233,7 @@
     "plan": "plan-b"
    }
   ],
-  "expect": "charged:plan-b"
+  "expect": "held"
  },
  {
   "id": "no-then-b-3",
@@ -251,7 +251,7 @@
     "plan": "plan-b"
    }
   ],
-  "expect": "charged:plan-b"
+  "expect": "held"
  },
  {
   "id": "no-then-a",
@@ -268,7 +268,24 @@
     "plan": "plan-a"
    }
   ],
-  "expect": "charged:plan-a"
+  "expect": "held"
+ },
+ {
+  "id": "no-then-a-125",
+  "shop": "gupta",
+  "note": "",
+  "turns": [
+   {
+    "text": "nahi",
+    "kind": "na"
+   },
+   {
+    "text": "accha theek hai 125 wala hi chalu kar do",
+    "kind": "haan",
+    "plan": "plan-a"
+   }
+  ],
+  "expect": "held"
  },
  {
   "id": "no-then-haan-no-plan",
