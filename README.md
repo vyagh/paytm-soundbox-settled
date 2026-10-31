@@ -91,6 +91,7 @@ The AI sorts a reply into a kind (haan, na, unsure, question, no answer) and say
 | He asks for a cheaper plan | Plan B offered |
 | Haan to Plan B | Held, Plan B first in his WhatsApp, nothing changes until he taps |
 | He taps a choice in the WhatsApp | Kept, switched or cancelled, as he chose |
+| He taps Not right? Call me on the SMS after a charge | A ticket and a person's call today, the charge stands until that person decides |
 
 <details>
 <summary>Every rule that holds these together</summary>
