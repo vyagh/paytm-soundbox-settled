@@ -1,0 +1,29 @@
+{
+  "plans": [
+    {"id": "plan-a", "name": "Plan A", "price": 125, "demo": true},
+    {"id": "plan-b", "name": "Plan B", "price": 79, "demo": true}
+  ],
+  "shops": {
+    "gupta": {
+      "name": "Gupta Kirana",
+      "owner": null,
+      "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
+      "delivery": {"delivered": true, "on": "2026-10-24"},
+      "return": {"returned": false}
+    },
+    "sharma": {
+      "name": "Sharma Store",
+      "owner": "Ramesh",
+      "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
+      "delivery": {"delivered": true, "on": "2026-10-25"},
+      "return": {"returned": false}
+    },
+    "verma": {
+      "name": "Verma Dairy",
+      "owner": null,
+      "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
+      "delivery": null,
+      "return": {"returned": false}
+    }
+  }
+}

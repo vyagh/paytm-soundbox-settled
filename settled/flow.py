@@ -1,0 +1,67 @@
+from voice.script_hi import ASK, NA_FOLLOW_UP, READ_BACK
+
+from . import log, paytm_mock, records
+from .rules import decide
+
+
+def run(shop_id, listener):
+    """Take one shop from due to follow-up. listener(shop, said) returns an Answer."""
+    shop = records.load(shop_id)
+    log.add(shop.id, "due", rule=f"first rent due {shop.signup['starts']}" if shop.signup else None)
+
+    decision = decide(shop, [])
+    log.add(shop.id, "records checked", rule=decision.rule, outcome=decision.outcome)
+    if decision.outcome != "call":
+        _decided(shop, decision)
+        if decision.outcome == "held":
+            paytm_mock.hold_rent(shop)
+            paytm_mock.open_ticket(shop, decision.rule)
+        return decision
+
+    log.add(shop.id, "calling")
+    answers = [_ask(shop, ASK, listener)]
+    decision = _decided(shop, decide(shop, answers))
+
+    if decision.outcome == "ask again":
+        answers.append(_ask(shop, READ_BACK, listener))
+        decision = _decided(shop, decide(shop, answers))
+
+    if decision.outcome == "charged":
+        paytm_mock.charge_rent(shop, decision.plan)
+    elif answers[-1].kind == "na":
+        decision = _after_na(shop, answers, listener)
+    else:
+        paytm_mock.hold_rent(shop)
+        paytm_mock.send_plan_details(shop)
+        paytm_mock.open_ticket(shop, decision.rule)
+    return decision
+
+
+def _after_na(shop, answers, listener):
+    paytm_mock.hold_rent(shop)
+    paytm_mock.tell_manager(shop, answers[-1].reason)
+    reply = _ask(shop, NA_FOLLOW_UP, listener)
+    answers.append(reply)
+
+    if reply.plan:
+        decision = _decided(shop, decide(shop, answers))
+        if decision.outcome == "charged":
+            paytm_mock.charge_rent(shop, decision.plan)
+        return decision
+
+    if reply.kind == "na":
+        paytm_mock.book_pickup(shop)
+    else:
+        paytm_mock.send_plan_details(shop)
+    return decide(shop, answers[:1])
+
+
+def _ask(shop, said, listener):
+    answer = listener(shop, said)
+    log.add(shop.id, "answered", said=said, heard=answer.words, read_as=answer.kind, reason=answer.reason)
+    return answer
+
+
+def _decided(shop, decision):
+    log.add(shop.id, "decided", rule=decision.rule, outcome=decision.outcome)
+    return decision
