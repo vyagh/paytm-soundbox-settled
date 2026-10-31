@@ -25,9 +25,10 @@ class Busy(Exception):
 
 
 class Call:
-    def __init__(self, shop_id, language):
+    def __init__(self, shop_id, language, callback=False):
         self.shop_id = shop_id
         self.language = language
+        self.callback = callback
         self.lock = threading.Lock()
         self.replies = queue.Queue()
         self.seq = 0
@@ -36,6 +37,8 @@ class Call:
         self.code = None
         self.progress = CallState()
         self.audio = None
+        # every line said on this call by seq, so the page can fetch a short one after the next has started
+        self.clips = {}
         self.waiting = False
         self.hearing = False
         self.heard_at = float("-inf")
@@ -47,7 +50,7 @@ class Call:
 
     def _run(self):
         try:
-            flow.run(self.shop_id, self._listen, self.progress)
+            flow.run(self.shop_id, self._listen, self.progress, callback=self.callback)
         except Exception as e:
             self.problem = f"call stopped: {type(e).__name__}"
         finally:
@@ -71,6 +74,7 @@ class Call:
             self.seq += 1
             self.said, self.line, self.code = english, said, language["code"]
             self.audio, self.problem = audio, problem
+            self.clips[self.seq] = audio
             self.waiting = wait
             seq = self.seq
         if not wait:
@@ -110,6 +114,7 @@ class Call:
             with self.lock:
                 self.seq += 1
                 seq = self.seq
+                self.clips[seq] = self.audio
                 self.waiting = True
             until = time.monotonic() + length + LISTEN
         with self.lock:
@@ -174,7 +179,8 @@ _calls = {}
 _lock = threading.Lock()
 
 
-def start(shop_id, language=None):
+def start(shop_id, language=None, callback=False):
+    """callback: he tapped "Call me now" or called the number back. The call runs the same identity steps."""
     language = language or records.load(shop_id).language
     if language not in script.LANGUAGES:
         raise ValueError(f"no language {language!r}")
@@ -184,7 +190,7 @@ def start(shop_id, language=None):
             raise Busy("a call to this shop is already on")
         if log.settled(shop_id):
             raise Busy("rent already settled for this shop this round, so there is no second call. Start a new round to call again")
-        call = _calls[shop_id] = Call(shop_id, language)
+        call = _calls[shop_id] = Call(shop_id, language, callback)
     call.thread.start()
     return call
 

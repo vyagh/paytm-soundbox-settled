@@ -134,8 +134,9 @@ class Handler(BaseHTTPRequestHandler):
             self.json(200, {"round": current_round()})
         elif len(parts := url.path.split("/")) == 6 and parts[1:3] == ["api", "call"] and parts[4] == "audio":
             call = calls.get(parts[3])
-            if call and call.audio and str(call.seq) == parts[5]:
-                self.send(200, "audio/wav", call.audio)
+            clip = call.clips.get(int(parts[5])) if call and parts[5].isdigit() else None
+            if clip:
+                self.send(200, "audio/wav", clip)
             else:
                 self.send(404, "text/plain; charset=utf-8", b"no audio")
         else:
@@ -161,6 +162,9 @@ class Handler(BaseHTTPRequestHandler):
                     return self.json(413, {"error": "too long"})
                 calls.start(shop_id, json.loads(self.rfile.read(length) or b"{}").get("language"))
                 return self.json(200, {"started": shop_id})
+            if what == "callback":
+                calls.start(shop_id, callback=True)
+                return self.json(200, {"started": shop_id, "callback": True})
             if what == "reply":
                 return self.reply(shop_id, url)
             if what == "hangup":

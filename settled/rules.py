@@ -33,7 +33,7 @@ def name(answer, first=True):
 
 
 def unverified(rule):
-    return Decision("held", f"identity {rule} → nothing changes, a person calls the registered number")
+    return Decision("held", f"identity {rule} → nothing changes, an SMS lets him call back")
 
 
 def decide(shop, answers, verified):

@@ -660,7 +660,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "someone-else-2",
@@ -673,7 +674,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "someone-else-3",
@@ -686,7 +688,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "someone-else-4",
@@ -720,7 +723,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "doubt-at-readback-1",
@@ -1027,7 +1031,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "bn-yes-yes",
@@ -1301,7 +1306,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "en-yes-yes",
@@ -1435,7 +1441,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "or-yes-yes",
@@ -1569,7 +1576,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "verma-not-delivered",
@@ -1589,7 +1597,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "family-son",
@@ -1603,7 +1612,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else"
+  "identity": "failed: someone else",
+  "retry": true
  },
  {
   "id": "family-wife-haan",
@@ -1618,7 +1628,8 @@
   ],
   "expect": "held",
   "identity": "failed: someone else",
-  "note": "a haan from someone else never passes the owner question"
+  "note": "a haan from someone else never passes the owner question",
+  "retry": true
  },
  {
   "id": "owner-asks-who",
@@ -1646,7 +1657,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: wrong year"
+  "identity": "failed: wrong year",
+  "retry": true
  },
  {
   "id": "wrong-year-close",
@@ -1662,7 +1674,8 @@
   ],
   "expect": "held",
   "identity": "failed: wrong year",
-  "note": "someone with his phone but not his year of birth says he is the owner"
+  "note": "someone with his phone but not his year of birth says he is the owner",
+  "retry": true
  },
  {
   "id": "year-refused",
@@ -2248,7 +2261,8 @@
   "expect": "held",
   "identity": "failed: wrong year",
   "note": "three wrong years, then a polite goodbye",
-  "year_asks": 3
+  "year_asks": 3,
+  "retry": true
  },
  {
   "id": "year-near-miss",
@@ -2270,7 +2284,8 @@
   ],
   "expect": "held",
   "identity": "failed: wrong year",
-  "note": "only the year on record passes"
+  "note": "only the year on record passes",
+  "retry": true
  },
  {
   "id": "name-garbled-then-haan",
@@ -2317,7 +2332,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: not confirmed"
+  "identity": "failed: not confirmed",
+  "retry": true
  },
  {
   "id": "round-two-charges",
@@ -2419,10 +2435,11 @@
    "choice": "keep_plan",
    "status": 200
   },
-  "note": "his son answers the second call: the first call's WhatsApp still works"
+  "note": "his son answers the second call: the first call's WhatsApp still works",
+  "retry": true
  },
  {
-  "id": "wrong-code-keeps-choices",
+  "id": "wrong-year-keeps-choices",
   "shop": "sharma",
   "turns": [
    {
@@ -2461,7 +2478,8 @@
    "choice": "cheaper_plan",
    "status": 200
   },
-  "note": "a second call that fails the year check leaves his choices as they are"
+  "note": "a second call that fails the year check leaves his choices as they are",
+  "retry": true
  },
  {
   "id": "year-declined-hindi",
@@ -2565,7 +2583,8 @@
   "identity": "failed: no year",
   "unread": 1,
   "note": "three asks in all, waits included, never a fourth",
-  "year_asks": 3
+  "year_asks": 3,
+  "retry": true
  },
  {
   "id": "year-ask-cap-silence",
@@ -2860,7 +2879,8 @@
   "expect": "held",
   "identity": "failed: wrong year",
   "year_asks": 3,
-  "note": "Mahesh's year on Ramesh's call: wrong each time"
+  "note": "Mahesh's year on Ramesh's call: wrong each time",
+  "retry": true
  },
  {
   "id": "scared-lootega",
@@ -2971,7 +2991,8 @@
   "identity": "failed: no year",
   "year_asks": 3,
   "unread": 1,
-  "note": "3 asks in all, reassured or not"
+  "note": "3 asks in all, reassured or not",
+  "retry": true
  },
  {
   "id": "who-kis-liye",
@@ -3157,6 +3178,135 @@
   ],
   "expect": "held",
   "identity": "failed: wrong year",
-  "year_asks": 3
+  "year_asks": 3,
+  "retry": true
+ },
+ {
+  "id": "son-then-callback",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "papa dukaan pe nahi hain, main beta bol raha hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: someone else",
+  "retry": true,
+  "call_me": true,
+  "again": {
+   "callback": true,
+   "turns": [
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "1978"
+    },
+    {
+     "text": "haan liya tha",
+     "kind": "haan"
+    },
+    {
+     "text": "haan pakka",
+     "kind": "haan"
+    }
+   ],
+   "expect": "charged"
+  },
+  "note": "his son picks up; Mahesh taps Call me now on the SMS, the same identity steps run, and his yes charges"
+ },
+ {
+  "id": "refused-then-callback",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "nahi bataunga"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: refused",
+  "year_asks": 2,
+  "call_me": true,
+  "again": {
+   "callback": true,
+   "turns": [
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "1984"
+    },
+    {
+     "text": "nahi, 125 nahi bola tha",
+     "kind": "na"
+    }
+   ],
+   "expect": "held"
+  },
+  "note": "he calls back after refusing: verified this time, and his no holds the rent"
+ },
+ {
+  "id": "callback-wrong-year",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "main unka beta hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: someone else",
+  "retry": true,
+  "call_me": true,
+  "again": {
+   "callback": true,
+   "turns": [
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "1990"
+    },
+    {
+     "text": "1991"
+    },
+    {
+     "text": "1992"
+    }
+   ],
+   "expect": "held"
+  },
+  "note": "a callback from his number is still checked: three wrong years, nothing changes"
+ },
+ {
+  "id": "cut-sends-call-me",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "hangup": true,
+    "text": ""
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "retry": true,
+  "call_me": true
  }
 ]

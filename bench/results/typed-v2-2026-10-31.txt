@@ -110,7 +110,7 @@ name-unclear-twice        gupta   held            held            failed: not co
 round-two-charges         sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
 round-old-link            gupta   held            held            verified: year of birth matches
 failed-call-keeps-choices gupta   held            held            verified: year of birth matches
-wrong-code-keeps-choices  sharma  held            held            verified: year of birth matches
+wrong-year-keeps-choices  sharma  held            held            verified: year of birth matches
 year-declined-hindi       gupta   held            held            failed: refused         
 year-who-first            sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
 name-who-first            gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
@@ -139,6 +139,10 @@ busy-ai                   gupta   held            held            busy → call 
 wait-ai                   sharma  charged:plan-a  charged:plan-a  verified: year of birth matches
 question-at-year          gupta   charged:plan-a  charged:plan-a  verified: year of birth matches
 other-then-wrong          sharma  held            held            failed: wrong year      
+son-then-callback         gupta   held            held            failed: someone else    
+refused-then-callback     sharma  held            held            failed: refused         
+callback-wrong-year       gupta   held            held            failed: someone else    
+cut-sends-call-me         sharma  held            held            verified: year of birth matches
 
 charged after na or unsure: 0
 charged without verified identity: 0
@@ -146,5 +150,5 @@ negative actions from the AI: 0
 double charges (more than one charge or cancel per shop in a round): 0
 honest yeses charged: 31/31
 consent taps through the endpoint: 12
-cases matching expected outcome: 140/140
+cases matching expected outcome: 144/144
 lines read differently from their label: 0

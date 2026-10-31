@@ -11,7 +11,9 @@ call's WhatsApp, which should answer 409 unless it gives another "status".
 A turn at the year question may carry the "intent" the AI would read in it.
 "year_asks" checks how many times the year was asked, and "unread" how many of his
 turns the call never got to. A turn {"hangup": true} is him hanging up there, and
-"retry" says a retry call should be booked, as after a cut line or silence. "new_round" starts a demo round through
+"retry" says a retry call should be booked, as after a cut line or silence, and
+"call_me" whether an SMS with a Call me now button went out. "callback" on "again"
+makes the second call one he started. "new_round" starts a demo round through
 POST /api/round/new between the first call and the rest.
 """
 import argparse
@@ -79,7 +81,7 @@ def play(case, read):
         return answer
 
     try:
-        decision = flow.run(case["shop"], listener, state)
+        decision = flow.run(case["shop"], listener, state, callback=case.get("callback", False))
     except log.AlreadySettled:
         decision = None
     return decision, heard, state, list(turns)
@@ -89,7 +91,7 @@ def tap(board, shop):
     """His tap on the choices in his latest WhatsApp, through the board's endpoint. Also checks a second tap is refused."""
     from settled import log
     with sqlite3.connect(log.path()) as db:
-        found = db.execute("SELECT id FROM messages WHERE shop = ? AND choices IS NOT NULL ORDER BY id DESC", (shop,)).fetchone()
+        found = db.execute("SELECT id FROM messages WHERE shop = ? AND channel = 'WhatsApp' AND choices IS NOT NULL ORDER BY id DESC", (shop,)).fetchone()
     if not found:
         return None, "no choices sent"
     return poster(board, found[0]), found[0]
@@ -217,7 +219,8 @@ def main(argv):
             if case.get("again"):
                 later = case["again"]
                 before = len(log.rows(case["shop"]))
-                decision2, heard2, _, unread2 = play({**case, "turns": later["turns"]}, make_reader(args.reader, later))
+                decision2, heard2, _, unread2 = play({**case, "turns": later["turns"], "callback": later.get("callback", False)},
+                                                     make_reader(args.reader, later))
                 _, b, u, neg = score(decision2, heard2, log.rows(case["shop"])[before:])
                 bad, unverified, negative = bad + b, unverified + u, negative + neg
                 heard += heard2
@@ -243,6 +246,14 @@ def main(argv):
                 wrong.append(f"identity {identity}")
             if len(unread) != case.get("unread", 0):
                 wrong.append(f"{len(unread)} turns never read")
+            with sqlite3.connect(log.path()) as db:
+                sms = db.execute("SELECT id FROM messages WHERE shop = ? AND channel = 'SMS' AND choices LIKE '%call_me%'",
+                                 (case["shop"],)).fetchall()
+            if bool(sms) != case.get("call_me", bool(sms)):
+                wrong.append("call me SMS sent" if sms else "no call me SMS")
+            if case.get("again", {}).get("callback") and not any(
+                    r["step"] == "calling" and (r["rule"] or "").startswith("callback") for r in log.rows(case["shop"])):
+                wrong.append("callback not logged")
             retried = any(r["action"] == "book retry call (mock)" for r in log.rows(case["shop"]))
             if retried != case.get("retry", False):
                 wrong.append("retry call booked" if retried else "no retry call booked")

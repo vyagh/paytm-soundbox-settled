@@ -215,7 +215,7 @@ def last_answer(shop, read_as=None):
 
 def message(shop, to_whom, channel, text, choices=None, call=None):
     """Add a message. {ticket} in text becomes this message's ticket id, SET-<4 digits>.
-    With choices, the message gets a mock consent link, and {link} in text becomes it.
+    With choices on a WhatsApp, the message gets a mock consent link, and {link} in text becomes it.
     call is the id of the "due" row of the call that sent it."""
     at = datetime.now().isoformat(timespec="seconds")
     db = _connect()
@@ -223,7 +223,7 @@ def message(shop, to_whom, channel, text, choices=None, call=None):
         db.isolation_level = None
         db.execute("BEGIN IMMEDIATE")
         msg_id = db.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM messages").fetchone()[0]
-        link = consent_link(msg_id) if choices else None
+        link = consent_link(msg_id) if choices and channel == "WhatsApp" else None
         db.execute(
             "INSERT INTO messages (id, at, shop, to_whom, channel, text, link, choices, call) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (msg_id, at, shop, to_whom, channel, text.replace("{ticket}", ticket_id(msg_id)).replace("{link}", link or ""),
@@ -254,9 +254,10 @@ def get_message(msg_id):
 
 
 def last_choices(shop):
-    """The latest message to this shop that carries choices, or None."""
+    """The latest WhatsApp to this shop that carries choices, or None. An SMS's Call me now is not one."""
     with closing(_connect()) as db:
-        row = db.execute("SELECT * FROM messages WHERE shop = ? AND choices IS NOT NULL ORDER BY id DESC LIMIT 1",
+        row = db.execute("SELECT * FROM messages WHERE shop = ? AND channel = 'WhatsApp' AND choices IS NOT NULL "
+                         "ORDER BY id DESC LIMIT 1",
                          (shop,)).fetchone()
         return dict(row) if row else None
 

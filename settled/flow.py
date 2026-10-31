@@ -29,18 +29,19 @@ class _Busy(Exception):
         self.line, self.answer = line, answer
 
 
-def run(shop_id, listener, state=None):
+def run(shop_id, listener, state=None, callback=False):
     """Take one shop from due to follow-up.
 
     listener(shop, line) says the line and returns his reply as an Answer;
     listener(shop, line, wait=False) only says it. state is what the board sees.
+    callback is a call he started, by tapping "Call me now" or calling the number back.
     """
     state = state if state is not None else CallState()
     shop = records.load(shop_id)
     if log.settled(shop.id):
         raise log.AlreadySettled(f"{shop.name}'s rent is already settled this round, so there is nothing to call about")
     try:
-        return _run(shop, listener, state)
+        return _run(shop, listener, state, callback)
     except HungUp:
         return cut(shop.id, "he hung up or the line dropped")
     except Exception:
@@ -51,7 +52,7 @@ def run(shop_id, listener, state=None):
         state.step = "done"
 
 
-def _run(shop, listener, state):
+def _run(shop, listener, state, callback=False):
     state.call = log.add(shop.id, "due", rule=f"first rent due {shop.signup['starts']}" if shop.signup else None)
     log.add(shop.id, "records checked", reason=_records_seen(shop))
     decision = rules.before_call(shop)
@@ -64,7 +65,7 @@ def _run(shop, listener, state):
             paytm_mock.open_ticket(shop, decision.rule, "delivery")
         return decision
 
-    log.add(shop.id, "calling")
+    log.add(shop.id, "calling", rule="callback: he tapped Call me now or called the number back" if callback else None)
     try:
         return _call(shop, _busy_aware(listener), state)
     except _Busy as busy:
@@ -193,9 +194,14 @@ def _year(shop, state, listener):
 
 
 def _unverified(shop, listener, rule, line=None):
+    """Nothing changes. An SMS lets him call back, and unless he said no to telling us,
+    Paytm calls the registered number again this evening."""
     decision = _decided(shop, rules.unverified(rule))
-    paytm_mock.hold_rent(shop, "unverified")
+    paytm_mock.hold_rent(shop)
+    paytm_mock.tell_call_me(shop)
     paytm_mock.open_ticket(shop, rule, "identity")
+    if rule not in ("failed: refused", "failed: angry"):
+        paytm_mock.book_retry(shop, "call him again this evening")
     _say(shop, listener, line or (GOODBYE_OTHER if rule == "failed: someone else" else GOODBYE_UNVERIFIED))
     return decision
 
@@ -204,7 +210,7 @@ def _silent(shop):
     """Silence after the line was said again ends the call the same way as a cut line."""
     decision = _decided(shop, rules.cut("no answer"))
     paytm_mock.tell_cut(shop)
-    paytm_mock.book_retry(shop)
+    paytm_mock.book_retry(shop, "call him again this evening")
     return decision
 
 
@@ -215,7 +221,7 @@ def cut(shop_id, why):
     log.add(shop.id, "cut", rule=why)
     decision = _decided(shop, rules.cut(why))
     paytm_mock.tell_cut(shop)
-    paytm_mock.book_retry(shop)
+    paytm_mock.book_retry(shop, "call him again this evening")
     return decision
 
 

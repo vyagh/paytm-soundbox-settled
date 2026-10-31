@@ -89,7 +89,7 @@ def main(shop, replies):
     while shop_state(shop)["call"]["active"]:
         time.sleep(0.3)
     if tap:
-        asked = [m for m in rows_after(0, "messages") if m["shop"] == shop and m["choices"]]
+        asked = [m for m in rows_after(0, "messages") if m["shop"] == shop and m["channel"] == "WhatsApp" and m["choices"]]
         status, got = call(f"/api/consent/{asked[-1]['id']}/{tap}", b"") if asked else (None, "no choices sent")
         print("tap", tap, status, got)
     for row in rows_after(start):

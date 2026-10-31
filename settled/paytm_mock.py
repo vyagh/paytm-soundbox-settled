@@ -74,16 +74,24 @@ def charge_rent(shop, plan, tapped=False):
 def hold_rent(shop, tell=None):
     if tell == "no answer":
         _sms(shop, f"Nothing is charged for your Soundbox at {shop.name}. A Paytm person will call you soon.")
-    elif tell == "unverified":
-        _sms(shop, f"We called {shop.name} about your Soundbox but could not confirm we were speaking with you. "
-                   f"Nothing has changed. A Paytm person will call you on this number.")
     return _act(shop, "hold rent", outcome="held")
+
+
+# The button on his SMS that rings Paytm back: POST /api/call/<shop>/callback.
+CALL_ME = [{"id": "call_me", "label": "Call me now"}]
+
+
+def tell_call_me(shop):
+    """To his registered number, after a call that never confirmed it was him."""
+    log.message(shop.id, "shopkeeper", "SMS", "Paytm: Paytm called about your Soundbox. "
+                "Tap Call me now to talk now, or call this number back.", CALL_ME)
 
 
 def tell_cut(shop):
     link = live_link(shop.id)
     also = f" You can also choose yourself here: {log.get_message(link)['link']}" if link else ""
-    _sms(shop, f"Our call about your Soundbox at {shop.name} got cut. Nothing was taken. We will call you again.{also}")
+    log.message(shop.id, "shopkeeper", "SMS", f"Paytm: Our call about your Soundbox at {shop.name} got cut. Nothing was taken. "
+                f"We will call you again this evening. Tap Call me now to talk now, or call this number back.{also}", CALL_ME)
 
 
 def tell_call_later(shop):
@@ -92,8 +100,8 @@ def tell_call_later(shop):
     _sms(shop, f"As you asked, Paytm will call you back about your Soundbox at {shop.name}. Nothing has changed.{also}")
 
 
-def book_retry(shop):
-    return _act(shop, "book retry call", rule="call him again later today")
+def book_retry(shop, when="call him again later today"):
+    return _act(shop, "book retry call", rule=when)
 
 
 def open_ticket(shop, why, case="unclear"):
