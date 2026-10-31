@@ -11,7 +11,7 @@ import queue
 import threading
 import time
 
-from ai import reader
+from ai import agent, reader
 from settled import flow, log, records, year
 from settled.models import Answer, CallState
 
@@ -63,7 +63,7 @@ class Call:
         line = script.say(self.language, said, shop)
         english = script.english(said, shop)
         try:
-            audio = sarvam.speak(line, language["code"], language["voice"])
+            audio = sarvam.speak(line, language["code"], language["voice"], fresh=isinstance(said, script.Fresh))
             length = sarvam.wav_seconds(audio)
             problem = None
         except Exception as e:
@@ -138,8 +138,16 @@ class Call:
                 answer = Answer("no answer", "")
             elif line in script.YEAR_LINES:
                 # the year is checked in plain code; only a reply with no year in it goes to the AI, for what he meant
-                got, rule = year.check(text, records.load(self.shop_id).born)
-                answer = Answer("unsure", text, intent=reader.intent(text, said) if rule == "failed: no year" else None)
+                shop = records.load(self.shop_id)
+                got, rule = year.check(text, shop.born)
+                if rule != "failed: no year":
+                    answer = Answer("unsure", text)
+                elif self.language == "hi":
+                    answer = agent.read(text, said, shop, self.progress.turn, self.progress.call)
+                else:
+                    answer = Answer("unsure", text, intent=reader.intent(text, said))
+            elif self.language == "hi":
+                answer = agent.read(text, said, records.load(self.shop_id), self.progress.turn, self.progress.call)
             else:
                 answer = reader.read(text, said)
             self.replies.put((seq, answer))
