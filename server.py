@@ -89,6 +89,8 @@ class Handler(BaseHTTPRequestHandler):
                 return self.reply(shop_id, url)
         except calls.Busy as e:
             return self.json(409, {"error": str(e)})
+        except ValueError as e:
+            return self.json(422, {"error": str(e)})
         except Exception as e:
             return self.json(502, {"error": f"{type(e).__name__}: {e}"})
         self.send(404, "text/plain; charset=utf-8", b"not found")

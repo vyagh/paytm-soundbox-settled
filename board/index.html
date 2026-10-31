@@ -207,6 +207,10 @@ function renderShops() {
     const st = el.querySelector('.status');
     st.className = `status s-${s.status}`;
     st.textContent = STATUS[s.status];
+    if (shop.call?.active && shop.call.said && shop.call.said !== s.said) {
+      s.said = shop.call.said;
+      s.heard = null;
+    }
     const native = s.said && shop.lines[s.said];
     const line = (label, text) => `<div><span>${label}</span>${text ? `<q>${esc(text)}</q>` : `<em class="none">${text === '' ? 'no reply' : 'nothing yet'}</em>`}</div>`;
     el.querySelector('.lines').innerHTML = s.said || !s.why
@@ -387,6 +391,7 @@ async function poll() {
       const last = rows[rows.length - 1];
       lastId = last ? last.id : 0;
       lastAt = last ? last.at : null;
+      if (!Object.keys(SHOPS).length) await refreshShops();
       renderLog(freshFrom);
     }
     await refreshShops();
