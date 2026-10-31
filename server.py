@@ -11,6 +11,9 @@ from voice import calls, script
 ROOT = Path(__file__).resolve().parent
 PAGE = ROOT / "board" / "index.html"
 FONTS = ROOT / "board" / "fonts"
+PROTO = ROOT / "board" / "proto"
+PROTO_TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
+               ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml"}
 DB = Path(os.environ.get("SETTLED_DB") or ROOT / "settled.db").resolve()
 PORT = int(os.environ.get("BOARD_PORT") or 8080)
 MAX_REPLY = 5_000_000
@@ -95,6 +98,11 @@ class Handler(BaseHTTPRequestHandler):
         elif url.path.startswith("/fonts/") and (font := FONTS / url.path.removeprefix("/fonts/")).parent == FONTS \
                 and font.suffix == ".woff2" and font.is_file():
             self.send(200, "font/woff2", font.read_bytes())
+        elif url.path in ("/proto", "/proto/"):
+            self.send(200, PROTO_TYPES[".html"], (PROTO / "index.html").read_bytes())
+        elif url.path.startswith("/proto/") and (page := PROTO / url.path.removeprefix("/proto/")).parent == PROTO \
+                and page.suffix in PROTO_TYPES and page.is_file():
+            self.send(200, PROTO_TYPES[page.suffix], page.read_bytes())
         elif url.path == "/api/log":
             self.json(200, with_clips(rows_after(after_id(url))))
         elif url.path == "/api/messages":

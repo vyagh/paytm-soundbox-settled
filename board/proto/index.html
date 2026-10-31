@@ -1,0 +1,894 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settled</title>
+<style>
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Board Devanagari";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/noto-sans-devanagari.woff2) format("woff2");
+  unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF}
+:root{
+  --bg:#f4f4f6; --surface:#fff; --fill:#f2f2f5; --fill2:#e7e7ec; --hair:rgb(20 20 40 / .08);
+  --ink:#1d1d1f; --ink2:#3b3b41; --muted:#6c6c73; --faint:#9c9ca3;
+  --accent:#1f5fc9; --accent-soft:#ebf2fd; --accent-ink:#164a9e;
+  --charged:#1e7d3c; --charged-soft:#e5f3e9;
+  --held:#b25300; --held-soft:#fcf0e2;
+  --not:#5c5d66; --not-soft:#eeeef1;
+  --rec:#d42a3c; --rec-soft:#fde7ea; --mock:#8c5600;
+  --sans:"Board Sans","Board Devanagari",system-ui,-apple-system,"Segoe UI","Nirmala UI","Noto Sans",sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --r:1.25rem;
+  --card:0 1px 2px rgb(20 20 40 / .04),0 8px 24px -16px rgb(20 20 40 / .18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(13px,min(1.1vw,1.95vh),22px)}
+body{background:var(--bg);color:var(--ink2);font-family:var(--sans);line-height:1.45;font-feature-settings:"cv11";-webkit-font-smoothing:antialiased;
+  height:100vh;overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr);padding:1rem 1.5rem 1.5rem;gap:1rem}
+q{quotes:"\201C" "\201D"}
+[hidden]{display:none!important}
+button,select,input{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.01em;color:var(--muted)}
+
+/* header */
+.bar{display:flex;align-items:center;gap:1.25rem;min-height:2.75rem}
+.brand{display:flex;align-items:center;gap:.75rem}
+.mark{width:2.25rem;height:2.25rem;flex:none}
+h1{font-size:1.35rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font-weight:700}
+.brand p{font-size:.8125rem;color:var(--muted)}
+.how{list-style:none;display:flex;gap:1.5rem;margin-left:auto;counter-reset:how}
+.how li{counter-increment:how;display:flex;align-items:center;gap:.5rem;font-size:.8125rem;font-weight:500;color:var(--ink2)}
+.how li::before{content:counter(how);display:grid;place-items:center;width:1.3rem;height:1.3rem;border-radius:50%;background:var(--fill2);color:var(--ink2);font-size:.68rem;font-weight:700}
+.live{display:flex;align-items:center;gap:.5rem;font-size:.8125rem;font-weight:600;color:var(--charged)}
+.live::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:currentColor;box-shadow:0 0 0 .2rem color-mix(in srgb,currentColor 16%,transparent)}
+.live.off{color:var(--rec)}
+
+/* three columns */
+main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min-height:0}
+.panel{background:var(--surface);border-radius:var(--r);box-shadow:var(--card);min-height:0}
+
+/* shop list */
+.rail{display:flex;flex-direction:column;gap:.75rem;min-height:0}
+.rail h2{font-size:.75rem;font-weight:600;color:var(--muted);padding:.25rem .75rem 0}
+.shops{list-style:none;display:flex;flex-direction:column;gap:.375rem}
+.shop{width:100%;text-align:left;border:0;background:transparent;border-radius:1rem;padding:.75rem .9rem;cursor:pointer;display:grid;gap:.2rem;
+  transition:background-color .2s var(--ease),box-shadow .25s var(--ease)}
+.shop:hover{background:rgb(255 255 255 / .6)}
+.shop[aria-current="true"]{background:var(--surface);box-shadow:var(--card)}
+.shop b{font-size:1rem;font-weight:650;color:var(--ink);letter-spacing:-.01em;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.shop .st{display:flex;align-items:center;gap:.45rem;font-size:.8125rem;font-weight:550;color:var(--muted)}
+.shop .st::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--fill2);flex:none}
+.st.k-charged{color:var(--charged)} .st.k-charged::before{background:var(--charged)}
+.st.k-held{color:var(--held)} .st.k-held::before{background:var(--held)}
+.st.k-not{color:var(--not)} .st.k-not::before{background:var(--not)}
+.st.k-on{color:var(--accent)} .st.k-on::before{background:var(--accent)}
+.st.k-rec{color:var(--rec)} .st.k-rec::before{background:var(--rec)}
+.railfoot{margin-top:auto;display:flex;flex-direction:column;gap:.6rem;padding:0 .75rem .25rem}
+.railfoot p{font-size:.75rem;color:var(--faint);line-height:1.4}
+.ghost{align-self:flex-start;border:0;background:var(--fill2);color:var(--ink2);font-size:.75rem;font-weight:600;height:1.9rem;padding:0 .85rem;border-radius:999px;cursor:pointer;transition:background-color .15s}
+.ghost:hover{background:#dcdce2}
+
+/* the call */
+.call{display:flex;flex-direction:column;padding:1.25rem 1.5rem 1.25rem;gap:1rem;overflow:hidden}
+.callhead{display:flex;align-items:center;gap:1rem}
+.callhead h2{font-size:1.6rem;line-height:1.15;color:var(--ink);letter-spacing:-.03em;font-weight:700}
+.callhead .sub{font-size:.875rem;color:var(--muted);margin-top:.15rem}
+.pill{margin-left:auto;display:flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:600;height:2rem;padding:0 .9rem;border-radius:999px;white-space:nowrap;color:var(--muted);background:var(--fill)}
+.pill::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+.pill.k-on{color:var(--accent);background:var(--accent-soft)}
+.pill.k-rec{color:var(--rec);background:var(--rec-soft)}
+.pill.k-charged{color:var(--charged);background:var(--charged-soft)}
+.pill.k-held{color:var(--held);background:var(--held-soft)}
+.pill.k-not{color:var(--not);background:var(--not-soft)}
+
+.scene{position:relative;flex:1 1 12rem;min-height:11rem;border-radius:1rem;overflow:hidden;background:var(--fill)}
+.scene iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .5s var(--ease)}
+.scene iframe.ready{opacity:1}
+.wait{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:.4rem;text-align:center;
+  background:radial-gradient(circle at 1px 1px,rgb(20 20 40 / .07) 1px,transparent 0) 0 0/1.1rem 1.1rem,linear-gradient(180deg,#f7f7f9,#efeff3)}
+.wait strong{font-size:1.35rem;font-weight:650;color:var(--ink);letter-spacing:-.02em}
+.wait span{font-size:.8125rem;color:var(--faint)}
+
+.convo{flex:0 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;scrollbar-width:thin;padding:.1rem}
+.bub{max-width:88%;border-radius:1.15rem;padding:.75rem 1rem .8rem}
+.bub .label{margin-bottom:.25rem;display:flex;align-items:center;gap:.5rem}
+.bub.settled{align-self:flex-start;background:var(--accent-soft);border-top-left-radius:.4rem}
+.bub.settled .label{color:var(--accent-ink)}
+.bub.him{align-self:flex-end;background:var(--fill);border-top-right-radius:.4rem;min-width:16rem}
+.native{font-size:1.2rem;line-height:1.45;color:var(--ink);font-weight:500}
+.gloss{font-size:.8125rem;line-height:1.4;color:var(--muted);margin-top:.15rem}
+.words{font-size:1.2rem;line-height:1.4;color:var(--ink);font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.words .none{font-size:.95rem;font-weight:500;color:var(--faint)}
+.read{display:flex;align-items:center;gap:.5rem;margin-top:.35rem;font-size:.8125rem;color:var(--muted)}
+.kind{display:inline-flex;align-items:center;height:1.4rem;padding:0 .55rem;border-radius:999px;font-size:.75rem;font-weight:650;background:var(--surface);color:var(--ink2)}
+.kind.haan{color:var(--charged)} .kind.na{color:var(--held)}
+.bub.old{padding:.45rem .85rem .5rem}
+.bub.old .native{font-size:.95rem;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bub.old .gloss,.bub.old .label{display:none}
+.bub.old .words{font-size:.95rem}
+.bub.old .read{margin-top:.15rem}
+.bub.settled.old{max-width:72%}
+.sys{align-self:center;display:flex;flex-direction:column;align-items:center;gap:.2rem;text-align:center;padding:.5rem 1rem;max-width:80%}
+.sys b{font-size:1rem;font-weight:600;color:var(--ink)}
+.sys span{font-size:.8125rem;color:var(--muted)}
+.eq{display:inline-flex;gap:2px;align-items:center;height:.7rem}
+.eq i{width:3px;height:100%;background:currentColor;border-radius:2px}
+.meter{display:flex;align-items:center;gap:3px;height:1.9rem;width:100%}
+.meter i{flex:1;height:100%;border-radius:3px;background:var(--rec);transform:scaleY(.08);transition:transform 60ms linear}
+.dots{display:inline-flex;gap:.3rem}
+.dots i{width:.4rem;height:.4rem;border-radius:50%;background:var(--faint)}
+
+/* controls */
+.controls{display:flex;align-items:center;gap:.75rem;min-height:3.25rem;flex:none}
+.btn{border:0;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-weight:600;white-space:nowrap;
+  transition:background-color .15s,transform .12s var(--ease),box-shadow .2s}
+.btn svg{width:1.1em;height:1.1em;flex:none}
+.btn:disabled{opacity:.5;cursor:default}
+.start{font-size:1rem;height:3.25rem;padding:0 1.75rem;background:var(--ink);color:#fff;margin-left:auto}
+.start:hover{background:#000}
+.start.again{background:var(--fill2);color:var(--ink)}
+.start.again:hover{background:#dcdce2}
+.talk{font-size:1.05rem;height:3.25rem;padding:0 1.75rem;background:var(--accent);color:#fff;touch-action:none;user-select:none;-webkit-user-select:none;min-width:13rem}
+.talk.on{background:var(--rec);transform:scale(.97);box-shadow:0 0 0 .4rem var(--rec-soft)}
+.typed{display:flex;gap:.5rem;flex:1;min-width:0}
+.typed input{flex:1;min-width:0;font-size:.95rem;height:3.25rem;padding:0 1.25rem;border:0;border-radius:999px;background:var(--fill);color:var(--ink)}
+.typed input::placeholder{color:var(--faint)}
+.typed input:focus{outline:2px solid var(--accent);outline-offset:0;background:#fff}
+.typed button{font-size:.95rem;font-weight:600;border:0;border-radius:999px;background:var(--fill2);color:var(--ink2);height:3.25rem;padding:0 1.25rem;cursor:pointer}
+.typed button:hover{background:#dcdce2}
+.lang{appearance:none;font-size:.875rem;font-weight:600;color:var(--ink2);background:var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M2 5l3-3 3 3M2 9l3 3 3-3' fill='none' stroke='%236c6c73' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .8rem center/.5rem;
+  border:0;border-radius:999px;height:3.25rem;padding:0 2.2rem 0 1.15rem;cursor:pointer;max-width:14rem}
+.lang:hover{background-color:var(--fill2)}
+.note{font-size:.8125rem;color:var(--muted);flex:none;max-width:16rem;line-height:1.35}
+.note:empty{display:none}
+.note .warn{color:var(--rec);font-weight:600}
+.note span{display:block}
+
+/* result */
+.side{display:flex;flex-direction:column;gap:1rem;min-height:0}
+.result{padding:1.1rem 1.4rem 1.15rem;display:flex;flex-direction:column;gap:.75rem;flex:none}
+.result h3,.texts h3{font-size:.75rem;font-weight:600;color:var(--muted)}
+.verdict{display:flex;align-items:center;gap:.9rem}
+.verdict svg{width:2.9rem;height:2.9rem;flex:none}
+.verdict strong{display:block;font-size:2rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums}
+.verdict span{display:block;font-size:.875rem;font-weight:500;margin-top:.3rem;color:var(--muted)}
+.v-charged{color:var(--charged)} .v-held{color:var(--held)} .v-not{color:var(--not)}
+.verdict strong{color:inherit}
+.facts{display:flex;flex-direction:column;gap:.6rem;padding-top:.75rem;border-top:1px solid var(--hair)}
+.facts p{font-size:.875rem;line-height:1.45;color:var(--ink)}
+.facts .label{margin-bottom:.15rem}
+.arr{width:.95em;height:.6em;color:var(--muted);vertical-align:.05em;margin:0 .1em}
+.acts .label{display:flex;align-items:center;gap:.4rem}
+.acts .sep{color:var(--faint)}
+.mock{display:inline-flex;align-items:center;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);background:#fff;border-radius:999px;height:1.15rem;padding:0 .45rem;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mock) 40%,transparent)}
+.outs{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.outs li{display:grid;grid-template-columns:.6rem 1fr;column-gap:.7rem;align-items:baseline;font-size:.875rem;color:var(--ink)}
+.outs li::before{content:"";width:.6rem;height:.6rem;border-radius:50%;background:var(--c);transform:translateY(-.05rem)}
+.outs li span{grid-column:2;font-size:.8125rem;color:var(--muted)}
+.outs b{font-weight:650;color:var(--c)}
+.recs{font-size:.875rem;color:var(--ink);line-height:1.45}
+
+.texts{display:flex;flex-direction:column;min-height:0;flex:1}
+.texthead{display:flex;align-items:baseline;justify-content:space-between;padding:1rem 1.4rem .4rem}
+.texthead p{font-size:.75rem;color:var(--faint)}
+.msglist{list-style:none;overflow:auto;min-height:0;flex:1;padding:.25rem 1rem 1rem;display:flex;flex-direction:column;gap:.5rem;scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 1.5rem);mask-image:linear-gradient(to bottom,transparent 0,#000 1.5rem)}
+.msglist::-webkit-scrollbar{display:none}
+.msg{display:grid;grid-template-columns:2.1rem minmax(0,1fr);gap:.7rem;background:var(--fill);border-radius:1rem;padding:.65rem .9rem .7rem .7rem}
+.msg .av{display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:50%;color:#fff;background:var(--accent)}
+.msg .av svg{width:1rem;height:1rem}
+.msg.to-manager .av{background:#1f8a4c}
+.msg.to-support .av{background:var(--not)}
+.msg-top{display:flex;align-items:baseline;gap:.4rem;font-size:.75rem;color:var(--muted);min-width:0}
+.msg-top b{font-weight:650;color:var(--ink);font-size:.875rem;white-space:nowrap}
+.msg-top time{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--faint)}
+.msg p{font-size:.8125rem;line-height:1.45;color:var(--ink2);margin-top:.15rem}
+.msglist .empty{color:var(--faint);text-align:center;padding:2rem 1rem;font-size:.875rem}
+
+/* his voice */
+.clip{--p:0;flex:none;display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;font-weight:600;color:var(--accent);background:none;border:0;border-radius:999px;cursor:pointer;padding:0}
+.clip .ring{display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1turn),#d9e5f8 0);transition:transform .12s var(--ease)}
+.clip .ring::before{content:"";grid-area:1/1;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--surface)}
+.clip svg{grid-area:1/1;width:.7rem;height:.7rem;position:relative}
+.clip .stop{display:none}
+.clip.playing .play{display:none}
+.clip.playing .stop{display:block}
+.clip:hover .ring{transform:scale(1.06)}
+.clip.small .ring{width:1.6rem;height:1.6rem}
+.clip.small .ring::before{width:1.25rem;height:1.25rem}
+.clip.small svg{width:.55rem;height:.55rem}
+
+@media (prefers-reduced-motion:no-preference){
+  .pill.breathe::before{animation:breathe 1.6s ease-in-out infinite}
+  .eq i{animation:eq .7s var(--ease) infinite alternate}
+  .eq i:nth-child(2){animation-delay:-.25s}
+  .eq i:nth-child(3){animation-delay:-.5s}
+  .dots i{animation:breathe 1.2s ease-in-out infinite}
+  .dots i:nth-child(2){animation-delay:.2s}
+  .dots i:nth-child(3){animation-delay:.4s}
+  .enter{animation:enter .45s var(--ease) both}
+  .pop{animation:pop .5s var(--ease) both}
+}
+@keyframes breathe{50%{opacity:.3}}
+@keyframes eq{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#1d1d1f"/><path d="M11 13.5h18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-9l-5.5 4v-4H11a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3z" fill="#fff"/><path d="M15 20.5l3.4 3.2 6.6-6.7" fill="none" stroke="#1d1d1f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>
+      <h1>Settled</h1>
+      <p>Asks the shopkeeper before the first Soundbox rent is taken</p>
+    </div>
+  </div>
+  <ol class="how" aria-label="How it works">
+    <li>Asks him in his language</li>
+    <li>AI only sorts his reply</li>
+    <li>Plain rules decide the money</li>
+  </ol>
+  <div class="live off" id="live">Connecting</div>
+</header>
+
+<main>
+  <nav class="rail" aria-label="Shops">
+    <h2>Rent due 1 Nov</h2>
+    <ul class="shops" id="shops"></ul>
+    <div class="railfoot">
+      <p id="fresh-note"></p>
+      <button class="ghost" type="button" id="fresh"></button>
+    </div>
+  </nav>
+
+  <section class="panel call" aria-label="The call">
+    <div class="callhead">
+      <div><h2 id="name"></h2><p class="sub" id="sub"></p></div>
+      <div class="pill" id="pill"></div>
+    </div>
+    <div class="scene" id="scene">
+      <iframe id="frame" title="Live scene" tabindex="-1"></iframe>
+      <div class="wait" id="wait"><strong id="wait-line"></strong><span>Live scene</span></div>
+    </div>
+    <div class="convo" id="convo"></div>
+    <div class="controls" id="controls">
+      <select class="lang" id="lang" aria-label="Language for the next call"></select>
+      <button class="btn talk" type="button" id="talk" hidden></button>
+      <form class="typed" id="typed" hidden><input name="text" placeholder="Type his reply instead" autocomplete="off" aria-label="Type his reply instead"><button>Send</button></form>
+      <div class="note" id="note"></div>
+      <button class="btn start" type="button" id="start"></button>
+    </div>
+  </section>
+
+  <aside class="side">
+    <section class="panel result" id="result" aria-label="Result"></section>
+    <section class="panel texts" aria-label="Who gets what">
+      <div class="texthead"><h3>Who gets what</h3><p>Mock, nothing is sent</p></div>
+      <ol class="msglist" id="msgs"></ol>
+    </section>
+  </aside>
+</main>
+
+<script>
+let SHOPS = {};
+let focus = null;
+let rows = [];
+let lastId = 0;
+let lastAt = null;
+let msgs = [];
+let msgLast = 0;
+let msgLastAt = null;
+let refetch = false;
+const live = {};
+const BARS = 30;
+const FINAL = {'charged': 'charged', 'held': 'held', 'not charged': 'not'};
+const ICONS = {
+  charged: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M12.5 20.5l5 4.8 10-10.3" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  held: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><rect x="14.5" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/><rect x="21.9" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/></svg>',
+  not: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M13 20h14" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5l2.6-.6 1.9 4.4-2 1.7a12 12 0 0 0 5.9 5.9l1.7-2 4.4 1.9-.6 2.6a2 2 0 0 1-2 1.6A16.5 16.5 0 0 1 3.5 5.5a2 2 0 0 1 1.6-2z" fill="currentColor"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+};
+const CHANNEL_ICONS = {
+  SMS: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h14a2.5 2.5 0 0 1 2.5 2.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5v-3.5H5A2.5 2.5 0 0 1 2.5 15V7A2.5 2.5 0 0 1 5 4.5z" fill="currentColor"/></svg>',
+  WhatsApp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="currentColor"/><circle cx="8" cy="12" r="1.3" fill="#1f8a4c"/><circle cx="12" cy="12" r="1.3" fill="#1f8a4c"/><circle cx="16" cy="12" r="1.3" fill="#1f8a4c"/></svg>',
+  ticket: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h15A1.5 1.5 0 0 1 21 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 16.5V14a2 2 0 0 0 0-4z" fill="currentColor"/></svg>'
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const clock = at => (at || '').split('T').pop().slice(0, 5);
+const arrows = s => esc(s).replace(/\s*→\s*/g, ' <svg class="arr" viewBox="0 0 16 10" aria-label="then"><path d="M1 5h13M10 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ');
+const clipUrl = c => typeof c === 'string' && /^\/api\/clip\/\d+$/.test(c) ? c : null;
+const html = (el, str) => { if (el._html !== str) { el._html = str; el.innerHTML = str; return true; } return false; };
+const me = key => live[key] || (live[key] = {});
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const day = s => s.replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g, (_, y, m, d) => `${+d} ${MONTHS[+m - 1]}`);
+const clipBtn = (c, small) => c ? `<button class="clip${small ? ' small' : ''}" type="button" data-clip="${c}" aria-label="Play his voice"><span class="ring"><svg class="play" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 1.2v7.6L8.8 5z" fill="currentColor"/></svg><svg class="stop" viewBox="0 0 10 10" aria-hidden="true"><rect x="2" y="2" width="6" height="6" rx="1" fill="currentColor"/></svg></span>${small ? '' : 'His voice'}</button>` : '';
+
+/* "Fresh board" hides earlier rows from view for the next group at the table; the log keeps them */
+const FRESH_KEY = 'settled-fresh-board';
+let fresh = null;
+try { fresh = JSON.parse(localStorage.getItem(FRESH_KEY)); } catch (e) { fresh = null; }
+const view = () => fresh ? rows.filter(r => r.id > fresh.id) : rows;
+const viewMsgs = () => fresh ? msgs.filter(m => m.id > fresh.msg) : msgs;
+
+function setFresh(on) {
+  fresh = on ? {id: lastId, at: lastAt, msg: msgLast, t: new Date().toTimeString().slice(0, 5)} : null;
+  if (!on && rows[0]?.id > 1) refetch = true;
+  try {
+    if (fresh) localStorage.setItem(FRESH_KEY, JSON.stringify(fresh));
+    else localStorage.removeItem(FRESH_KEY);
+  } catch (e) {}
+  render();
+}
+
+$('fresh').onclick = () => setFresh(!fresh);
+
+/* one shop's latest run, read from its log rows */
+function runOf(key) {
+  let s = null;
+  for (const r of view()) {
+    if (r.shop !== key) continue;
+    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null};
+    if (FINAL[r.outcome]) {
+      s.status = FINAL[r.outcome];
+      s.settled = true;
+    } else if (!s.settled) {
+      if (r.outcome === 'ask again' || r.outcome === 'call' || r.step === 'calling' || r.step === 'answered') s.status = 'on';
+      else if (r.step === 'records checked') s.status = 'on';
+    }
+    if (r.step === 'decided' && r.rule && (!s.pinned || (FINAL[r.outcome] && r.rule !== s.why))) {
+      s.why = r.rule;
+      if (FINAL[r.outcome]) s.pinned = true;
+    }
+    if (r.said) s.turns.push(r);
+    if (r.step === 'records checked') s.records = r.reason;
+    if (r.step === 'calling') s.called = true;
+    if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
+    if (r.step === 'follow-up' && r.outcome === 'charged') s.charge = r.rule;
+    if (r.step === 'follow-up' && /confirm by SMS/i.test(r.action || '')) s.pick = r.rule;
+  }
+  if (s) s.msgs = viewMsgs().filter(m => m.shop === key && m.at >= s.startAt);
+  return s || {status: 'waiting', settled: false, turns: [], acts: [], msgs: []};
+}
+
+function statusLine(key, s) {
+  const call = SHOPS[key]?.call || {};
+  const m = me(key);
+  const active = !!call.active;
+  const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0] || '';
+  if (m.rec) return ['rec', 'Recording his reply'];
+  if (active) {
+    if (m.speaking) return ['on', 'Settled is speaking'];
+    if (call.hearing || m.sending) return ['on', 'Hearing his reply'];
+    if (call.waiting) return ['on', 'Listening for his reply'];
+    if (!call.seq) return ['on', 'Checking records'];
+    return ['on', 'Deciding'];
+  }
+  if (s.status === 'charged') return ['charged', `Charged ${amount}`.trim()];
+  if (s.status === 'held') return ['held', 'Held'];
+  if (s.status === 'not') return ['not', 'Not charged'];
+  return ['', 'Ready'];
+}
+
+function render() {
+  const keys = Object.keys(SHOPS);
+  if (!keys.length) return;
+  if (!focus || !SHOPS[focus]) focus = keys[0];
+  renderRail(keys);
+  const s = runOf(focus);
+  s.shop = SHOPS[focus];
+  renderHead(s);
+  renderScene(s);
+  renderConvo(s);
+  renderControls(s);
+  renderResult(s);
+  renderTexts(s);
+  syncClips();
+  html($('fresh'), fresh ? 'Show all' : 'Fresh board');
+  html($('fresh-note'), fresh ? `Showing calls from ${esc(fresh.t)}. The log keeps every row.` : 'Every call is logged. Fresh board clears the view for the next group.');
+}
+
+function renderRail(keys) {
+  const list = $('shops');
+  if (list.children.length !== keys.length) {
+    list.innerHTML = keys.map(k => `<li><button class="shop" type="button" data-shop="${esc(k)}"></button></li>`).join('');
+  }
+  for (const b of list.querySelectorAll('.shop')) {
+    const k = b.dataset.shop;
+    const shop = SHOPS[k];
+    const [kind, text] = statusLine(k, runOf(k));
+    b.setAttribute('aria-current', k === focus);
+    html(b, `<b>${esc(shop.name)}</b><span class="st k-${kind}">${esc(text)}</span>`);
+  }
+}
+
+$('shops').addEventListener('click', e => {
+  const b = e.target.closest('.shop');
+  if (!b || b.dataset.shop === focus) return;
+  focus = b.dataset.shop;
+  try { localStorage.setItem('settled-focus', focus); } catch (e) {}
+  render();
+});
+
+function renderHead(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  html($('name'), esc(shop.name));
+  const lang = call.active ? shop.language : shop.languages.find(l => l.code === (me(focus).lang || shop.default));
+  html($('sub'), [shop.owner ? `Owner ${esc(shop.owner)}` : 'Shopkeeper', lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
+  const [kind, text] = statusLine(focus, s);
+  const pill = $('pill');
+  pill.className = `pill k-${kind}${call.active && call.waiting && !me(focus).speaking ? ' breathe' : ''}`;
+  pill.textContent = text;
+}
+
+/* the live scene is another page; until it answers, a quiet stand-in carries the state */
+let sceneUp = false;
+let sceneTried = 0;
+async function probeScene() {
+  if (sceneUp || Date.now() - sceneTried < 4000) return;
+  sceneTried = Date.now();
+  try {
+    const res = await fetch('/proto/d-scene.html', {cache: 'no-store'});
+    if (res.ok) { sceneUp = true; render(); }
+  } catch (e) {}
+}
+
+function renderScene(s) {
+  const frame = $('frame');
+  if (sceneUp) {
+    const src = `/proto/d-scene.html?shop=${encodeURIComponent(focus)}&embed=1`;
+    if (frame.dataset.src !== src) {
+      frame.dataset.src = src;
+      frame.classList.remove('ready');
+      frame.onload = () => frame.classList.add('ready');
+      frame.src = src;
+    }
+  }
+  $('wait').hidden = sceneUp && frame.classList.contains('ready');
+  html($('wait-line'), esc(statusLine(focus, s)[1]));
+}
+
+function bubbleSettled(said, shop, old, speaking) {
+  const native = shop.lines[said];
+  return `<div class="bub settled${old ? ' old' : ''}"><span class="label">Settled${speaking ? ' <span class="eq" aria-label="speaking"><i></i><i></i><i></i></span>' : ''}</span>
+    <p class="native">${esc(native || said)}</p>${native && native !== said ? `<p class="gloss">${esc(said)}</p>` : ''}</div>`;
+}
+
+function bubbleHim(who, inner, read, old) {
+  return `<div class="bub him${old ? ' old' : ''}"><span class="label">${esc(who)}</span>${inner}${read || ''}</div>`;
+}
+
+function readAs(r) {
+  if (!r.read_as) return '';
+  return `<p class="read">AI read it as <span class="kind ${esc(r.read_as)}">${esc(r.read_as)}</span>${r.reason ? `<span>${esc(r.reason)}</span>` : ''}</p>`;
+}
+
+function renderConvo(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const m = me(focus);
+  const who = shop.owner || 'Shopkeeper';
+  const active = !!call.active;
+  const turns = s.turns.slice();
+  const pending = active && call.said && (!turns.length || turns[turns.length - 1].said !== call.said);
+  const parts = [];
+  if (!s.startAt || (s.status === 'waiting' && !active)) {
+    const own = (m.lang || shop.default) === shop.language.code;
+    const ask = Object.keys(shop.lines)[0];
+    parts.push(`<div class="bub settled"><span class="label">Settled will ask</span>${own ? `<p class="native">${esc(shop.lines[ask])}</p>` : ''}<p class="gloss">${esc(ask)}</p></div>`);
+  } else if (!s.called && s.settled) {
+    parts.push(`<div class="sys enter"><b>No call made</b><span>Records checked: ${esc(day(s.records || ''))}</span></div>`);
+  } else if (!turns.length && !pending) {
+    parts.push(`<div class="sys"><b>${active ? 'Calling' : 'Call ended'}</b>${s.records ? `<span>Records checked: ${esc(day(s.records))}</span>` : ''}</div>`);
+  }
+  const total = turns.length + (pending ? 1 : 0);
+  turns.forEach((r, i) => {
+    const old = i < total - 1;
+    parts.push(bubbleSettled(r.said, shop, old, false));
+    const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q>${clipBtn(clipUrl(r.clip), old)}</p>` : `<p class="words"><span class="none">No reply</span></p>`;
+    parts.push(bubbleHim(`${who} said`, inner, readAs(r), old));
+  });
+  if (pending) {
+    parts.push(bubbleSettled(call.said, shop, false, m.speaking));
+    let inner;
+    if (m.rec) inner = `<div class="meter" id="meter">${'<i></i>'.repeat(BARS)}</div>`;
+    else if (m.heard && m.heardSeq === call.seq) inner = `<p class="words"><q>${esc(m.heard)}</q></p>`;
+    else if (call.hearing || m.sending) inner = `<p class="words"><span class="none">Hearing his reply <span class="dots"><i></i><i></i><i></i></span></span></p>`;
+    else if (call.waiting) inner = `<p class="words"><span class="none">Listening <span class="dots"><i></i><i></i><i></i></span></span></p>`;
+    else inner = `<p class="words"><span class="none">…</span></p>`;
+    parts.push(bubbleHim(m.rec ? `${who} is speaking` : `${who}`, inner, ''));
+  }
+  const box = $('convo');
+  const keep = m.rec && $('meter');
+  if (keep) return;
+  const before = box.childElementCount;
+  if (html(box, parts.join(''))) {
+    const kids = [...box.children];
+    if (box._focus === focus && kids.length > before) kids.slice(before).forEach(k => k.classList.add('enter'));
+    box._focus = focus;
+    box.scrollTop = box.scrollHeight;
+  }
+}
+
+function renderControls(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const m = me(focus);
+  const active = !!call.active;
+  const listening = active && call.waiting;
+
+  const pick = $('lang');
+  if (pick._shop !== focus) {
+    pick._shop = focus;
+    pick.innerHTML = shop.languages.map(l => `<option value="${esc(l.code)}">${esc(l.name)} · ${esc(l.own)}</option>`).join('');
+  }
+  pick.hidden = active;
+  const lang = m.lang || shop.default;
+  if (pick.value !== lang && document.activeElement !== pick) pick.value = lang;
+
+  const start = $('start');
+  start.hidden = active;
+  html(start, `${ICONS.phone}${s.startAt ? 'Call again' : 'Start call'}`);
+  start.classList.toggle('again', !!s.settled);
+
+  const talk = $('talk');
+  talk.hidden = !listening || !m.stream;
+  talk.disabled = call.hearing || m.sending;
+  talk.classList.toggle('on', !!m.rec);
+  html(talk, `${ICONS.mic}${m.rec ? 'Let go to send' : call.hearing || m.sending ? 'Hearing…' : 'Hold to speak'}`);
+  const typed = $('typed');
+  typed.hidden = !listening;
+  typed.querySelector('input').disabled = call.hearing || m.sending;
+
+  if (active && !m.stream && !m.asking && !m.micTried) {
+    m.micTried = true;
+    askMic(m).then(render);
+  }
+  let note = m.note || '';
+  if (!active && /^Heard/.test(note)) note = '';
+  if (call.problem) note = call.problem;
+  const mic = active && !m.stream && m.mic ? m.mic : '';
+  html($('note'), [mic, note].filter(Boolean).map(n =>
+    `<span${/Try again|Hold the button|heard nothing|problem|stopped|no voice|could not/i.test(n) ? ' class="warn"' : ''}>${esc(n)}</span>`).join(''));
+
+  playLine(focus, call);
+}
+
+function playLine(key, call) {
+  const m = me(key);
+  if (!(call.active && call.waiting && m.played !== call.seq)) return;
+  m.played = call.seq;
+  m.note = '';
+  if (!call.voice) return;
+  m.speaking = true;
+  const audio = new Audio(`/api/call/${key}/audio/${call.seq}`);
+  const done = () => { m.speaking = false; render(); };
+  audio.onended = done;
+  audio.onerror = done;
+  audio.play().catch(done);
+}
+
+function renderResult(s) {
+  const box = $('result');
+  if (s.settled) {
+    const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0];
+    const plan = s.charge ? `${s.charge}, from 1 Nov` : null;
+    const head = {
+      charged: [`Charged${amount ? ` ${amount}` : ''}`, plan || 'Rent taken'],
+      held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : `₹0 taken, ₹125 a month on hold`],
+      not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made']
+    }[s.status];
+    const fresh = box.dataset.v !== `${focus}:${s.status}:${s.startAt}`;
+    box.dataset.v = `${focus}:${s.status}:${s.startAt}`;
+    html(box, `<h3>Result</h3>
+      <div class="verdict v-${s.status}${fresh ? ' pop' : ''}">${ICONS[s.status]}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
+      <div class="facts">
+        ${s.why ? `<p><span class="label">Rule that fired</span>${arrows(s.why)}</p>` : ''}
+        ${!s.called && s.records ? `<p><span class="label">Records</span>${esc(cap(day(s.records)))}</p>` : ''}
+        ${s.acts.length ? `<p class="acts"><span class="label">Paytm actions <span class="mock">mock</span></span>${[...new Set(s.acts)].map(a => esc(cap(a))).join('<span class="sep"> · </span>')}</p>` : ''}
+      </div>`);
+    return;
+  }
+  box.dataset.v = '';
+  html(box, `<h3>${s.records ? 'Records checked' : 'What plain rules can decide'}</h3>
+    ${s.records ? `<p class="recs">${esc(cap(day(s.records)))}</p>` : ''}
+    <ul class="outs">
+      <li style="--c:var(--charged)"><b>Charged</b><span>Haan, then haan again on the price read-back</span></li>
+      <li style="--c:var(--held)"><b>Held</b><span>Na, unsure, a question, silence, or someone else answers</span></li>
+      <li style="--c:var(--not)"><b>Not charged</b><span>Box never delivered. No call is made</span></li>
+    </ul>`);
+}
+
+const TO = {manager: 'Manager', support: 'Support'};
+const CHANNEL = {SMS: 'SMS', WhatsApp: 'WhatsApp', ticket: 'Support'};
+function renderTexts(s) {
+  const shop = s.shop;
+  const list = $('msgs');
+  const items = s.msgs || [];
+  const before = list.querySelectorAll('.msg').length;
+  const changed = html(list, items.length ? items.map(m => {
+    const to = m.to_whom === 'shopkeeper' ? (shop.owner || 'Shopkeeper') : TO[m.to_whom] || m.to_whom;
+    const text = m.text.replace(/^\{ticket\}\s*·\s*/, '').replace(/^For [^:]+:\s*/, '').replace(/^Paytm:\s*/, '');
+    const whom = m.to_whom === 'manager' ? (m.text.match(/^For ([^:]+):/)?.[1] || 'Manager') : to;
+    return `<li class="msg to-${esc(m.to_whom)}"><span class="av">${CHANNEL_ICONS[m.channel] || CHANNEL_ICONS.SMS}</span>
+      <div><div class="msg-top"><b>${esc(cap(whom))}</b><span>${esc(m.channel === 'ticket' ? 'Ticket' : m.channel)}</span><time>${esc(clock(m.at))}</time></div><p>${esc(text)}</p></div></li>`;
+  }).join('') : `<li class="empty">${s.startAt ? 'Texts appear once the rules decide' : 'The SMS, WhatsApp and ticket show here'}</li>`);
+  if (changed) {
+    const kids = list.querySelectorAll('.msg');
+    if (list._focus === focus && kids.length > before) [...kids].slice(before).forEach(k => k.classList.add('enter'));
+    list._focus = focus;
+    list.scrollTop = list.scrollHeight;
+  }
+}
+
+/* call actions */
+$('start').onclick = async () => {
+  const key = focus;
+  const m = me(key);
+  m.note = '';
+  m.played = 0;
+  m.speaking = false;
+  m.heard = null;
+  m.micTried = true;
+  askMic(m).then(render);
+  const language = m.lang || SHOPS[key].default;
+  try {
+    const res = await fetch(`/api/call/${key}/start`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({language})});
+    if (!res.ok) m.note = (await res.json()).error || 'could not start';
+  } catch (e) {
+    m.note = 'Network failed, could not start';
+  }
+  await refreshShops();
+};
+
+$('lang').onchange = e => { me(focus).lang = e.target.value; render(); };
+
+$('typed').onsubmit = e => {
+  e.preventDefault();
+  const input = e.target.elements.text;
+  const text = input.value.trim();
+  if (text) sendReply(focus, JSON.stringify({text}), 'application/json').then(ok => { if (ok) input.value = ''; });
+};
+
+const talk = $('talk');
+talk.addEventListener('pointerdown', e => { e.preventDefault(); talk.setPointerCapture(e.pointerId); holdStart(focus); });
+for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) talk.addEventListener(ev, () => holdEnd(focus));
+
+function askMic(m) {
+  if (m.stream) return Promise.resolve();
+  if (m.asking) return m.asking;
+  if (!navigator.mediaDevices?.getUserMedia) {
+    m.mic = 'No mic here, type his reply';
+    return Promise.resolve();
+  }
+  m.asking = navigator.mediaDevices.getUserMedia({audio: true})
+    .then(stream => { m.stream = stream; m.mic = ''; })
+    .catch(() => { m.mic = 'No mic, type his reply'; })
+    .finally(() => { m.asking = null; });
+  return m.asking;
+}
+
+function holdStart(key) {
+  const m = live[key];
+  if (!m?.stream || m.rec) return;
+  const chunks = [];
+  const rec = new MediaRecorder(m.stream);
+  rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = () => {
+    meterStop(m);
+    const seconds = (performance.now() - m.t0) / 1000;
+    m.rec = null;
+    if (seconds < 0.4) { m.note = 'Hold the button while you talk'; render(); return; }
+    const blob = new Blob(chunks, {type: rec.mimeType || 'audio/webm'});
+    sendReply(key, blob, blob.type, seconds);
+  };
+  m.rec = rec;
+  m.t0 = performance.now();
+  rec.start();
+  render();
+  meterStart(m, $('meter'));
+}
+
+function meterStart(m, el) {
+  if (!el) return;
+  try {
+    const ctx = m.ctx || (m.ctx = new AudioContext());
+    ctx.resume();
+    const src = ctx.createMediaStreamSource(m.stream);
+    const an = ctx.createAnalyser();
+    an.fftSize = 1024;
+    src.connect(an);
+    const buf = new Float32Array(an.fftSize);
+    const bars = [...el.children];
+    const levels = new Array(bars.length).fill(0);
+    let at = 0;
+    const tick = t => {
+      if (t - at > 45) {
+        at = t;
+        an.getFloatTimeDomainData(buf);
+        let sum = 0;
+        for (const v of buf) sum += v * v;
+        const db = 20 * Math.log10(Math.sqrt(sum / buf.length) + 1e-9);
+        levels.shift();
+        levels.push(Math.min(1, Math.max(0, (db + 58) / 46)));
+        bars.forEach((b, i) => { b.style.transform = `scaleY(${(0.08 + levels[i] * 0.92).toFixed(3)})`; });
+      }
+      m.raf = requestAnimationFrame(tick);
+    };
+    m.meter = src;
+    m.raf = requestAnimationFrame(tick);
+  } catch (e) {
+    m.meter = null;
+  }
+}
+
+function meterStop(m) {
+  cancelAnimationFrame(m.raf);
+  m.meter?.disconnect();
+  m.meter = null;
+}
+
+function holdEnd(key) {
+  const m = live[key];
+  if (m?.rec && m.rec.state === 'recording') m.rec.stop();
+}
+
+async function sendReply(key, body, type, seconds) {
+  const m = me(key);
+  const call = SHOPS[key].call;
+  m.sending = true;
+  m.note = '';
+  render();
+  const headers = {'Content-Type': type};
+  if (seconds) headers['X-Seconds'] = seconds.toFixed(2);
+  let ok = false;
+  try {
+    const res = await fetch(`/api/call/${key}/reply?seq=${call.seq}`, {method: 'POST', headers, body});
+    const got = await res.json();
+    ok = res.ok;
+    if (ok) { m.heard = got.heard; m.heardSeq = call.seq; }
+    m.note = ok ? '' : `${got.error || 'failed'}. Try again or type it.`;
+  } catch (e) {
+    m.note = 'Network failed. Try again or type it.';
+  }
+  m.sending = false;
+  await refreshShops();
+  return ok;
+}
+
+/* his recorded voice */
+let player = null;
+let playing = null;
+function playClip(url) {
+  const was = playing;
+  stopClip();
+  if (was === url) return;
+  player = new Audio(url);
+  playing = url;
+  player.ontimeupdate = syncClips;
+  player.onended = player.onerror = stopClip;
+  player.play().catch(stopClip);
+  syncClips();
+}
+function stopClip() {
+  if (player) {
+    player.ontimeupdate = player.onended = player.onerror = null;
+    player.pause();
+  }
+  player = null;
+  playing = null;
+  syncClips();
+}
+function syncClips() {
+  const d = player?.duration;
+  const p = player && Number.isFinite(d) && d > 0 ? Math.min(1, player.currentTime / d) : 0;
+  for (const b of document.querySelectorAll('.clip')) {
+    const on = b.dataset.clip === playing;
+    b.classList.toggle('playing', on);
+    b.style.setProperty('--p', on ? p.toFixed(3) : 0);
+    b.setAttribute('aria-pressed', on);
+  }
+}
+document.addEventListener('click', e => {
+  const b = e.target.closest('.clip');
+  if (b) playClip(b.dataset.clip);
+});
+
+/* polling */
+async function refreshShops() {
+  const res = await fetch('/api/shops', {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  const list = await res.json();
+  SHOPS = Object.fromEntries(list.map(s => [s.id, s]));
+  if (!focus) {
+    let saved = null;
+    try { saved = localStorage.getItem('settled-focus'); } catch (e) {}
+    focus = list.find(s => s.call?.active)?.id || (SHOPS[saved] ? saved : list[0]?.id);
+  }
+  render();
+}
+
+async function fetchAfter(id, what = 'log') {
+  const res = await fetch(`/api/${what}?after=${id}`, {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+
+async function fetchAll(id) {
+  let got = await fetchAfter(id);
+  for (let page = got; page.length >= 500;) {
+    page = await fetchAfter(page[page.length - 1].id);
+    got = got.concat(page);
+  }
+  return got;
+}
+
+async function pollLog() {
+  let reset = refetch;
+  refetch = false;
+  let got = lastId > 0 && !reset ? await fetchAll(lastId - 1) : [];
+  if (lastId > 0 && !reset && (!got[0] || got[0].id !== lastId || got[0].at !== lastAt)) reset = true;
+  if (lastId === 0 || reset) {
+    rows = [];
+    got = await fetchAll(0);
+    if (fresh && fresh.id && !got.some(r => r.id === fresh.id && r.at === fresh.at)) {
+      fresh = null;
+      try { localStorage.removeItem(FRESH_KEY); } catch (e) {}
+    }
+  } else {
+    const mine = rows[rows.length - 1];
+    if (got[0].clip && !mine.clip) mine.clip = got[0].clip;
+    got = got.slice(1);
+  }
+  rows = rows.concat(got);
+  const last = rows[rows.length - 1];
+  lastId = last ? last.id : 0;
+  lastAt = last ? last.at : null;
+}
+
+async function pollMessages() {
+  let got = await fetchAfter(Math.max(msgLast - 1, 0), 'messages');
+  if (msgLast > 0) {
+    const anchor = got[0];
+    if (!anchor || anchor.id !== msgLast || anchor.at !== msgLastAt) {
+      msgs = [];
+      got = await fetchAfter(0, 'messages');
+    } else {
+      got = got.slice(1);
+    }
+  }
+  msgs = msgs.concat(got);
+  const last = msgs[msgs.length - 1];
+  msgLast = last ? last.id : 0;
+  msgLastAt = last ? last.at : null;
+}
+
+async function poll() {
+  const dot = $('live');
+  try {
+    await pollLog();
+    await pollMessages();
+    await refreshShops();
+    probeScene();
+    dot.className = 'live';
+    dot.textContent = 'Live';
+  } catch (e) {
+    dot.className = 'live off';
+    dot.textContent = 'Not connected';
+  }
+  setTimeout(poll, 800);
+}
+
+poll();
+</script>
+</body>
+</html>
