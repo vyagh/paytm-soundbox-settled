@@ -3,30 +3,51 @@
     {"id": "plan-a", "name": "Plan A", "price": 125, "demo": true},
     {"id": "plan-b", "name": "Plan B", "price": 79, "demo": true}
   ],
+  "salesmen": {
+    "FSE-4471": {
+      "name": "Anil Kumar",
+      "say": {"hi": "अनिल", "mr": "अनिल", "bn": "অনিল", "gu": "અનિલ", "kn": "ಅನಿಲ್", "ml": "അനിൽ", "od": "ଅନିଲ", "pa": "ਅਨਿਲ", "ta": "அனில்", "te": "అనిల్", "en": "Anil"}
+    }
+  },
   "shops": {
     "gupta": {
       "name": "Gupta Kirana",
-      "owner": null,
+      "owner": "Mahesh Gupta",
+      "say": {"hi": "महेश गुप्ता", "mr": "महेश गुप्ता", "bn": "মহেশ গুপ্তা", "gu": "મહેશ ગુપ્તા", "kn": "ಮಹೇಶ್ ಗುಪ್ತಾ", "ml": "മഹേഷ് ഗുപ്ത", "od": "ମହେଶ ଗୁପ୍ତା", "pa": "ਮਹੇਸ਼ ਗੁਪਤਾ", "ta": "மகேஷ் குப்தா", "te": "మహేష్ గుప్తా"},
+      "mobile": "+91 98XXX XX407",
+      "address": "14 Station Road, Sadar Bazaar, Agra 282001",
       "language": "hi",
-      "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
+      "signup": {"on": "2026-10-23", "form": "SF-231026-0412", "plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "FSE-4471"},
+      "device": {"model": "Soundbox 4G", "serial": "SBX4G-23A-118842"},
       "delivery": {"delivered": true, "on": "2026-10-24"},
-      "return": {"returned": false}
+      "return": {"returned": false},
+      "payments": {"since": "2026-10-24", "received": 41380, "count": 236, "rent_taken": 0, "settles_to": "bank ••••4821"}
     },
     "sharma": {
       "name": "Sharma Store",
-      "owner": "Ramesh",
+      "owner": "Ramesh Sharma",
+      "say": {"hi": "रमेश शर्मा", "mr": "रमेश शर्मा", "bn": "রমেশ শর্মা", "gu": "રમેશ શર્મા", "kn": "ರಮೇಶ್ ಶರ್ಮಾ", "ml": "രമേശ് ശർമ്മ", "od": "ରମେଶ ଶର୍ମା", "pa": "ਰਮੇਸ਼ ਸ਼ਰਮਾ", "ta": "ரமேஷ் ஷர்மா", "te": "రమేష్ శర్మ"},
+      "mobile": "+91 97XXX XX214",
+      "address": "Shop 7, Gandhi Market, Lajpat Nagar, New Delhi 110024",
       "language": "hi",
-      "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
+      "signup": {"on": "2026-10-24", "form": "SF-241026-0187", "plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "FSE-4471"},
+      "device": {"model": "Soundbox 4G", "serial": "SBX4G-23A-119305"},
       "delivery": {"delivered": true, "on": "2026-10-25"},
-      "return": {"returned": false}
+      "return": {"returned": false},
+      "payments": {"since": "2026-10-25", "received": 18920, "count": 131, "rent_taken": 0, "settles_to": "bank ••••0937"}
     },
     "verma": {
       "name": "Verma Dairy",
-      "owner": null,
+      "owner": "Rakesh Verma",
+      "say": {"hi": "राकेश वर्मा", "mr": "राकेश वर्मा"},
+      "mobile": "+91 99XXX XX736",
+      "address": "22 Nehru Nagar, Kanpur 208012",
       "language": "hi",
-      "signup": {"plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "Anil"},
-      "delivery": null,
-      "return": {"returned": false}
+      "signup": {"on": "2026-10-25", "form": "SF-251026-0233", "plan": "plan-a", "price": 125, "per": "month", "starts": "2026-11-01", "salesman": "FSE-4471"},
+      "device": {"model": "Soundbox 4G", "serial": "SBX4G-23A-119611"},
+      "delivery": {"delivered": false, "note": "courier marked shop closed on 27 Oct, not tried again"},
+      "return": {"returned": false},
+      "payments": {"since": "2026-10-25", "received": 9650, "count": 74, "rent_taken": 0, "settles_to": "bank ••••5502", "via": "QR only, no Soundbox"}
     }
   }
 }
