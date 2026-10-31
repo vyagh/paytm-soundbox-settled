@@ -14,7 +14,8 @@ FONTS = ROOT / "board" / "fonts"
 PROTO = ROOT / "board" / "proto"
 PROTO_TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
                ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml"}
-PORT = int(os.environ.get("BOARD_PORT") or 8080)
+PORT = int(os.environ.get("BOARD_PORT") or os.environ.get("PORT") or 8080)
+HOST = os.environ.get("BOARD_HOST") or ("0.0.0.0" if os.environ.get("PORT") else "127.0.0.1")
 MAX_REPLY = 5_000_000
 
 LANGUAGES = [{"code": code, "name": l["name"], "own": l["own"]} for code, l in script.LANGUAGES.items()]
@@ -227,8 +228,8 @@ def main():
     if log.path().exists():
         for shop_id in log.unfinished():
             flow.cut(shop_id, "the board restarted during the call")
-    server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"board on http://127.0.0.1:{PORT}  reading {log.path().resolve()}")
+    server = ThreadingHTTPServer((HOST, PORT), Handler)
+    print(f"board on http://{HOST}:{PORT}  reading {log.path().resolve()}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:
