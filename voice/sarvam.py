@@ -22,10 +22,15 @@ TTS_PER_CHAR = 3 / 1000
 STT_PER_SECOND = 0.49 / 60
 
 
+def cached(text, language_code, voice):
+    """Where this line's voice is kept once said."""
+    name = hashlib.sha1(f"{TTS_MODEL}|{voice}|{language_code}|{text}".encode("utf-8")).hexdigest()[:16]
+    return CACHE / f"{language_code}-{name}.wav"
+
+
 def speak(text, language_code, voice):
     """WAV bytes for text, from the cache when this line was said before."""
-    name = hashlib.sha1(f"{TTS_MODEL}|{voice}|{language_code}|{text}".encode("utf-8")).hexdigest()[:16]
-    path = CACHE / f"{language_code}-{name}.wav"
+    path = cached(text, language_code, voice)
     if path.exists():
         return path.read_bytes()
 

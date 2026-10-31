@@ -26,8 +26,8 @@ def main(args):
         sys.stdout.reconfigure(encoding="utf-8")
     language = args[0] if args else "hi"
     l = script.LANGUAGES[language]
-    texts = lines(language)
-    print(f"{len(texts)} lines, {sum(map(len, texts))} characters, about ₹{sum(map(len, texts)) * sarvam.TTS_PER_CHAR * 1.18:.2f} if none are cached")
+    texts = [t for t in lines(language) if not sarvam.cached(t, l["code"], l["voice"]).exists()]
+    print(f"{len(texts)} lines not cached, {sum(map(len, texts))} characters, about ₹{sum(map(len, texts)) * sarvam.TTS_PER_CHAR * 1.18:.2f}")
     if "--dry" in args:
         return
     for text in texts:
