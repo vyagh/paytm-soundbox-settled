@@ -946,6 +946,16 @@ async function poll() {
 renderFresh();
 renderLog(0);
 poll();
+
+let seenVersion;
+setInterval(async () => {
+  try {
+    const v = await (await fetch('/api/version', {cache: 'no-store'})).text();
+    if (seenVersion === undefined) seenVersion = v;
+    const busy = Object.keys(SHOPS).some(k => SHOPS[k].call?.active || live[k]?.rec || live[k]?.sending);
+    if (v !== seenVersion && !busy) location.reload();
+  } catch (e) {}
+}, 2500);
 </script>
 </body>
 </html>

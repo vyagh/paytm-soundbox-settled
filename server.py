@@ -68,6 +68,18 @@ def with_clips(rows):
     return rows
 
 
+def version():
+    files = [f for f in (ROOT / "board").rglob("*") if f.is_file()]
+    files += [f for f in ROOT.rglob("*.py") if {".venv", "__pycache__", ".git"}.isdisjoint(f.relative_to(ROOT).parts)]
+    stamp = 0
+    for f in files:
+        try:
+            stamp = max(stamp, f.stat().st_mtime_ns)
+        except OSError:
+            pass
+    return f"{len(files)}-{stamp}"
+
+
 def after_id(url):
     try:
         return int(parse_qs(url.query).get("after", ["0"])[0])
@@ -94,6 +106,8 @@ class Handler(BaseHTTPRequestHandler):
                 self.send(200, found[1], found[0].read_bytes())
             else:
                 self.send(404, "text/plain; charset=utf-8", b"no clip")
+        elif url.path == "/api/version":
+            self.send(200, "text/plain; charset=utf-8", version().encode())
         elif url.path == "/api/shops":
             self.json(200, shops())
         elif len(parts := url.path.split("/")) == 6 and parts[1:3] == ["api", "call"] and parts[4] == "audio":
