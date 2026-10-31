@@ -51,7 +51,7 @@ def _after_na(shop, answers, listener):
             paytm_mock.ask_sms_confirm(shop, decision.plan)
         return decision
 
-    decision = decide(shop, answers[:-1])
+    decision = _decided(shop, decide(shop, answers[:-1]))
     paytm_mock.open_ticket(shop, decision.rule, "na")
     if reply.kind == "na":
         paytm_mock.book_pickup(shop)
