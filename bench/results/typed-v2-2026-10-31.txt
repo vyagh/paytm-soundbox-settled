@@ -1,0 +1,123 @@
+case                      shop    expected        got             identity                
+yes-yes-1                 gupta   charged:plan-a  charged:plan-a  verified                
+yes-yes-2                 sharma  charged:plan-a  charged:plan-a  verified                
+yes-yes-3                 gupta   charged:plan-a  charged:plan-a  verified                
+yes-yes-4                 sharma  charged:plan-a  charged:plan-a  verified                
+yes-yes-5                 gupta   charged:plan-a  charged:plan-a  verified                
+yes-yes-6                 sharma  charged:plan-a  charged:plan-a  verified                
+yes-yes-7                 gupta   charged:plan-a  charged:plan-a  verified                
+no-1                      gupta   held            held            verified                
+no-silent-after           sharma  held            held            verified                
+no-reason-1               gupta   held            held            verified                
+no-reason-2               sharma  held            held            verified                
+no-reason-3               gupta   held            held            verified                
+no-then-b-1               gupta   held            held            verified                
+no-then-b-2               sharma  held            held            verified                
+no-then-b-3               sharma  held            held            verified                
+no-then-a                 gupta   held            held            verified                
+no-then-a-125             gupta   held            held            verified                
+no-then-haan-no-plan      sharma  held            held            verified                
+no-then-question          gupta   held            held            verified                
+but-1                     gupta   held            held            verified                
+but-2                     sharma  held            held            verified                
+but-3                     gupta   held            held            verified                
+but-4                     sharma  held            held            verified                
+other-price-1             gupta   held            held            verified                
+other-price-2             sharma  held            held            verified                
+confused-1                gupta   held            held            verified                
+confused-2                sharma  held            held            verified                
+questions-1               gupta   held            held            verified                
+questions-2               sharma  held            held            verified                
+questions-3               gupta   held            held            verified                
+silence-1                 sharma  held            held            verified                
+silence-2                 gupta   held            held            verified                
+someone-else-1            gupta   held            held            failed: someone else    
+someone-else-2            sharma  held            held            failed: someone else    
+someone-else-3            gupta   held            held            failed: someone else    
+someone-else-4            sharma  held            held            verified                
+salesman-twice            sharma  held            held            failed: someone else    
+doubt-at-readback-1       gupta   held            held            verified                
+doubt-at-readback-2       sharma  held            held            verified                
+yes-then-no               sharma  held            held            verified                
+yes-then-question         gupta   held            held            verified                
+yes-then-silence          sharma  held            held            verified                
+mixed-1                   gupta   held            held            verified                
+mixed-2                   sharma  held            held            verified                
+mixed-3                   gupta   held            held            verified                
+ta-yes-yes                gupta   charged:plan-a  charged:plan-a  verified                
+ta-no-reason              sharma  held            held            verified                
+ta-but                    gupta   held            held            verified                
+te-yes-yes                sharma  charged:plan-a  charged:plan-a  verified                
+te-no-reason              gupta   held            held            verified                
+te-someone-else           sharma  held            held            failed: someone else    
+bn-yes-yes                gupta   charged:plan-a  charged:plan-a  verified                
+bn-no-reason              sharma  held            held            verified                
+bn-but                    gupta   held            held            verified                
+mr-yes-yes                sharma  charged:plan-a  charged:plan-a  verified                
+mr-no-reason              gupta   held            held            verified                
+mr-but                    sharma  held            held            verified                
+kn-yes-yes                gupta   charged:plan-a  charged:plan-a  verified                
+kn-no-reason              sharma  held            held            verified                
+kn-but                    gupta   held            held            verified                
+gu-yes-yes                sharma  charged:plan-a  charged:plan-a  verified                
+gu-no-reason              gupta   held            held            verified                
+gu-someone-else           sharma  held            held            failed: someone else    
+en-yes-yes                gupta   charged:plan-a  charged:plan-a  verified                
+en-no-reason              sharma  held            held            verified                
+en-but                    gupta   held            held            verified                
+ml-yes-yes                sharma  charged:plan-a  charged:plan-a  verified                
+ml-no-reason              gupta   held            held            verified                
+ml-someone-else           sharma  held            held            failed: someone else    
+or-yes-yes                gupta   charged:plan-a  charged:plan-a  verified                
+or-no-reason              sharma  held            held            verified                
+or-but                    gupta   held            held            verified                
+pa-yes-yes                sharma  charged:plan-a  charged:plan-a  verified                
+pa-no-reason              gupta   held            held            verified                
+pa-someone-else           sharma  held            held            failed: someone else    
+verma-not-delivered       verma   not charged     not charged     -                       
+wrong-person              sharma  held            held            failed: someone else    
+family-son                sharma  held            held            failed: someone else    
+family-wife-haan          gupta   held            held            failed: someone else    
+owner-asks-who            gupta   held            held            failed: not confirmed   
+wrong-code                sharma  held            held            failed: wrong code      
+wrong-code-haan-after     gupta   held            held            failed: wrong code      
+code-refused              sharma  held            held            failed: no code         
+code-silent               gupta   held            held            failed: no code         
+code-hindi-words          gupta   charged:plan-a  charged:plan-a  verified                
+code-devanagari           sharma  charged:plan-a  charged:plan-a  verified                
+code-in-a-sentence        gupta   charged:plan-a  charged:plan-a  verified                
+consent-no                sharma  charged:plan-a  charged:plan-a  verified                
+consent-question          gupta   held            held            verified                
+consent-silent            sharma  held            held            -                       
+angry-na                  sharma  held            held            verified                
+box-wapas-at-ask          gupta   held            held            verified                
+box-wapas-at-readback     sharma  held            held            verified                
+hmm-at-ask                gupta   held            held            verified                
+tap-cancel                sharma  cancelled       cancelled       verified                
+tap-cheaper               sharma  charged:plan-b  charged:plan-b  verified                
+tap-keep                  gupta   charged:plan-a  charged:plan-a  verified                
+tap-then-call-again       gupta   charged:plan-a  charged:plan-a  verified                
+call-again-then-old-tap   sharma  held            held            verified                
+two-holds-old-tap         gupta   held            held            verified                
+code-ek-minute            gupta   charged:plan-a  charged:plan-a  verified                
+code-pause                sharma  charged:plan-a  charged:plan-a  verified                
+code-pairs                gupta   charged:plan-a  charged:plan-a  verified                
+code-pairs-devanagari     sharma  charged:plan-a  charged:plan-a  verified                
+code-twice                gupta   charged:plan-a  charged:plan-a  verified                
+code-spellings            sharma  charged:plan-a  charged:plan-a  verified                
+code-wrong-then-right     gupta   charged:plan-a  charged:plan-a  verified                
+code-three-wrong          sharma  held            held            failed: wrong code      
+code-near-miss            gupta   held            held            failed: wrong code      
+name-garbled-then-haan    sharma  charged:plan-a  charged:plan-a  verified                
+name-unclear-twice        gupta   held            held            failed: not confirmed   
+round-two-charges         sharma  charged:plan-a  charged:plan-a  verified                
+round-old-link            gupta   held            held            verified                
+
+charged after na or unsure: 0
+charged without verified identity: 0
+negative actions from the AI: 0
+double charges (more than one charge or cancel per shop in a round): 0
+honest yeses charged: 30/30
+consent taps through the endpoint: 7
+cases matching expected outcome: 113/113
+lines read differently from their label: 0
