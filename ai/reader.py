@@ -27,7 +27,7 @@ CAP = float(os.environ.get("SETTLED_CAP") or "inf")
 
 SYSTEM = PROMPT.read_text(encoding="utf-8")
 # What a question at the plan or the read-back is about. Code picks the answer line.
-TOPICS = ("cheaper", "price", "start", "charge", "who", "other")
+TOPICS = ("cheaper", "price", "start", "charge", "who", "extra", "how", "stop", "other")
 PROMISES = ("one rupee", "free", "lower price")
 # What he meant when his reply to the year question had no year in it. Code picks the line.
 INTENTS = ("wait", "refuse", "scared", "who", "busy", "angry", "question", "other")

@@ -1,11 +1,11 @@
 import time
 
 from voice import script
-from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, AUTOMATED, CALL_LATER, CALLBACK,
-                          CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING,
-                          NAME_AFTER_WHO, NAME_AGAIN, OFFER_AGAIN, OFFER_B, ON_THE_LINE, PROMISE_FREE, PROMISE_LOWER,
-                          PROMISE_ONE, READ_BACK, REASSURE, SOFT, TAP_B, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WAIT,
-                          YEAR_WRONG)
+from voice.script import (A_CHARGE, A_EXTRA, A_HOW, A_OTHER, A_PRICE, A_START, A_STOP, A_WHO, ASK, ASK_AGAIN, AUTOMATED,
+                          CALL_LATER, CALLBACK, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER,
+                          GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO, NAME_AGAIN, OFFER_AGAIN, OFFER_B, ON_THE_LINE,
+                          PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, REASSURE, SOFT, TAP_B, WHO_WHY, YEAR,
+                          YEAR_AGAIN, YEAR_WAIT, YEAR_WRONG)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -21,9 +21,11 @@ EXPLAIN = {"scared": REASSURE, "who": WHO_WHY}
 EXPLAINED = {"scared": "reassured, ", "who": "said who's calling, "}
 # A question at the plan or the read-back, as the AI read it, to the line that answers it.
 # Plain code says the line, then asks the same thing again.
-ANSWERS = {"price": A_PRICE, "start": A_START, "charge": A_CHARGE, "who": A_WHO, "other": A_OTHER}
+ANSWERS = {"price": A_PRICE, "start": A_START, "charge": A_CHARGE, "who": A_WHO, "other": A_OTHER, "extra": A_EXTRA,
+           "how": A_HOW, "stop": A_STOP}
 TOPICS = {"cheaper": "cheaper plan", "price": "price", "start": "start date", "charge": "what the charge is",
-          "who": "who's calling", "other": "other"}
+          "who": "who's calling", "other": "other", "extra": "hidden charge", "how": "how the rent is taken",
+          "stop": "how to stop it"}
 # A salesman's promise his na or doubt rests on, to the line that owns it and offers the cheaper plan.
 PROMISES = {"one rupee": PROMISE_ONE, "free": PROMISE_FREE, "lower price": PROMISE_LOWER}
 OFFERS = (OFFER_B, OFFER_AGAIN, *PROMISES.values())
@@ -212,7 +214,7 @@ def _plan(shop, state, listener):
                 plan, line = shop.cheaper(signed), OFFER_B
                 state.step = "ask"
                 continue
-            if answer.topic in ANSWERS and not (answer.topic == "price" and plan != signed):
+            if answer.topic in ANSWERS and not (answer.topic in ("price", "extra") and plan != signed):
                 _say(shop, listener, ANSWERS[answer.topic])
             line = AGAIN.get(line, line)
         elif answer.kind == "haan":
