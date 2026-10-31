@@ -36,7 +36,7 @@ flowchart LR
 
 Before any call, Settled reads the shop's records. A box that was never delivered isn't charged and the shop isn't called. A missing record puts the rent on hold for a person to check.
 
-If the records are in order, it calls and asks first if the call can be recorded. Saying no is fine: the call goes on and no voice clip is saved. Then it asks if it's speaking with the owner by name, and asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe", "chauntees chhappan", "३४५६" or the code said twice, and the AI never sees it. Only the exact 4 digits pass. "Ek minute", "ruko, app khol raha hoon" or a pause aren't tries: Settled says it's waiting and listens again, for about 45 seconds in all, and he gets 3 real tries. An unclear answer to the name question gets it asked once more. If someone else picks up, or the code still doesn't match, Settled says goodbye politely and nothing about his plan changes.
+If the records are in order, it calls and asks first if the call can be recorded. Saying no is fine: the call goes on and no voice clip is saved. Then it asks if it's speaking with the owner by name, and asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe", "chauntees chhappan", "३४५६" or the code said twice, and the AI never sees it. Only the exact 4 digits pass. "Ek minute", "ruko, app khol raha hoon" or a pause get "no problem, I'm waiting" instead of "that's not it", and the code is asked at most 3 times in all. If he won't give it ("nahi bataunga", "aap kaun ho pehle batao"), that's a fair answer to a call asking for a code: Settled says that's fine, nothing changes, and a person calls his registered number. An unclear answer to the name question gets it asked once more. If someone else picks up, or the code still doesn't match, Settled says goodbye politely and nothing about his plan changes.
 
 Only then comes the plan question, built from his record in [`data/shops.json`](data/shops.json): "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?" Shopkeepers rarely know the salesman's name, so it stays in the records and the manager's alert, not the question. A clear haan gets the price read back ("So ₹125 every month from 1 November. Shall I confirm it?"), and only a second haan charges.
 
@@ -55,7 +55,8 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 | No to recording | The call goes on, no voice saved |
 | No answer to the first line | Held, a person calls |
 | Someone else answers, or he doesn't say he's the owner when asked twice | Ends politely, held, plan unchanged |
-| Wrong code or no code after 3 tries, or about 45 s of waiting | Ends politely, held, plan unchanged |
+| Wrong code or no code after 3 asks, or he won't give it | Ends politely, held, plan unchanged |
+| The line cuts, or the board restarts mid-call | Nothing changes, SMS that the call cut, a retry call booked |
 | Haan, then haan again on the read-back | Charged at the signed plan |
 | Haan, then anything else on the read-back | Held, WhatsApp with his choices |
 | Na | Held, manager told, WhatsApp with his choices |

@@ -56,6 +56,25 @@ ACK = {"haan", "han", "ha", "ji", "jee", "ok", "okay", "acha", "achha", "accha",
        "हाँ", "हां", "हा", "जी", "ओके", "अच्छा", "ठीक", "है", "हम्म"}
 
 
+# He won't give the code, or wants to know who's asking first. A fair answer to a call
+# asking for a code: respected at once, never asked again.
+REFUSE = ("nahi bataunga", "nahi bataoonga", "nahin bataunga", "nhi bataunga", "nahi bataungi", "nahi batata",
+          "kyun bataun", "kyu bataun", "kyon bataun", "kyun batau", "kyu batau", "nahi dunga", "nahi doonga",
+          "nahi dungi", "aap kaun ho", "ap kaun ho", "pehle batao", "pahle batao", "won't tell", "will not tell",
+          "not telling", "why should i", "नहीं बताऊंगा", "नहीं बताउंगा", "नहीं बताऊंगी", "क्यों बताऊं", "क्यूं बताऊं",
+          "क्यों बताऊ", "नहीं दूंगा", "नहीं दूंगी", "आप कौन हो", "आप कौन हैं", "पहले बताओ", "पहले बताइए")
+
+
+def _plain(text):
+    return (text or "").lower().replace("\u0902", "").replace("\u0901", "").replace("\u093c", "")
+
+
+def refused(text):
+    """True when he declines to give the code or asks who's calling first."""
+    words = " ".join(_tokens(_plain(text)))
+    return any(_plain(phrase) in words for phrase in REFUSE)
+
+
 def _key(token):
     """One spelling for the many: "chauntees" and "chautis", "chhappan" and "chappan"."""
     if not token.isascii():
@@ -135,10 +154,13 @@ def waiting(text):
 
 def check(text, code):
     """(what was read, the rule) for his reply to the code line. The rule is "verified",
-    "wait" when he needs time, or the identity rule that counts as a try."""
+    "wait" when he needs time, "failed: declined" when he won't give it, or the identity
+    rule of a wrong or missing code."""
     got = read(text)
     if got == code:
         return got, "verified"
+    if refused(text):
+        return got, "failed: declined"
     if waiting(text):
         return None, "wait"
     if got is None:

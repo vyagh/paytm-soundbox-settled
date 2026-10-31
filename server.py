@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from settled import log, paytm_mock, records
+from settled import flow, log, paytm_mock, records
 from voice import calls, script
 
 ROOT = Path(__file__).resolve().parent
@@ -233,6 +233,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
+    if log.path().exists():
+        for shop_id in log.unfinished():
+            flow.cut(shop_id, "the board restarted during the call")
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
     print(f"board on http://127.0.0.1:{PORT}  reading {log.path().resolve()}")
     try:

@@ -1,3 +1,4 @@
+from .codes import refused
 from .models import Decision
 from .records import missing
 
@@ -19,6 +20,8 @@ def consent(answer):
 def name(answer, first=True):
     """None when he says he is the owner, "ask again" for an unclear first reply, else
     the identity rule that ends the call. Only a clear someone else ends it at once."""
+    if refused(answer.words):
+        return "failed: declined"
     if answer.kind == "haan" and answer.speaker == "shopkeeper":
         return None
     if answer.kind == "na" or answer.speaker == "someone else":
@@ -66,3 +69,11 @@ def held(answer):
 
 def settled_meanwhile():
     return Decision("not charged", "his tap settled the rent during the call → nothing more taken")
+
+
+def cut(why):
+    return Decision("held", f"{why} → nothing changed, Paytm calls again")
+
+
+def stopped():
+    return Decision("held", "call stopped by an error → nothing changed, a person follows up")

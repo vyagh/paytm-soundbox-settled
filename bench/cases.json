@@ -2081,8 +2081,10 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: no code",
-  "recording": true
+  "identity": "failed: declined",
+  "recording": true,
+  "code_asks": 1,
+  "note": "he won't give the code: respected at once, nothing changes"
  },
  {
   "id": "code-silent",
@@ -2827,9 +2829,6 @@
     "text": "1111"
    },
    {
-    "text": "ek minute"
-   },
-   {
     "text": "2222"
    },
    {
@@ -2839,7 +2838,8 @@
   "expect": "held",
   "identity": "failed: wrong code",
   "recording": true,
-  "note": "three real tries, a wait between them doesn't count"
+  "note": "three wrong codes, then a polite goodbye",
+  "code_asks": 3
  },
  {
   "id": "code-near-miss",
@@ -3100,5 +3100,132 @@
    "status": 200
   },
   "note": "a second call that fails the code check leaves his choices as they are"
+ },
+ {
+  "id": "code-declined-hindi",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "नहीं बताऊंगा।"
+   },
+   {
+    "text": "नहीं बताऊंगा।"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: declined",
+  "recording": true,
+  "code_asks": 1,
+  "unread": 1,
+  "note": "the reply from Shubham's live test: one ask, then the calm closing, never a loop"
+ },
+ {
+  "id": "code-who-first",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "aap kaun ho pehle batao"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: declined",
+  "recording": true,
+  "code_asks": 1
+ },
+ {
+  "id": "name-who-first",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "aap kaun ho pehle batao",
+    "kind": "question"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: declined",
+  "recording": true
+ },
+ {
+  "id": "code-ask-cap",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "ek minute"
+   },
+   {
+    "text": "ruko"
+   },
+   {
+    "text": "ek second"
+   },
+   {
+    "text": "3456"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: no code",
+  "recording": true,
+  "code_asks": 3,
+  "unread": 1,
+  "note": "three asks in all, waits included, never a fourth"
+ },
+ {
+  "id": "code-ask-cap-silence",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": ""
+   },
+   {
+    "text": ""
+   },
+   {
+    "text": ""
+   },
+   {
+    "text": "3456"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: no code",
+  "recording": true,
+  "code_asks": 3,
+  "unread": 1
  }
 ]

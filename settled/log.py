@@ -178,6 +178,15 @@ def new_round():
         db.close()
 
 
+def unfinished():
+    """Shops whose latest call has no final decided row, as when the board restarted mid-call."""
+    with closing(_connect()) as db:
+        dues = db.execute("SELECT shop, MAX(id) FROM log WHERE step = 'due' GROUP BY shop").fetchall()
+        return [shop for shop, due in dues if not db.execute(
+            "SELECT 1 FROM log WHERE shop = ? AND id > ? AND step = 'decided' AND outcome != 'ask again'",
+            (shop, due)).fetchone()]
+
+
 def last_step(shop, step):
     with closing(_connect()) as db:
         row = db.execute("SELECT * FROM log WHERE shop = ? AND step = ? ORDER BY id DESC LIMIT 1", (shop, step)).fetchone()

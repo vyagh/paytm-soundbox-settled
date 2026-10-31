@@ -7,7 +7,9 @@ gets the bench's fixed app code, 3456. A case with "tap" then taps that choice i
 his WhatsApp through POST /api/consent, on a board started in this process. A case
 with "again" calls the shop a second time in the same log, with its own turns and
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
-call's WhatsApp, which should answer 409 unless it gives another "status". "new_round" starts a demo round through
+call's WhatsApp, which should answer 409 unless it gives another "status".
+"code_asks" checks how many times the code was asked, and "unread" how many of his
+turns the call never got to. "new_round" starts a demo round through
 POST /api/round/new between the first call and the rest.
 """
 import argparse
@@ -238,8 +240,11 @@ def main(argv):
                 wrong.append(f"identity {identity}")
             if "recording" in case and state.recording != case["recording"]:
                 wrong.append(f"recording {state.recording}")
-            if unread:
+            if len(unread) != case.get("unread", 0):
                 wrong.append(f"{len(unread)} turns never read")
+            asked = sum(1 for said, _ in heard if said in script.CODE_LINES)
+            if "code_asks" in case and asked != case["code_asks"]:
+                wrong.append(f"code asked {asked} times")
             matched += not wrong
             if case.get("honest"):
                 honest += 1
