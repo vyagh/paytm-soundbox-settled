@@ -1,3 +1,4 @@
+import re
 import time
 
 from voice import script
@@ -317,6 +318,9 @@ def _checked(shop, state, answer, kind):
         answer.say = answer.next = None
         return None
     why = None
+    if answer.say:
+        # code asks the next question itself, so one the AI wrote isn't said
+        answer.say = " ".join(s.strip() for s in re.findall(r"[^।.!?]+[।.!?]*", answer.say) if "?" not in s).strip()
     if answer.next not in state.turn["allowed"].get(kind, []):
         why = f"next step {answer.next!r} not allowed"
     elif answer.next in ("read_back", "confirm"):
