@@ -39,6 +39,7 @@ def load(shop_id):
         language=s.get("language", "hi"),
         say=s.get("say", {}),
         mobile=s.get("mobile"),
+        born=s.get("born"),
     )
 
 

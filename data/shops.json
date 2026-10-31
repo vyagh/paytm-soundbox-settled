@@ -13,6 +13,7 @@
     "gupta": {
       "name": "Gupta Kirana",
       "owner": "Mahesh Gupta",
+      "born": 1978,
       "say": {"hi": "महेश गुप्ता", "mr": "महेश गुप्ता", "bn": "মহেশ গুপ্তা", "gu": "મહેશ ગુપ્તા", "kn": "ಮಹೇಶ್ ಗುಪ್ತಾ", "ml": "മഹേഷ് ഗുപ്ത", "od": "ମହେଶ ଗୁପ୍ତା", "pa": "ਮਹੇਸ਼ ਗੁਪਤਾ", "ta": "மகேஷ் குப்தா", "te": "మహేష్ గుప్తా"},
       "mobile": "+91 98XXX XX407",
       "address": "14 Station Road, Sadar Bazaar, Agra 282001",
@@ -26,6 +27,7 @@
     "sharma": {
       "name": "Sharma Store",
       "owner": "Ramesh Sharma",
+      "born": 1984,
       "say": {"hi": "रमेश शर्मा", "mr": "रमेश शर्मा", "bn": "রমেশ শর্মা", "gu": "રમેશ શર્મા", "kn": "ರಮೇಶ್ ಶರ್ಮಾ", "ml": "രമേശ് ശർമ്മ", "od": "ରମେଶ ଶର୍ମା", "pa": "ਰਮੇਸ਼ ਸ਼ਰਮਾ", "ta": "ரமேஷ் ஷர்மா", "te": "రమేష్ శర్మ"},
       "mobile": "+91 97XXX XX214",
       "address": "Shop 7, Gandhi Market, Lajpat Nagar, New Delhi 110024",
@@ -39,6 +41,7 @@
     "verma": {
       "name": "Verma Dairy",
       "owner": "Rakesh Verma",
+      "born": 1990,
       "say": {"hi": "राकेश वर्मा", "mr": "राकेश वर्मा"},
       "mobile": "+91 99XXX XX736",
       "address": "22 Nehru Nagar, Kanpur 208012",

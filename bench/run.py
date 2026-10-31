@@ -2,13 +2,13 @@
 
     python bench/run.py --reader typed
 
-Each case lists his replies in order, from the name question on. The code line
-gets the bench's fixed app code, 3456. A case with "tap" then taps that choice in
+Each case lists his replies in order, from the name question on. His reply to the
+year question is checked against his year of birth on record. A case with "tap" then taps that choice in
 his WhatsApp through POST /api/consent, on a board started in this process. A case
 with "again" calls the shop a second time in the same log, with its own turns and
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
 call's WhatsApp, which should answer 409 unless it gives another "status".
-"code_asks" checks how many times the code was asked, and "unread" how many of his
+"year_asks" checks how many times the year was asked, and "unread" how many of his
 turns the call never got to. A turn {"hangup": true} is him hanging up there, and
 "retry" says a retry call should be booked, as after a cut line or silence. "new_round" starts a demo round through
 POST /api/round/new between the first call and the rest.
@@ -29,7 +29,6 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 CASES = Path(__file__).resolve().parent / "cases.json"
-APP_CODE = "3456"
 
 
 def typed_reader(case):
@@ -53,12 +52,12 @@ def make_reader(name, case):
 
 
 def play(case, read):
-    """The call as calls.py runs it: blanks are no answer, and the code line never reaches the reader."""
+    """The call as calls.py runs it: blanks are no answer, and the year question never reaches the reader."""
     from settled import flow, log
     from settled.models import Answer, CallState
     from voice import script
 
-    state = CallState(code=APP_CODE)
+    state = CallState()
     turns = iter(case["turns"])
     heard = []
 
@@ -71,7 +70,7 @@ def play(case, read):
         text = "" if turn is None else turn["text"]
         if not text.strip():
             answer = Answer("no answer", "")
-        elif said in script.CODE_LINES:
+        elif said in script.YEAR_LINES:
             answer = Answer("unsure", text)
         else:
             answer = read(text, script.english(said, shop))
@@ -136,7 +135,7 @@ def score(decision, heard, rows):
     if decision is not None and decision.outcome == "charged":
         asked = [a for said, a in heard if said in (script.ASK, script.READ_BACK)]
         bad = any(a.kind in ("na", "unsure") for a in asked)
-        unverified = identity != "verified"
+        unverified = not (identity or "").startswith("verified")
     negative = sum(1 for r in rows if r["action"] and r["action"].removesuffix(" (mock)") in paytm_mock.NEGATIVE)
     return identity, bad, unverified, negative
 
@@ -246,9 +245,9 @@ def main(argv):
             retried = any(r["action"] == "book retry call (mock)" for r in log.rows(case["shop"]))
             if retried != case.get("retry", False):
                 wrong.append("retry call booked" if retried else "no retry call booked")
-            asked = sum(1 for said, _ in heard if said in script.CODE_LINES)
-            if "code_asks" in case and asked != case["code_asks"]:
-                wrong.append(f"code asked {asked} times")
+            asked = sum(1 for said, _ in heard if said in script.YEAR_LINES)
+            if "year_asks" in case and asked != case["year_asks"]:
+                wrong.append(f"year asked {asked} times")
             matched += not wrong
             if case.get("honest"):
                 honest += 1
@@ -259,7 +258,7 @@ def main(argv):
             labelled = {t["text"]: t for t in case["turns"] + case.get("again", {}).get("turns", []) if "kind" in t}
             for said, a in heard:
                 t = labelled.get(a.words)
-                if t and said not in script.CODE_LINES and (t["kind"] != a.kind or t.get("speaker", "shopkeeper") != a.speaker):
+                if t and said not in script.YEAR_LINES and (t["kind"] != a.kind or t.get("speaker", "shopkeeper") != a.speaker):
                     misread.append(f"{case['id']}: {a.words!r} labelled {t['kind']}/{t.get('speaker', 'shopkeeper')}, read {a.kind}/{a.speaker}")
             print(f"{case['id']:<26}{case['shop']:<8}{want:<16}{got:<16}{identity or '-':<24}{'' if not wrong else 'MISMATCH'}")
     board.shutdown()

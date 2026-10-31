@@ -1,12 +1,9 @@
-"""The 4-digit code sent to his Paytm app, and reading it back out of what he said.
+"""His year of birth, read out of what he said and compared with the record.
 
-This is plain code on purpose: the AI never sees the code or decides whether it matched.
+This is plain code on purpose: the AI never sees the year or decides whether it matched.
 """
 import re
-import secrets
 import unicodedata
-
-LENGTH = 4
 
 WORDS = {
     "0": "zero shunya shoonya shunye sunya sifar sifr शून्य शुन्य जीरो ज़ीरो सिफ़र सिफर",
@@ -20,7 +17,7 @@ WORDS = {
     "8": "eight aath aat ath आठ",
     "9": "nine nau nao naw नौ",
 }
-# Hindi says the code in pairs too: "chauntees chhappan" is 3456.
+# Hindi says a year in pairs: "unnees sau athattar" is 1978.
 PAIRS = {
     "10": "das दस", "11": "gyarah gyara igyarah ग्यारह", "12": "barah bara बारह", "13": "terah tera तेरह",
     "14": "chaudah chauda चौदह", "15": "pandrah pandra पंद्रह पन्द्रह", "16": "solah sola सोलह",
@@ -40,7 +37,7 @@ PAIRS = {
     "66": "chhiyasath छियासठ", "67": "sadsath sarsath सड़सठ", "68": "arsath adsath अड़सठ", "69": "unhattar उनहत्तर",
     "70": "sattar सत्तर", "71": "ikhattar इकहत्तर", "72": "bahattar बहत्तर", "73": "tihattar तिहत्तर",
     "74": "chauhattar चौहत्तर", "75": "pachhattar पचहत्तर", "76": "chhihattar छिहत्तर", "77": "satattar सतहत्तर",
-    "78": "athattar अठहत्तर", "79": "unasi unyasi उन्यासी उनासी", "80": "assi अस्सी", "81": "ikyasi इक्यासी",
+    "78": "athattar athhattar अठहत्तर अठत्तर", "79": "unasi unyasi उन्यासी उनासी", "80": "assi अस्सी", "81": "ikyasi इक्यासी",
     "82": "bayasi बयासी", "83": "tirasi तिरासी", "84": "chaurasi चौरासी", "85": "pachasi पचासी",
     "86": "chhiyasi छियासी", "87": "sattasi सत्तासी", "88": "atthasi अट्ठासी अठ्ठासी", "89": "navasi नवासी",
     "90": "nabbe नब्बे", "91": "ikyanve इक्यानवे", "92": "banve बानवे", "93": "tiranve तिरानवे",
@@ -48,7 +45,7 @@ PAIRS = {
     "98": "atthanve अट्ठानवे", "99": "ninyanve निन्यानवे",
 }
 
-# English pairs: "thirty four fifty six" is 3456.
+# English pairs: "nineteen seventy eight" is 1978.
 ENGLISH = {
     "10": "ten", "11": "eleven", "12": "twelve", "13": "thirteen", "14": "fourteen", "15": "fifteen", "16": "sixteen",
     "17": "seventeen", "18": "eighteen", "19": "nineteen", "20": "twenty", "30": "thirty", "40": "forty fourty",
@@ -56,20 +53,20 @@ ENGLISH = {
 }
 TENS = {"twenty", "thirty", "forty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"}
 
-# Waits, not tries: he's opening the app or looking for the code. Matched as the start of a word.
+# Waits, not tries: he needs a moment. Matched as the start of a word.
 WAIT = ("minut", "minat", "mint", "sec", "sekand", "ruk", "wait", "hold", "dekh", "khol", "aay", "aaya", "aya", "aagaya",
         "abhi", "मिन", "सेक", "रुक", "देख", "खोल", "आय", "आई", "आए", "अभी", "वेट")
-# A bare "haan" or "ji" to the code line means he's about to read it.
+# A bare "haan" or "ji" to the year question means he's about to say it.
 ACK = {"haan", "han", "ha", "ji", "jee", "ok", "okay", "acha", "achha", "accha", "theek", "thik", "hai", "hmm",
        "हाँ", "हां", "हा", "जी", "ओके", "अच्छा", "ठीक", "है", "हम्म"}
 
 
-# He won't give the code, or wants to know who's asking first. A fair answer to a call
-# asking for a code: respected at once, never asked again.
+# He won't say, or wants to know who's asking first. A fair answer to a call asking
+# who he is: respected at once, never asked again.
 REFUSE = ("nahi bataunga", "nahi bataoonga", "nahin bataunga", "nhi bataunga", "nahi bataungi", "nahi batata",
           "kyun bataun", "kyu bataun", "kyon bataun", "kyun batau", "kyu batau", "nahi dunga", "nahi doonga",
           "nahi dungi", "aap kaun ho", "ap kaun ho", "pehle batao", "pahle batao", "won't tell", "will not tell",
-          "not telling", "why should i", "नहीं बताऊंगा", "नहीं बताउंगा", "नहीं बताऊंगी", "क्यों बताऊं", "क्यूं बताऊं",
+          "not telling", "why should i", "nahi bolunga", "kyun bolun", "नहीं बोलूंगा", "क्यों बोलूं", "नहीं बताऊंगा", "नहीं बताउंगा", "नहीं बताऊंगी", "क्यों बताऊं", "क्यूं बताऊं",
           "क्यों बताऊ", "नहीं दूंगा", "नहीं दूंगी", "आप कौन हो", "आप कौन हैं", "पहले बताओ", "पहले बताइए")
 
 
@@ -83,7 +80,7 @@ def spoken(text):
 
 
 def refused(text):
-    """True when he declines to give the code or asks who's calling first."""
+    """True when he declines to say or asks who's calling first."""
     return any(spoken(phrase) in spoken(text) for phrase in REFUSE)
 
 
@@ -96,12 +93,13 @@ def _key(token):
 
 
 DIGIT = {_key(word): d for d, words in (WORDS | PAIRS | ENGLISH).items() for word in words.split()}
+# "unnees sau athattar", "nineteen hundred seventy eight": the hundred joins the two halves.
+HUNDRED = {"sau", "so", "सौ", "hundred"}
+# "do hazaar paanch", "two thousand five".
+THOUSAND = {"hazar", "hajar", "हजार", "thousand"}
+FILLER = {"and", "aur", "और"}
 
 SPLIT = re.compile(r"[\s,.;:!?\-–—/|।॥()\"'“”‘’]+")
-
-
-def new():
-    return f"{secrets.randbelow(9000) + 1000}"
 
 
 def _token_digits(token):
@@ -116,50 +114,66 @@ def _token_digits(token):
 
 
 def _runs(text):
-    runs, run, tens = [], "", False
+    """Each unbroken run of number words or numerals, as one digit string."""
+    runs, run, tens, thousand = [], "", False, None
     for token in _tokens(text):
+        word = _key(token)
+        if run and word in HUNDRED:
+            continue
+        if run and word in THOUSAND:
+            thousand, run = int(run) * 1000, ""
+            continue
+        if thousand is not None and word in FILLER:
+            continue
         digits = _token_digits(token)
         if digits is None:
-            if run:
-                runs.append(run)
-            run = ""
+            if run or thousand is not None:
+                runs.append(str((thousand or 0) + int(run or 0)) if thousand is not None else run)
+            run, thousand = "", None
         elif tens and len(digits) == 1 and digits != "0":
             run = run[:-1] + digits
         else:
             run += digits
         tens = digits is not None and token in TENS
-    if run:
-        runs.append(run)
-    # the code said twice in a row comes in as one run of 8
-    return [r[:LENGTH] if len(r) == 2 * LENGTH and r[:LENGTH] == r[LENGTH:] else r for r in runs]
+    if run or thousand is not None:
+        runs.append(str((thousand or 0) + int(run or 0)) if thousand is not None else run)
+    return runs
 
 
 def _tokens(text):
     return [t for t in SPLIT.split((text or "").lower()) if t]
 
 
-def read(text):
-    """The code in his reply as a digit string, or None if no code could be read.
+def _years(text):
+    """Every year his reply names: four digits as they are, two digits as 19xx ("78", "sann athattar")."""
+    years = []
+    for run in _runs(text):
+        if len(run) == 8 and run[:4] == run[4:]:
+            run = run[:4]
+        if len(run) == 4:
+            years.append(run)
+        elif len(run) == 2:
+            years.append("19" + run)
+    return years
 
-    He might say it as numerals ("3456", "34 56", "३४५६"), as words ("teen chaar
-    paanch chhe", "तीन चार पांच छह"), in pairs ("chauntees chhappan") or twice.
-    Words like "do" (give) or "ek" (a) also count as digits, so the code is the one
-    run of number tokens that comes to 4 digits.
+
+def read(text):
+    """The year in his reply as 4 digits, or None if no year could be read.
+
+    He might say "1978", "१९७८", "unnees sau athattar", "उन्नीस सौ अठहत्तर",
+    "sann athattar", "78", "nineteen seventy eight" or "ek nau saat aath".
+    Two different years in one reply read as no year he stands by.
     """
-    runs = _runs(text)
-    fits = {r for r in runs if len(r) == LENGTH}
-    if len(fits) == 1:
-        return fits.pop()
-    joined = "".join(runs)
-    if not fits and len(joined) == LENGTH:
-        return joined
-    return joined or None
+    years = set(_years(text))
+    if len(years) == 1:
+        return years.pop()
+    return None
 
 
 def waiting(text):
-    """True when the reply asks him to be given time: silence, "ek minute", "ruko, app khol raha hoon",
-    a bare "haan". A reply with a 4-digit code in it is never a wait."""
-    if any(len(r) == LENGTH for r in _runs(text)):
+    """True when the reply asks for a moment: silence, "ek minute", a bare "haan".
+    A reply with a year in it is never a wait."""
+    if _years(text):
         return False
     tokens = _tokens(text)
     if not tokens:
@@ -167,17 +181,20 @@ def waiting(text):
     return all(t in ACK for t in tokens) or any(t.startswith(WAIT) for t in tokens)
 
 
-def check(text, code):
-    """(what was read, the rule) for his reply to the code line. The rule is "verified",
-    "wait" when he needs time, "failed: declined" when he won't give it, or the identity
-    rule of a wrong or missing code."""
+def check(text, born):
+    """(what was read, the rule) for his reply to the year question. The rule is
+    "verified: year of birth matches", "wait" when he needs a moment, "failed: refused"
+    when he won't say, or "failed: wrong year" / "failed: no year"."""
     got = read(text)
-    if got == code:
-        return got, "verified"
+    if born and got == str(born):
+        return got, VERIFIED
     if refused(text):
-        return got, "failed: declined"
+        return got, "failed: refused"
     if waiting(text):
         return None, "wait"
-    if got is None:
-        return None, "failed: no code"
-    return got, "failed: wrong code"
+    if got is None and not _years(text):
+        return None, "failed: no year"
+    return got or "unclear", "failed: wrong year"
+
+
+VERIFIED = "verified: year of birth matches"

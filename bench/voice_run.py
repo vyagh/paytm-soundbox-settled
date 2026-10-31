@@ -3,7 +3,7 @@
     python bench/voice_run.py <shop> <reply>...
 
 Each reply answers the next line Settled says: a .wav path is sent as his voice,
-text:<words> is typed ({code} in it becomes the code in his mock Paytm app), wait
+text:<words> is typed ({year} in it becomes his year of birth on record), wait
 sends nothing and lets the call time out. A last tap:<choice> taps that choice in
 his WhatsApp once the call is over.
 """
@@ -16,7 +16,13 @@ import urllib.request
 import wave
 from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
 BOARD = f"http://127.0.0.1:{os.environ.get('BOARD_PORT') or 8080}"
+
+
+def born(shop):
+    data = json.loads((ROOT / "data" / "shops.json").read_text(encoding="utf-8"))
+    return data["shops"][shop].get("born", "")
 
 
 def call(path, body=None, ctype=None, headers=None):
@@ -71,7 +77,7 @@ def main(shop, replies):
             print("  waiting it out")
             continue
         if reply.startswith("text:"):
-            text = reply[5:].replace("{code}", prompt["app_code"] or "")
+            text = reply[5:].replace("{year}", str(born(shop)))
             got = call(f"/api/call/{shop}/reply?seq={seq}", json.dumps({"text": text}).encode("utf-8"), "application/json")
         else:
             clip = Path(reply).read_bytes()

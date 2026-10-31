@@ -23,7 +23,7 @@ COLUMNS = ("id", "at", "shop", "step", "said", "heard", "read_as", "reason", "ru
 MESSAGE_COLUMNS = ("id", "at", "shop", "to_whom", "channel", "text", "link", "choices")
 CHOICES = ("keep_plan", "cheaper_plan", "cancel")
 IDLE = {"active": False, "seq": 0, "said": None, "voice": False, "waiting": False, "hearing": False,
-        "problem": None, "step": None, "app_code": None}
+        "problem": None, "step": None}
 
 
 def shops():

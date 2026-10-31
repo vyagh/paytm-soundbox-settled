@@ -58,10 +58,6 @@ def _salesman(shop):
     return f"{man['name']} ({man['id']})"
 
 
-def send_app_code(shop):
-    return _act(shop, "send code to his Paytm app")
-
-
 def charge_rent(shop, plan, tapped=False):
     if tapped:
         why = "You chose this in WhatsApp."

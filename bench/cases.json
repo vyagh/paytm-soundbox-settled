@@ -8,7 +8,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan bhai, liya tha",
@@ -21,7 +21,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-yes-2",
@@ -32,7 +32,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan ji, Anil aaya tha",
@@ -45,7 +45,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-yes-3",
@@ -56,7 +56,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan",
@@ -69,7 +69,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-yes-4",
@@ -80,7 +80,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "ha liya tha maine",
@@ -93,7 +93,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-yes-5",
@@ -104,7 +104,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan haan, sab theek hai",
@@ -117,7 +117,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-yes-6",
@@ -128,7 +128,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "arre haan bhai, kab se bol rahe ho, liya tha",
@@ -141,7 +141,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-yes-7",
@@ -152,7 +152,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ji haan... haan liya tha",
@@ -165,7 +165,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-1",
@@ -176,7 +176,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "na, humne koi plan nahi liya",
@@ -184,7 +184,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-silent-after",
@@ -195,7 +195,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na bhaiya, nahi chahiye",
@@ -203,7 +203,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-reason-1",
@@ -214,7 +214,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "na bhaiya, usne ₹1 bola tha",
@@ -223,7 +223,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-reason-2",
@@ -234,7 +234,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "nahi, Anil ne bola tha free hai",
@@ -243,7 +243,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-reason-3",
@@ -254,7 +254,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "na, dukaan mein chal hi nahi raha ye",
@@ -263,7 +263,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-then-b-1",
@@ -274,7 +274,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "na, 125 bahut zyada hai",
@@ -282,7 +282,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-then-b-2",
@@ -293,7 +293,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "nahi, ye nahi chahiye",
@@ -301,7 +301,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-then-b-3",
@@ -312,7 +312,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na, usne ₹1 bola tha",
@@ -321,7 +321,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-then-a",
@@ -332,7 +332,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "na, mehenga lag raha hai",
@@ -340,7 +340,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-then-a-125",
@@ -351,7 +351,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "nahi",
@@ -359,7 +359,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-then-haan-no-plan",
@@ -370,7 +370,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na, pata nahi kya hai ye",
@@ -378,7 +378,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "no-then-question",
@@ -389,7 +389,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "na bhaiya",
@@ -397,7 +397,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "but-1",
@@ -408,7 +408,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan, par ₹1 bola tha",
@@ -417,7 +417,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "but-2",
@@ -428,7 +428,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan lekin pehle mahine free tha na?",
@@ -436,7 +436,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "but-3",
@@ -447,7 +447,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan ji, bas rate thoda kam karo",
@@ -455,7 +455,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "but-4",
@@ -466,7 +466,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan haan, par ye box kharab hai",
@@ -474,7 +474,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "other-price-1",
@@ -485,7 +485,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan 79 mein de do to le lunga",
@@ -493,7 +493,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "other-price-2",
@@ -504,7 +504,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan, ₹100 mein hua tha na?",
@@ -512,7 +512,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "confused-1",
@@ -523,7 +523,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "kya? kaunsa plan? samajh nahi aaya",
@@ -531,7 +531,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "confused-2",
@@ -542,7 +542,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "hello? kaun bol raha hai?",
@@ -550,7 +550,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "questions-1",
@@ -561,7 +561,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ye plan kya hai?",
@@ -569,7 +569,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "questions-2",
@@ -580,7 +580,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "kitna katega mahine ka?",
@@ -588,7 +588,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "questions-3",
@@ -599,7 +599,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "kisne bola ye? Anil kaun?",
@@ -607,7 +607,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "silence-1",
@@ -618,7 +618,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "",
@@ -626,7 +626,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true
  },
  {
@@ -638,7 +638,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "",
@@ -646,7 +646,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true
  },
  {
@@ -697,7 +697,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "bhaiya dukaan pe customer hai, baad mein call karo",
@@ -705,7 +705,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true
  },
  {
@@ -731,7 +731,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan liya tha",
@@ -743,7 +743,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "doubt-at-readback-2",
@@ -754,7 +754,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan haan",
@@ -766,7 +766,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-then-no",
@@ -777,7 +777,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan",
@@ -789,7 +789,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-then-question",
@@ -800,7 +800,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan liya tha",
@@ -812,7 +812,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "yes-then-silence",
@@ -823,7 +823,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan",
@@ -835,7 +835,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true
  },
  {
@@ -847,7 +847,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan na, pata nahi",
@@ -855,7 +855,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "mixed-2",
@@ -866,7 +866,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na na, haan le lunga",
@@ -874,7 +874,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "mixed-3",
@@ -885,7 +885,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan to bola tha, par kitna bola tha yaad nahi",
@@ -893,7 +893,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "ta-yes-yes",
@@ -905,7 +905,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ஆமா, வாங்கினேன்",
@@ -920,7 +920,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "ta-no-reason",
@@ -932,7 +932,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "இல்ல, அவன் ஒரு ரூபாய்னு சொன்னான்",
@@ -942,7 +942,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "ta-but",
@@ -954,7 +954,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "சரி, ஆனா ஒரு ரூபாய்னு சொன்னாங்களே",
@@ -963,7 +963,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "te-yes-yes",
@@ -975,7 +975,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "అవును, తీసుకున్నాను",
@@ -990,7 +990,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "te-no-reason",
@@ -1002,7 +1002,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "లేదు, అతను ఒక్క రూపాయి అన్నాడు",
@@ -1012,7 +1012,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "te-someone-else",
@@ -1039,7 +1039,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "হ্যাঁ, নিয়েছিলাম",
@@ -1054,7 +1054,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "bn-no-reason",
@@ -1066,7 +1066,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "না, ও তো এক টাকা বলেছিল",
@@ -1076,7 +1076,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "bn-but",
@@ -1088,7 +1088,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "হ্যাঁ, কিন্তু প্রথম মাস ফ্রি বলেছিল না?",
@@ -1097,7 +1097,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "mr-yes-yes",
@@ -1109,7 +1109,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "हो, घेतला होता",
@@ -1124,7 +1124,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "mr-no-reason",
@@ -1136,7 +1136,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "नाही, त्याने ₹1 सांगितलं होतं",
@@ -1146,7 +1146,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "mr-but",
@@ -1158,7 +1158,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "हो, पण ₹1 सांगितलं होतं",
@@ -1167,7 +1167,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "kn-yes-yes",
@@ -1179,7 +1179,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ಹೌದು, ತಗೊಂಡಿದ್ದೆ",
@@ -1194,7 +1194,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "kn-no-reason",
@@ -1206,7 +1206,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "ಇಲ್ಲ, ಅವನು ಒಂದು ರೂಪಾಯಿ ಅಂದಿದ್ದ",
@@ -1216,7 +1216,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "kn-but",
@@ -1228,7 +1228,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ಹೌದು, ಆದ್ರೆ ದರ ಸ್ವಲ್ಪ ಕಮ್ಮಿ ಮಾಡಿ",
@@ -1237,7 +1237,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "gu-yes-yes",
@@ -1249,7 +1249,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "હા, લીધું હતું",
@@ -1264,7 +1264,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "gu-no-reason",
@@ -1276,7 +1276,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ના, એણે ₹1 કીધું હતું",
@@ -1286,7 +1286,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "gu-someone-else",
@@ -1313,7 +1313,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "Yes, I took it",
@@ -1328,7 +1328,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "en-no-reason",
@@ -1340,7 +1340,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "No bhaiya, he told me it's only ₹1",
@@ -1350,7 +1350,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "en-but",
@@ -1362,7 +1362,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "Okay yes, but he told me it was free",
@@ -1371,7 +1371,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "ml-yes-yes",
@@ -1383,7 +1383,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "അതെ, വാങ്ങിയതാണ്",
@@ -1398,7 +1398,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "ml-no-reason",
@@ -1410,7 +1410,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "അല്ല, അവൻ ഒരു രൂപയേ ആകൂ എന്ന് പറഞ്ഞു",
@@ -1420,7 +1420,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "ml-someone-else",
@@ -1447,7 +1447,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ହଁ, ନେଇଥିଲି",
@@ -1462,7 +1462,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "or-no-reason",
@@ -1474,7 +1474,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "ନା, ସେ ₹1 କହିଥିଲା",
@@ -1484,7 +1484,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "or-but",
@@ -1496,7 +1496,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ହଁ, କିନ୍ତୁ ସେ ମାଗଣା କହିଥିଲା",
@@ -1505,7 +1505,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "pa-yes-yes",
@@ -1517,7 +1517,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "ਹਾਂ ਜੀ, ਲਿਆ ਸੀ",
@@ -1532,7 +1532,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "pa-no-reason",
@@ -1544,7 +1544,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "ਨਹੀਂ, ਉਹਨੇ ₹1 ਕਿਹਾ ਸੀ",
@@ -1554,7 +1554,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "pa-someone-else",
@@ -1634,7 +1634,7 @@
   "retry": true
  },
  {
-  "id": "wrong-code",
+  "id": "wrong-year",
   "shop": "sharma",
   "turns": [
    {
@@ -1642,14 +1642,14 @@
     "kind": "haan"
    },
    {
-    "text": "1 2 3 4"
+    "text": "1 9 8 0"
    }
   ],
   "expect": "held",
-  "identity": "failed: wrong code"
+  "identity": "failed: wrong year"
  },
  {
-  "id": "wrong-code-haan-after",
+  "id": "wrong-year-close",
   "shop": "gupta",
   "turns": [
    {
@@ -1657,15 +1657,15 @@
     "kind": "haan"
    },
    {
-    "text": "5 6 7 8"
+    "text": "1979"
    }
   ],
   "expect": "held",
-  "identity": "failed: wrong code",
-  "note": "someone with his phone but not his app says he is the owner"
+  "identity": "failed: wrong year",
+  "note": "someone with his phone but not his year of birth says he is the owner"
  },
  {
-  "id": "code-refused",
+  "id": "year-refused",
   "shop": "sharma",
   "turns": [
    {
@@ -1673,16 +1673,16 @@
     "kind": "haan"
    },
    {
-    "text": "code kyun chahiye? nahi bataunga"
+    "text": "ye kyun chahiye? nahi bataunga"
    }
   ],
   "expect": "held",
-  "identity": "failed: declined",
-  "code_asks": 1,
-  "note": "he won't give the code: respected at once, nothing changes"
+  "identity": "failed: refused",
+  "note": "he won't say: respected at once, nothing changes",
+  "year_asks": 1
  },
  {
-  "id": "code-silent",
+  "id": "year-silent",
   "shop": "gupta",
   "turns": [
    {
@@ -1694,11 +1694,11 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: no code",
+  "identity": "failed: no year",
   "retry": true
  },
  {
-  "id": "code-hindi-words",
+  "id": "year-hindi-words",
   "shop": "gupta",
   "turns": [
    {
@@ -1706,7 +1706,7 @@
     "kind": "haan"
    },
    {
-    "text": "teen chaar paanch chhe"
+    "text": "unnees sau athattar"
    },
    {
     "text": "haan liya tha",
@@ -1719,10 +1719,10 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
-  "id": "code-devanagari",
+  "id": "year-devanagari",
   "shop": "sharma",
   "turns": [
    {
@@ -1730,23 +1730,23 @@
     "kind": "haan"
    },
    {
-    "text": "तीन चार पांच छह"
+    "text": "उन्नीस सौ चौरासी"
    },
    {
-    "text": "हाँ जी, लिया था",
+    "text": "haan liya tha",
     "kind": "haan"
    },
    {
-    "text": "हाँ, पक्का",
+    "text": "haan pakka",
     "kind": "haan"
    }
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
-  "id": "code-in-a-sentence",
+  "id": "year-in-a-sentence",
   "shop": "gupta",
   "turns": [
    {
@@ -1754,20 +1754,20 @@
     "kind": "haan"
    },
    {
-    "text": "haan code hai 34 56, likh lo"
+    "text": "haan, mera janam 1978 mein hua tha"
    },
    {
-    "text": "haan ji",
+    "text": "haan liya tha",
     "kind": "haan"
    },
    {
-    "text": "haan",
+    "text": "haan pakka",
     "kind": "haan"
    }
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "angry-na",
@@ -1778,7 +1778,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "nahi! usne toh bola tha 1 rupaya katega, tum log jhooth bolte ho",
@@ -1787,7 +1787,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "box-wapas-at-ask",
@@ -1798,7 +1798,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "nahi chahiye, box wapas le jao",
@@ -1807,7 +1807,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "note": "no pickup is booked from what the AI read"
  },
  {
@@ -1819,7 +1819,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan",
@@ -1832,7 +1832,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "note": "no pickup is booked from what the AI read"
  },
  {
@@ -1844,7 +1844,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "हम।",
@@ -1852,7 +1852,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true
  },
  {
@@ -1864,7 +1864,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na bhaiya, usne ₹1 bola tha",
@@ -1874,7 +1874,7 @@
   ],
   "tap": "cancel",
   "expect": "cancelled",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "note": "he taps cancel in WhatsApp: the plan is cancelled and the pickup booked by his tap"
  },
  {
@@ -1886,7 +1886,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na, 125 bahut zyada hai",
@@ -1896,7 +1896,7 @@
   ],
   "tap": "cheaper_plan",
   "expect": "charged:plan-b",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "tap-keep",
@@ -1907,7 +1907,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan, par pehle mahine free bola tha",
@@ -1917,7 +1917,7 @@
   ],
   "tap": "keep_plan",
   "expect": "charged:plan-a",
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "tap-then-call-again",
@@ -1928,7 +1928,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "nahi",
@@ -1937,7 +1937,7 @@
   ],
   "tap": "keep_plan",
   "expect": "charged:plan-a",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "again": {
    "turns": [
     {
@@ -1945,7 +1945,7 @@
      "kind": "haan"
     },
     {
-     "text": "3456"
+     "text": "1978"
     },
     {
      "text": "haan liya tha",
@@ -1969,7 +1969,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na bhaiya, nahi chahiye",
@@ -1977,7 +1977,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "again": {
    "turns": [
     {
@@ -1985,7 +1985,7 @@
      "kind": "haan"
     },
     {
-     "text": "3456"
+     "text": "1984"
     },
     {
      "text": "haan ji, Anil aaya tha",
@@ -2010,7 +2010,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "na, 125 bahut zyada hai",
@@ -2018,7 +2018,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "again": {
    "turns": [
     {
@@ -2026,7 +2026,7 @@
      "kind": "haan"
     },
     {
-     "text": "3456"
+     "text": "1978"
     },
     {
      "text": "haan, par ₹1 bola tha",
@@ -2042,7 +2042,7 @@
   "note": "two held calls: his first WhatsApp still works, only a charge or his tap ends it"
  },
  {
-  "id": "code-ek-minute",
+  "id": "year-ek-minute",
   "shop": "gupta",
   "turns": [
    {
@@ -2050,13 +2050,13 @@
     "kind": "haan"
    },
    {
-    "text": "ek minute dekhta hoon"
+    "text": "ek minute"
    },
    {
-    "text": "ruko, app khol raha hoon"
+    "text": "ruko, sochne do"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "haan liya tha",
@@ -2069,11 +2069,11 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "note": "waits are not tries: he's opening the app"
+  "identity": "verified: year of birth matches",
+  "note": "waits are not tries"
  },
  {
-  "id": "code-pause",
+  "id": "year-pause",
   "shop": "sharma",
   "turns": [
    {
@@ -2084,10 +2084,10 @@
     "text": ""
    },
    {
-    "text": "haan aaya hai"
+    "text": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan liya tha",
@@ -2100,11 +2100,11 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "note": "a pause, then a bare 'it came', then the code"
+  "identity": "verified: year of birth matches",
+  "note": "a pause, then a bare haan, then the year"
  },
  {
-  "id": "code-pairs",
+  "id": "year-san",
   "shop": "gupta",
   "turns": [
    {
@@ -2112,7 +2112,7 @@
     "kind": "haan"
    },
    {
-    "text": "chauntees chhappan"
+    "text": "san athattar"
    },
    {
     "text": "haan liya tha",
@@ -2125,10 +2125,11 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches",
+  "note": "two digits mean 19xx"
  },
  {
-  "id": "code-pairs-devanagari",
+  "id": "year-san-devanagari",
   "shop": "sharma",
   "turns": [
    {
@@ -2136,7 +2137,7 @@
     "kind": "haan"
    },
    {
-    "text": "चौंतीस छप्पन"
+    "text": "सन चौरासी"
    },
    {
     "text": "haan liya tha",
@@ -2149,10 +2150,10 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
-  "id": "code-twice",
+  "id": "year-twice",
   "shop": "gupta",
   "turns": [
    {
@@ -2160,7 +2161,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456 3456"
+    "text": "1978 1978"
    },
    {
     "text": "haan liya tha",
@@ -2173,10 +2174,10 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
-  "id": "code-spellings",
+  "id": "year-two-digits",
   "shop": "sharma",
   "turns": [
    {
@@ -2184,7 +2185,7 @@
     "kind": "haan"
    },
    {
-    "text": "teen chaar pach chheh"
+    "text": "84"
    },
    {
     "text": "haan liya tha",
@@ -2197,10 +2198,10 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
-  "id": "code-wrong-then-right",
+  "id": "year-wrong-then-right",
   "shop": "gupta",
   "turns": [
    {
@@ -2208,10 +2209,10 @@
     "kind": "haan"
    },
    {
-    "text": "3465"
+    "text": "1987"
    },
    {
-    "text": "sorry, 3456"
+    "text": "sorry, 1978"
    },
    {
     "text": "haan liya tha",
@@ -2224,10 +2225,10 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
-  "id": "code-three-wrong",
+  "id": "year-three-wrong",
   "shop": "sharma",
   "turns": [
    {
@@ -2235,22 +2236,22 @@
     "kind": "haan"
    },
    {
-    "text": "1111"
+    "text": "1980"
    },
    {
-    "text": "2222"
+    "text": "1985"
    },
    {
-    "text": "5678"
+    "text": "1990"
    }
   ],
   "expect": "held",
-  "identity": "failed: wrong code",
-  "note": "three wrong codes, then a polite goodbye",
-  "code_asks": 3
+  "identity": "failed: wrong year",
+  "note": "three wrong years, then a polite goodbye",
+  "year_asks": 3
  },
  {
-  "id": "code-near-miss",
+  "id": "year-near-miss",
   "shop": "gupta",
   "turns": [
    {
@@ -2258,18 +2259,18 @@
     "kind": "haan"
    },
    {
-    "text": "teen chaar paanch"
+    "text": "unnees sau unasi"
    },
    {
-    "text": "34 5"
+    "text": "79"
    },
    {
-    "text": "chauntees pachpan"
+    "text": "nineteen seventy seven"
    }
   ],
   "expect": "held",
-  "identity": "failed: wrong code",
-  "note": "only the exact 4 digits pass"
+  "identity": "failed: wrong year",
+  "note": "only the year on record passes"
  },
  {
   "id": "name-garbled-then-haan",
@@ -2285,7 +2286,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan liya tha",
@@ -2298,7 +2299,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "note": "a garbled haan gets the name question once more"
  },
  {
@@ -2327,7 +2328,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "haan liya tha",
@@ -2340,7 +2341,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "new_round": true,
   "again": {
    "turns": [
@@ -2349,7 +2350,7 @@
      "kind": "haan"
     },
     {
-     "text": "3456"
+     "text": "1984"
     },
     {
      "text": "haan liya tha",
@@ -2373,7 +2374,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "nahi",
@@ -2381,7 +2382,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "new_round": true,
   "old_tap": "keep_plan",
   "note": "a round-1 WhatsApp tapped in round 2 has expired"
@@ -2395,7 +2396,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "nahi",
@@ -2403,7 +2404,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "again": {
    "turns": [
     {
@@ -2429,7 +2430,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na, 125 bahut zyada hai",
@@ -2437,7 +2438,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "again": {
    "turns": [
     {
@@ -2460,10 +2461,10 @@
    "choice": "cheaper_plan",
    "status": 200
   },
-  "note": "a second call that fails the code check leaves his choices as they are"
+  "note": "a second call that fails the year check leaves his choices as they are"
  },
  {
-  "id": "code-declined-hindi",
+  "id": "year-declined-hindi",
   "shop": "gupta",
   "turns": [
    {
@@ -2478,13 +2479,13 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: declined",
-  "code_asks": 1,
+  "identity": "failed: refused",
   "unread": 1,
-  "note": "the reply from Shubham's live test: one ask, then the calm closing, never a loop"
+  "note": "the reply from Shubham's live test: one ask, then the calm closing, never a loop",
+  "year_asks": 1
  },
  {
-  "id": "code-who-first",
+  "id": "year-who-first",
   "shop": "sharma",
   "turns": [
    {
@@ -2496,8 +2497,8 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: declined",
-  "code_asks": 1
+  "identity": "failed: refused",
+  "year_asks": 1
  },
  {
   "id": "name-who-first",
@@ -2509,10 +2510,10 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: declined"
+  "identity": "failed: refused"
  },
  {
-  "id": "code-ask-cap",
+  "id": "year-ask-cap",
   "shop": "sharma",
   "turns": [
    {
@@ -2529,17 +2530,17 @@
     "text": "ek second"
    },
    {
-    "text": "3456"
+    "text": "1984"
    }
   ],
   "expect": "held",
-  "identity": "failed: no code",
-  "code_asks": 3,
+  "identity": "failed: no year",
   "unread": 1,
-  "note": "three asks in all, waits included, never a fourth"
+  "note": "three asks in all, waits included, never a fourth",
+  "year_asks": 3
  },
  {
-  "id": "code-ask-cap-silence",
+  "id": "year-ask-cap-silence",
   "shop": "gupta",
   "turns": [
    {
@@ -2556,14 +2557,14 @@
     "text": ""
    },
    {
-    "text": "3456"
+    "text": "1978"
    }
   ],
   "expect": "held",
-  "identity": "failed: no code",
-  "code_asks": 3,
+  "identity": "failed: no year",
   "unread": 1,
-  "retry": true
+  "retry": true,
+  "year_asks": 3
  },
  {
   "id": "hangup-at-ask",
@@ -2574,7 +2575,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "hangup": true,
@@ -2582,7 +2583,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true,
   "note": "he hangs up at the plan question: nothing changes, an SMS says the call cut, a retry is booked"
  },
@@ -2595,7 +2596,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "nahi",
@@ -2603,7 +2604,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true,
   "again": {
    "turns": [
@@ -2621,7 +2622,7 @@
   "note": "the line drops on a second call: his WhatsApp choices from the first still work"
  },
  {
-  "id": "busy-at-code",
+  "id": "busy-at-year",
   "shop": "gupta",
   "turns": [
    {
@@ -2635,8 +2636,8 @@
   "expect": "held",
   "identity": "busy → call back later",
   "retry": true,
-  "code_asks": 1,
-  "note": "busy at the code step: a callback, not 'I'm waiting'"
+  "note": "busy at the year question: a callback, not 'take your time'",
+  "year_asks": 1
  },
  {
   "id": "busy-at-ask",
@@ -2647,7 +2648,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "बाद में कॉल करना, अभी ग्राहक हैं",
@@ -2655,11 +2656,11 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true
  },
  {
-  "id": "code-english-pairs",
+  "id": "year-english",
   "shop": "sharma",
   "turns": [
    {
@@ -2667,7 +2668,7 @@
     "kind": "haan"
    },
    {
-    "text": "thirty four fifty six"
+    "text": "nineteen eighty four"
    },
    {
     "text": "haan liya tha",
@@ -2680,7 +2681,7 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified"
+  "identity": "verified: year of birth matches"
  },
  {
   "id": "refused-keeps-choices",
@@ -2691,7 +2692,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1978"
    },
    {
     "text": "nahi",
@@ -2699,7 +2700,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "again": {
    "turns": [
     {
@@ -2716,7 +2717,7 @@
    "choice": "keep_plan",
    "status": 200
   },
-  "note": "he refuses the code on a second call: the first call's WhatsApp still works"
+  "note": "he won't say his year on a second call: the first call's WhatsApp still works"
  },
  {
   "id": "silence-keeps-choices",
@@ -2727,7 +2728,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "na, 125 bahut zyada hai",
@@ -2735,7 +2736,7 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true,
   "again": {
    "turns": [
@@ -2775,7 +2776,7 @@
     "kind": "haan"
    },
    {
-    "text": "3456"
+    "text": "1984"
    },
    {
     "text": "abhi busy hoon, baad mein call karo",
@@ -2783,7 +2784,54 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
+  "identity": "verified: year of birth matches",
   "retry": true
+ },
+ {
+  "id": "year-english-gupta",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "nineteen seventy eight"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches"
+ },
+ {
+  "id": "year-wrong-spoken",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "उन्नीस सौ अठहत्तर"
+   },
+   {
+    "text": "sann athattar"
+   },
+   {
+    "text": "1978"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: wrong year",
+  "year_asks": 3,
+  "note": "Mahesh's year on Ramesh's call: wrong each time"
  }
 ]

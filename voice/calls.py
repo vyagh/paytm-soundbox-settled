@@ -3,8 +3,8 @@
 The listener speaks the line, then waits on the call's queue. A reply from the
 page (audio or typed) is heard and read here, and its Answer goes in the queue.
 Nothing in time means "no answer". A reply that reads as no answer, or none in
-time, gets the line said once more. The code lines are never shown to the AI:
-flow checks them in code, and waits for the code itself.
+time, gets the line said once more. His replies to the year question are never shown
+to the AI: flow checks them in code, and waits for the year itself.
 """
 import os
 import queue
@@ -12,7 +12,7 @@ import threading
 import time
 
 from ai import reader
-from settled import codes, flow, log, records
+from settled import flow, log, records, year
 from settled.models import Answer, CallState
 
 from . import sarvam, script
@@ -83,8 +83,8 @@ class Call:
             raise flow.HungUp()
         until = time.monotonic() + length + LISTEN
 
-        # the code step does its own waiting in flow, so its lines are never said again here
-        again = 0 if said in script.CODE_LINES else 1
+        # the year step does its own waiting in flow, so its lines are never said again here
+        again = 0 if said in script.YEAR_LINES else 1
         while True:
             try:
                 got, answer = self.replies.get(timeout=max(0.2, until - time.monotonic()))
@@ -131,14 +131,14 @@ class Call:
                 raise ValueError("heard nothing")
             if not text.strip():
                 answer = Answer("no answer", "")
-            elif line in script.CODE_LINES:
+            elif line in script.YEAR_LINES:
                 answer = Answer("unsure", text)
             else:
                 answer = reader.read(text, said)
             self.replies.put((seq, answer))
-            if line in script.CODE_LINES:
-                got, rule = codes.check(text, self.progress.code)
-                read_as = "wait" if rule == "wait" else got or "no code"
+            if line in script.YEAR_LINES:
+                got, rule = year.check(text, records.load(self.shop_id).born)
+                read_as = "wait" if rule == "wait" else got or "no year"
             else:
                 read_as = answer.kind
             return {"heard": text, "read_as": read_as}
@@ -166,7 +166,6 @@ class Call:
                 "hearing": self.hearing,
                 "problem": self.problem,
                 "step": self.progress.step,
-                "app_code": self.progress.code,
             }
 
 

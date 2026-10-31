@@ -1,16 +1,16 @@
 import time
 
 from voice import script
-from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, CODE, CODE_AGAIN, CODE_DECLINED, CODE_WAIT, FOLLOW_UP,
-                          GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AGAIN, READ_BACK)
+from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED,
+                          GREETING, NAME_AGAIN, READ_BACK, YEAR, YEAR_AGAIN, YEAR_WAIT)
 
-from . import codes, log, paytm_mock, records, rules
+from . import log, paytm_mock, records, rules, year
 from .models import CallState
 
-# The code step asks at most 3 times in all, the first ask included. "ek minute", a pause
-# or silence get "I'm waiting" instead of "that's not it", within about 45 s.
-CODE_ASKS = 3
-CODE_WAIT_SECONDS = 45
+# The year of birth is asked at most 3 times in all, the first ask included. "ek minute",
+# a pause or silence get "take your time" instead of "I didn't get that", within about 45 s.
+YEAR_ASKS = 3
+YEAR_WAIT_SECONDS = 45
 
 
 class HungUp(Exception):
@@ -99,13 +99,11 @@ def _call(shop, listener, state):
     if failed:
         return _unverified(shop, listener, failed)
 
-    state.code = state.code or codes.new()
-    paytm_mock.send_app_code(shop)
-    rule, silent = _code(shop, state, listener)
+    rule, silent = _year(shop, state, listener)
     if silent:
         return _silent(shop)
-    if rule != "verified":
-        return _unverified(shop, listener, rule, CODE_DECLINED if rule == "failed: declined" else None)
+    if rule != year.VERIFIED:
+        return _unverified(shop, listener, rule, DECLINED if rule == "failed: refused" else None)
 
     state.step = "ask"
     answers = [_ask(shop, state, ASK, listener)]
@@ -144,29 +142,29 @@ def _call(shop, listener, state):
     return decision
 
 
-def _code(shop, state, listener):
-    """("verified" once his reply has the exact code, else the identity rule that ends
-    the call; True when every ask got silence)."""
-    line, last, heard = CODE, "failed: no code", False
-    until = time.monotonic() + CODE_WAIT_SECONDS
-    for asked in range(1, CODE_ASKS + 1):
+def _year(shop, state, listener):
+    """(year.VERIFIED once his reply names the year of birth on record, else the identity
+    rule that ends the call; True when every ask got silence)."""
+    line, last, heard = YEAR, "failed: no year", False
+    until = time.monotonic() + YEAR_WAIT_SECONDS
+    for asked in range(1, YEAR_ASKS + 1):
         reply = listener(shop, line)
-        got, rule = codes.check(reply.words, state.code)
+        got, rule = year.check(reply.words, shop.born)
         heard = heard or bool(reply.words.strip())
         waited = rule == "wait"
         if not waited:
             last = rule
-        done = rule in ("verified", "failed: declined") or asked == CODE_ASKS or (waited and time.monotonic() >= until)
+        done = rule in (year.VERIFIED, "failed: refused") or asked == YEAR_ASKS or (waited and time.monotonic() >= until)
         if done:
             note = last
         elif waited:
-            note = "waiting for the code"
+            note = "waiting for the year"
         else:
-            note = f"{rule.removeprefix('failed: ')} → asked again, {asked} of {CODE_ASKS} asks"
-        _log_reply(shop, state, "identity", line, reply, rule=note, read_as="wait" if waited else got or "no code")
+            note = f"{rule.removeprefix('failed: ')} → asked again, {asked} of {YEAR_ASKS} asks"
+        _log_reply(shop, state, "identity", line, reply, rule=note, read_as="wait" if waited else got or "no year")
         if done:
             return last, not heard
-        line = CODE_WAIT if waited else CODE_AGAIN
+        line = YEAR_WAIT if waited else YEAR_AGAIN
     return last, not heard
 
 

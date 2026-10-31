@@ -1,4 +1,4 @@
-from .codes import refused, spoken
+from .year import refused, spoken
 
 # He's busy and asks for a call later. Matched in plain code at every step, and it ends
 # the call politely with nothing changed.
@@ -22,7 +22,7 @@ def name(answer, first=True):
     """None when he says he is the owner, "ask again" for an unclear first reply, else
     the identity rule that ends the call. Only a clear someone else ends it at once."""
     if refused(answer.words):
-        return "failed: declined"
+        return "failed: refused"
     if answer.kind == "haan" and answer.speaker == "shopkeeper":
         return None
     if answer.kind == "na" or answer.speaker == "someone else":

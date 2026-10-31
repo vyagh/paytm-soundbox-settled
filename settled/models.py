@@ -25,6 +25,7 @@ class Shop:
     language: str = "hi"
     say: dict = field(default_factory=dict)
     mobile: str | None = None
+    born: int | None = None
 
     def plan(self, plan_id):
         return next((p for p in self.plans if p.id == plan_id), None)
@@ -58,9 +59,6 @@ class Decision:
 
 @dataclass
 class CallState:
-    """What the board shows about a call in progress. code is the one in his mock
-    Paytm app, set when it is sent.
-    call is the id of the call's "due" row."""
+    """What the board shows about a call in progress. call is the id of the call's "due" row."""
     step: str | None = None
-    code: str | None = None
     call: int | None = None

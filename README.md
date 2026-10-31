@@ -19,13 +19,13 @@ Version 2 changed the call after feedback from the hackathon mentors.
 ```mermaid
 flowchart LR
     A["Records checked<br/>sign-up, delivery, return"] --> C["Namaste, am I speaking with the owner?"]
-    C --> D["4-digit code from his Paytm app<br/>checked in plain code"]
+    C --> D["His year of birth<br/>checked in plain code"]
     D --> E["Plan question<br/>from his record"]
     E --> F["Price read back"]
     F --> G["Plain code decides<br/>charge or hold"]
     E -. not a haan .-> G
     C -. someone else .-> X["Ends politely<br/>rent held, plan unchanged"]
-    D -. wrong or no code .-> X
+    D -. wrong or no year .-> X
     G --> H["Held: sorry, WhatsApp with his choices<br/>manager told on a na"]
     H --> I["Only his tap<br/>keeps, changes or cancels"]
     G --> L[("Append-only log")]
@@ -35,7 +35,7 @@ flowchart LR
 
 Before any call, Settled reads the shop's records. A box that was never delivered isn't charged and the shop isn't called. A missing record puts the rent on hold for a person to check.
 
-If the records are in order, it calls, greets him by name and asks if it's speaking with him, all in one line. Nothing is recorded: his voice goes to speech-to-text and is thrown away, and the log keeps the words. Then it asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe", "chauntees chhappan", "thirty four fifty six", "३४५६" or the code said twice, and the AI never sees it. Only the exact 4 digits pass. "Ek minute", "ruko, app khol raha hoon" or a pause get "no problem, I'm waiting" instead of "that's not it", and the code is asked at most 3 times in all. If he won't give it ("nahi bataunga", "aap kaun ho pehle batao"), that's a fair answer to a call asking for a code: Settled says that's fine, nothing changes, and a person calls his registered number. An unclear answer to the name question gets it asked once more. If someone else picks up, or the code still doesn't match, Settled says goodbye politely and nothing about his plan changes.
+If the records are in order, it calls, greets him by name and asks if it's speaking with him, all in one line. Nothing is recorded: his voice goes to speech-to-text and is thrown away, and the log keeps the words. Then it asks the year he was born, said plainly as a check that it's him. [`settled/year.py`](settled/year.py) reads the year out of his reply, as "1978", "१९७८", "unnees sau athattar", "उन्नीस सौ अठहत्तर", "san athattar", "78" or "nineteen seventy eight", and compares it with the record. The AI never sees it. "Ek minute" or a pause get "take your time" instead of "I didn't get that", and the year is asked at most 3 times in all. If he won't say ("nahi bataunga", "aap kaun ho pehle batao"), that's a fair answer: Settled says that's fine, nothing changes, and a person calls his registered number. An unclear answer to the name question gets it asked once more. If someone else picks up, or the year still doesn't match, Settled says goodbye politely and nothing about his plan changes.
 
 Only then comes the plan question, built from his record in [`data/shops.json`](data/shops.json): "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?" Shopkeepers rarely know the salesman's name, so it stays in the records and the manager's alert, not the question. A clear haan gets the price read back ("So ₹125 every month from 1 November. Shall I confirm it?"), and only a second haan charges.
 
@@ -52,7 +52,7 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 | Box never delivered | Not charged, no call |
 | Sign-up, delivery or return record missing | Held, a person checks |
 | Someone else answers, or he doesn't say he's the owner when asked twice | Ends politely, held, plan unchanged |
-| Wrong code or no code after 3 asks, or he won't give it | Ends politely, held, plan unchanged |
+| Wrong year or no year after 3 asks, or he won't say | Ends politely, held, plan unchanged |
 | He's busy and asks for a call later, at any step | Ends politely, nothing changed, an SMS says Paytm calls back, a retry call is booked |
 | He hangs up, the line cuts, silence after the line is said again, or the board restarts mid-call | Nothing changes, his open choices stay, an SMS says the call cut, a retry call is booked |
 | Haan, then haan again on the read-back | Charged at the signed plan |
@@ -64,7 +64,7 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 A few things hold these together:
 
 - Cancelling, changing a plan or booking a pickup only happens through his own tap (`POST /api/consent/<id>/<choice>`, in [`settled/paytm_mock.py`](settled/paytm_mock.py)). A second tap on the same message is refused.
-- A shop's rent is settled once a round: one charge or one cancel, checked in the same database write that makes it. After that, Settled won't call the shop again in that round. A WhatsApp's choices keep working while the rent is undecided in that round. A later call that never verifies him (a son, a wrong code, silence) leaves them as they are. Once a charge or his tap settles the rent, or a new round starts, a tap on an old message gets 409, "this link has expired".
+- A shop's rent is settled once a round: one charge or one cancel, checked in the same database write that makes it. After that, Settled won't call the shop again in that round. A WhatsApp's choices keep working while the rent is undecided in that round. A later call that never verifies him (a son, a wrong year, silence) leaves them as they are. Once a charge or his tap settles the rent, or a new round starts, a tap on an old message gets 409, "this link has expired".
 - `POST /api/call/<shop>/hangup` is him hanging up, at any step. It answers `{"ok": true}`.
 - A demo round stands for a fresh rent cycle, so the next group can see every shop again. `POST /api/round/new` starts one and answers `{"round": n}`. It writes a row to the log and changes nothing before it.
 - If the reply comes from someone else (a son, a worker, the salesman), [`ai/reader.py`](ai/reader.py) turns it into unsure, so a yes from them never counts.
@@ -90,7 +90,7 @@ The Hindi lines are hand-written. The other ten are machine-written and need a n
 
 ## Tested on 97 simulated shopkeepers
 
-[`bench/cases.json`](bench/cases.json) holds 122 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, a lone "hmm", the salesman or a relative answering, wrong, missing and refused codes, codes said in Hindi words, pairs or Devanagari digits, busy replies, hang-ups, second calls and demo rounds, his taps on the WhatsApp choices, and cases in all 11 languages. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
+[`bench/cases.json`](bench/cases.json) holds 128 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, a lone "hmm", the salesman or a relative answering, wrong, missing and refused years, years said in Hindi words, "san" and two digits, English words or Devanagari, busy replies, hang-ups, second calls and demo rounds, his taps on the WhatsApp choices, and cases in all 11 languages. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
 
 With the Sarvam model sorting every reply:
 
@@ -139,7 +139,7 @@ python dev.py
 
 and open http://127.0.0.1:8080. `dev.py` runs `server.py` and restarts it when a Python file or the prompt changes, and `python server.py` runs it once. The main page is the call screen, with a live drawing of the call as it happens. The old board is at http://127.0.0.1:8080/classic.
 
-There are three shops: Gupta Kirana and Sharma Store with full records, and Verma Dairy, whose box was never delivered. Start a call, pick a language, and hold to speak, or type a reply if there's no mic. The call screen shows his mock Paytm app with the code to read out, and his WhatsApp with the choices to tap.
+There are three shops: Gupta Kirana and Sharma Store with full records, and Verma Dairy, whose box was never delivered. Start a call, pick a language, and hold to speak, or type a reply if there's no mic. The call screen shows his WhatsApp with the choices to tap.
 
 It runs on Linux (Python 3.14) and on Windows 11 (Python 3.12), where the live demo takes real voice calls. On Windows use `python` or `py`. The server listens on 127.0.0.1 only. `BOARD_PORT` changes the port and `SETTLED_DB` changes where the log lives.
 
@@ -155,12 +155,12 @@ python try.py reset
 
 There's no phone call. The board speaks Settled's line through the browser and listens on the browser mic.
 
-[`settled/paytm_mock.py`](settled/paytm_mock.py) stands in for Paytm. Sending the code to his app, charging rent, holding it, opening a support ticket, booking a pickup, the WhatsApp to the salesman's manager and the SMS and WhatsApp to the shopkeeper are all written to the log and the messages table, and nothing is sent. His tap on a WhatsApp choice is a POST to the board. The shop records are mock records in [`data/shops.json`](data/shops.json): owner, sign-up form, salesman, device, delivery, return and payments. The names, price and dates in the spoken lines come from there.
+[`settled/paytm_mock.py`](settled/paytm_mock.py) stands in for Paytm. Charging rent, holding it, opening a support ticket, booking a pickup, the WhatsApp to the salesman's manager and the SMS and WhatsApp to the shopkeeper are all written to the log and the messages table, and nothing is sent. His tap on a WhatsApp choice is a POST to the board. The shop records are mock records in [`data/shops.json`](data/shops.json): owner, sign-up form, salesman, device, delivery, return and payments. The names, price and dates in the spoken lines come from there.
 
 For real use, each mock becomes a call to a Paytm system:
 
 - the records come from Paytm's sign-up, delivery and return data
-- the code goes to the Paytm app on his phone
+- the year of birth comes from his KYC record
 - the call goes out from a Paytm line to the shop's bank-linked number
 - charge and hold go to the settlement and payout side
 - tickets, pickups, SMS and WhatsApp go to Paytm's existing support and messaging, and the choice buttons come back from WhatsApp
@@ -176,7 +176,7 @@ settled/
 ├── try.py              type answers by hand, no AI
 ├── settled/
 │   ├── rules.py        the money rules
-│   ├── codes.py        the 4-digit app code, read in plain code
+│   ├── year.py         his year of birth, read in plain code
 │   ├── flow.py         one shop from due to follow-up
 │   ├── records.py      reads the shop records
 │   ├── paytm_mock.py   Paytm's side, mocked, and his taps
