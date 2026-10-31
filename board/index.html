@@ -126,7 +126,8 @@ h1{font-size:1.5rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font
 .typed button:hover{background:#dedcd5}
 .note{font-size:.875rem;color:var(--muted);padding:0 calc(.5*var(--u))}
 .note:empty{display:none}
-.note.warn{color:var(--rec);font-weight:600}
+.note span{display:block}
+.note .warn{color:var(--rec);font-weight:600}
 
 /* lower row: log and messages */
 .lower{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:calc(2*var(--u));min-height:0}
@@ -510,12 +511,16 @@ function renderControls(key, el, s) {
   st.classList.toggle('rec', !!me.rec);
   st.classList.toggle('wait', listening);
 
+  if (active && !me.stream && !me.asking && !me.micTried) {
+    me.micTried = true;
+    askMic(me).then(renderShops);
+  }
   let note = me.note || '';
   if (!active && /^Heard: /.test(note)) note = '';
   if (call.problem) note = call.problem;
-  const noteEl = el.querySelector('.note');
-  noteEl.textContent = note;
-  noteEl.classList.toggle('warn', !!call.problem || /Try again|No mic|Hold the button/.test(note));
+  const mic = active && !me.stream && me.mic ? me.mic : '';
+  html(el.querySelector('.note'), [mic, note].filter(Boolean).map(n =>
+    `<span${/Try again|No mic|Hold the button|heard nothing|problem|stopped|no voice/i.test(n) || n === call.problem ? ' class="warn"' : ''}>${esc(n)}</span>`).join(''));
 
   if (active && call.waiting && me.played !== call.seq) {
     me.played = call.seq;
@@ -536,19 +541,26 @@ async function startCall(key) {
   me.note = '';
   me.played = 0;
   me.speaking = false;
-  if (!me.stream && navigator.mediaDevices?.getUserMedia) {
-    try {
-      me.stream = await navigator.mediaDevices.getUserMedia({audio: true});
-    } catch (e) {
-      me.note = 'No mic, type his reply instead';
-    }
-  } else if (!me.stream) {
-    me.note = 'No mic here, type his reply instead';
-  }
+  me.micTried = true;
+  await askMic(me);
   const language = me.lang || SHOPS[key].default;
   const res = await fetch(`/api/call/${key}/start`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({language})});
   if (!res.ok) me.note = (await res.json()).error || 'could not start';
   await refreshShops();
+}
+
+function askMic(me) {
+  if (me.stream) return Promise.resolve();
+  if (me.asking) return me.asking;
+  if (!navigator.mediaDevices?.getUserMedia) {
+    me.mic = 'No mic here, type his reply instead';
+    return Promise.resolve();
+  }
+  me.asking = navigator.mediaDevices.getUserMedia({audio: true})
+    .then(stream => { me.stream = stream; me.mic = ''; })
+    .catch(() => { me.mic = 'No mic, type his reply instead'; })
+    .finally(() => { me.asking = null; });
+  return me.asking;
 }
 
 function holdStart(key) {
