@@ -26,7 +26,7 @@ def read(text, said, shop, turn, call=None):
     year_step = turn["step"] == "year"
     try:
         content = reader._ask(text, said, SYSTEM, max_tokens=320, user=_message(text, said, shop, turn, call))
-        return _parse(content, text, year_step)
+        return _parse(content, text, turn["step"])
     except Exception as e:
         reader._log({"error": type(e).__name__, "status": getattr(e, "code", None), "rupees": 0})
         return Answer("unsure", text, intent="other" if year_step else None)
@@ -60,7 +60,7 @@ def _message(text, said, shop, turn, call):
             f"His reply: {text}")
 
 
-def _parse(content, text, year_step):
+def _parse(content, text, step):
     content = content.strip()
     if content.startswith("```"):
         content = content.strip("`").removeprefix("json").strip()
@@ -71,13 +71,16 @@ def _parse(content, text, year_step):
     say = say.strip() if isinstance(say, str) else None
     nxt = nxt if isinstance(nxt, str) else None
     kind = got.get("kind")
-    if year_step:
+    if step == "year":
         return Answer("unsure", text, intent=kind if kind in reader.INTENTS else "other", say=say, next=nxt)
     if kind not in KINDS:
         raise ValueError("unknown kind")
     speaker = got.get("speaker")
     if speaker not in reader.SPEAKERS:
         raise ValueError("unknown speaker")
+    if step == "name" and kind == "question" and speaker == "someone else":
+        # asking who's calling doesn't say he isn't the owner: he gets asked once more
+        speaker = "unclear"
     reason = got.get("reason") if isinstance(got.get("reason"), str) else None
     if speaker != "shopkeeper":
         return Answer("unsure", text, reason=reason or f"{speaker} answered", speaker=speaker, say=say, next=nxt)
