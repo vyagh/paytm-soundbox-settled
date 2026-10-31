@@ -744,7 +744,9 @@ function renderResult(s) {
     const plan = s.charge ? `${s.charge}, from 1 Nov` : null;
     const head = {
       charged: [`Charged${amount ? ` ${amount}` : ''}`, plan || 'Rent taken'],
-      held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : `₹0 taken, ₹125 a month on hold`],
+      held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes`
+        : s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices)) ? '₹0 taken. Callback promised, only his tap changes the plan'
+        : '₹0 taken, ₹125 a month on hold'],
       not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made']
     }[s.status];
     const fresh = box.dataset.v !== `${focus}:${s.status}:${s.startAt}`;
