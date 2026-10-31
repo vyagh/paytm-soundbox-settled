@@ -326,6 +326,7 @@ const viewMsgs = () => fresh ? msgs.filter(m => m.id > fresh.msg) : msgs;
 
 function setFresh(on) {
   fresh = on ? {id: lastId, at: lastAt, msg: msgLast, t: new Date().toTimeString().slice(0, 5)} : null;
+  if (!on && rows[0]?.id > 1) refetch = true;
   try {
     if (fresh) localStorage.setItem(FRESH_KEY, JSON.stringify(fresh));
     else localStorage.removeItem(FRESH_KEY);
@@ -863,28 +864,48 @@ async function fetchAfter(id) {
   return res.json();
 }
 
+async function fetchAll(id) {
+  let got = await fetchAfter(id);
+  for (let page = got; page.length >= 500;) {
+    page = await fetchAfter(page[page.length - 1].id);
+    got = got.concat(page);
+  }
+  return got;
+}
+
+async function fetchStart() {
+  if (fresh && fresh.id) {
+    const got = await fetchAll(fresh.id - 1);
+    if (got[0] && got[0].id === fresh.id && got[0].at === fresh.at) return got;
+    setFresh(false);
+  }
+  return fetchAll(0);
+}
+
+let refetch = false;
+
 async function poll() {
   const live = document.getElementById('live');
   try {
-    let got = await fetchAfter(Math.max(lastId - 1, 0));
-    let freshFrom = lastId || Infinity;
-    let reset = false;
-    if (lastId > 0) {
-      const anchor = got[0];
-      if (!anchor || anchor.id !== lastId || anchor.at !== lastAt) {
-        reset = true;
+    let reset = refetch;
+    refetch = false;
+    let got = lastId > 0 && !reset ? await fetchAll(lastId - 1) : [];
+    let freshFrom = reset ? Infinity : lastId || Infinity;
+    if (lastId > 0 && !reset && (!got[0] || got[0].id !== lastId || got[0].at !== lastAt)) reset = true;
+    if (lastId === 0 || reset) {
+      if (reset) {
         rows = [];
         shown = {};
         freshFrom = Infinity;
-        got = await fetchAfter(0);
-      } else {
-        const mine = rows[rows.length - 1];
-        if (anchor.clip && !mine.clip) {
-          mine.clip = anchor.clip;
-          reset = true;
-        }
-        got = got.slice(1);
       }
+      got = await fetchStart();
+    } else {
+      const mine = rows[rows.length - 1];
+      if (got[0].clip && !mine.clip) {
+        mine.clip = got[0].clip;
+        reset = true;
+      }
+      got = got.slice(1);
     }
     if (got.length || reset) {
       rows = rows.concat(got);
