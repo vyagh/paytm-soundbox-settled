@@ -3430,15 +3430,14 @@
    {
     "text": "haan",
     "kind": "haan"
-   },
-   {
-    "text": "haan, pakka",
-    "kind": "haan"
    }
   ],
+  "tap": "cheaper_plan",
   "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
-  "manager": false
+  "manager": false,
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "cheaper-at-ask",
@@ -3459,14 +3458,13 @@
    {
     "text": "haan, wahi de do",
     "kind": "haan"
-   },
-   {
-    "text": "haan ji",
-    "kind": "haan"
    }
   ],
+  "tap": "cheaper_plan",
   "expect": "charged:plan-b",
-  "identity": "verified: year of birth matches"
+  "identity": "verified: year of birth matches",
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "cheaper-then-na",
@@ -3515,10 +3513,6 @@
     "topic": "cheaper"
    },
    {
-    "text": "haan",
-    "kind": "haan"
-   },
-   {
     "text": "pata nahi, soch ke batata hoon",
     "kind": "unsure",
     "reason": "soch ke batata hoon"
@@ -3530,7 +3524,7 @@
   "manager": false
  },
  {
-  "id": "price-at-b-readback",
+  "id": "price-at-b-offer",
   "shop": "gupta",
   "turns": [
    {
@@ -3546,10 +3540,6 @@
     "topic": "cheaper"
    },
    {
-    "text": "haan",
-    "kind": "haan"
-   },
-   {
     "text": "kitna bola?",
     "kind": "question",
     "topic": "price"
@@ -3559,8 +3549,11 @@
     "kind": "haan"
    }
   ],
+  "tap": "cheaper_plan",
   "expect": "charged:plan-b",
-  "identity": "verified: year of birth matches"
+  "identity": "verified: year of birth matches",
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "two-questions-then-yes",
@@ -3678,15 +3671,14 @@
    {
     "text": "haan, ye theek hai",
     "kind": "haan"
-   },
-   {
-    "text": "haan, pakka",
-    "kind": "haan"
    }
   ],
+  "tap": "cheaper_plan",
   "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
-  "manager": true
+  "manager": true,
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "his-promise-then-na",
@@ -3762,10 +3754,6 @@
     "reason": "usne to free bola tha",
     "promise": "free",
     "upset": true
-   },
-   {
-    "text": "haan",
-    "kind": "haan"
    },
    {
     "text": "nahi",
@@ -3870,15 +3858,14 @@
    {
     "text": "haan",
     "kind": "haan"
-   },
-   {
-    "text": "haan ji, pakka",
-    "kind": "haan"
    }
   ],
+  "tap": "cheaper_plan",
   "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
-  "manager": true
+  "manager": true,
+  "ends": "TAP_B",
+  "first_choice": "cheaper_plan"
  },
  {
   "id": "bare-haan-at-name",

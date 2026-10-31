@@ -4,7 +4,7 @@ from voice import script
 from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, CALL_LATER, CALLBACK, CHARGED,
                           CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO,
                           NAME_AGAIN, OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK,
-                          READ_BACK_B, REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
+                          REASSURE, SOFT, TAP_B, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -142,7 +142,7 @@ def _call(shop, listener, state):
             return decision
         _decided(shop, decision)
         if told:
-            paytm_mock.tell_manager(shop, told.reason, _read_as(told), took=decision.plan)
+            paytm_mock.tell_manager(shop, told.reason, _read_as(told))
         state.step = "done"
         _say(shop, listener, CHARGED)
         return decision
@@ -155,7 +155,13 @@ def _call(shop, listener, state):
     paytm_mock.hold_rent(shop)
     if told:
         paytm_mock.tell_manager(shop, told.reason, _read_as(told))
-    paytm_mock.send_choices(shop, state.call)
+    # a haan to the cheaper plan on the call: its choice goes first, and only his tap starts it
+    wants = decision.plan if last.kind == "haan" and decision.plan != signed else None
+    paytm_mock.send_choices(shop, state.call, wants)
+    if wants:
+        _say(shop, listener, TAP_B)
+        _say(shop, listener, CLOSING)
+        return decision
     paytm_mock.open_ticket(shop, decision.rule, "na" if last.kind == "na" else "unclear")
     # the apology only for anger, a complaint or distress; calm doubt gets time to think
     if offered or not any(a.upset for _, a in answers):
@@ -191,8 +197,7 @@ def _plan(shop, state, listener):
                 _say(shop, listener, ANSWERS[answer.topic])
             line = AGAIN.get(line, line)
         elif answer.kind == "haan":
-            plan = decision.plan
-            line = READ_BACK if plan == signed else READ_BACK_B
+            line = READ_BACK
             state.step = "readback"
         else:
             plan, line, offered = decision.plan, PROMISES[answer.promise], True

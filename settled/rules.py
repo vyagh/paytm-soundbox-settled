@@ -60,11 +60,12 @@ def decide(shop, answers, verified):
     """The money, from his answers on the plan question, the read-back and any Plan B offer.
 
     answers holds (plan, Answer) pairs, each answer to a line about that plan. The only
-    write straight from what the AI read is a charge, after haan twice to the same plan
-    from the verified owner, with no na or unsure about that plan. A question gets an
+    write straight from what the AI read is a charge of the plan he signed, after haan
+    twice from the verified owner, with no na or unsure about it. A question gets an
     answer and the line asked again, up to QUESTIONS. A na or doubt that rests on a
-    salesman's promise gets the cheaper plan offered once. Everything else holds the
-    rent for a person, and a cancel, pickup or plan change waits for his own tap in WhatsApp.
+    salesman's promise gets the cheaper plan offered once, and a haan to it holds the
+    rent until his tap in WhatsApp. Everything else holds the rent for a person, and a
+    cancel, pickup or plan change waits for his own tap in WhatsApp.
     """
     before = before_call(shop)
     if before.outcome != "call":
@@ -83,6 +84,8 @@ def decide(shop, answers, verified):
             if questions > QUESTIONS:
                 return Decision("held", f"{questions} questions → nothing taken, a person calls back")
             continue
+        if answer.kind == "haan" and plan != signed:
+            return Decision("held", f"haan to {plan.name} → nothing taken, {plan.name} waits for his tap", plan)
         if answer.kind == "haan":
             haans[plan.id] = haans.get(plan.id, 0) + 1
             if haans[plan.id] == 2:

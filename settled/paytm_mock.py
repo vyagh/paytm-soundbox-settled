@@ -128,38 +128,42 @@ def open_ticket(shop, why, case="unclear"):
     return _act(shop, "open ticket", rule=why)
 
 
-def tell_manager(shop, reason, read_as="na", took=None):
-    """took is the plan he chose on the call instead, if any."""
+def tell_manager(shop, reason, read_as="na"):
     answer = log.last_answer(shop.id, read_as)
     s = shop.signup
-    after = f"He took {took.name} at ₹{took.price} on the call instead." if took else "Nothing is taken."
     text = (f"{_who(shop)} {'said no to' if read_as == 'na' else 'disputed'} the ₹{s['price']}/month Soundbox rent that {_salesman(shop)} signed up "
-            f"on {_day(s['on'])} (form {s['form']}). What he said: {_his_words(answer)}. {after}")
+            f"on {_day(s['on'])} (form {s['form']}). What he said: {_his_words(answer)}. Nothing is taken.")
     log.message(shop.id, "manager", "WhatsApp", f"For {s['salesman']['name']}'s manager: {text}")
     return _act(shop, "tell manager", reason=reason)
 
 
-def choices(shop):
+def choices(shop, wants=None):
+    """wants is the cheaper plan he said yes to on the call, if any: its choice goes first."""
     signed = shop.plan(shop.signup["plan"])
     out = [{"id": "keep_plan", "label": f"Keep {signed.name}, ₹{signed.price}/month"}]
     cheaper = shop.cheaper(signed)
     if cheaper:
-        out.append({"id": "cheaper_plan", "label": f"Switch to {cheaper.name}, ₹{cheaper.price}/month"})
+        out.insert(0 if wants == cheaper else 1, {"id": "cheaper_plan", "label": f"Switch to {cheaper.name}, ₹{cheaper.price}/month"})
     out.append({"id": "cancel", "label": "Cancel and return the box"})
     return out
 
 
-def send_choices(shop, call):
+def send_choices(shop, call, wants=None):
     """His WhatsApp: what the record says, that nothing is taken, and the choices only he can make.
-    call is the id of this call's "due" row: the choices hold for this call only."""
+    call is the id of this call's "due" row: the choices hold for this call only. wants is the
+    cheaper plan he said yes to on the call, which starts only when he taps it here."""
     s = shop.signup
     signed = shop.plan(s["plan"])
+    if wants:
+        then = (f"On our call you said yes to {wants.name}, ₹{wants.price}/month from {_starts(shop)}. "
+                f"Tap {wants.name} here to start it: {{link}}")
+    else:
+        then = "A Paytm representative will call you within two days with the right plan. Or choose yourself here: {link}"
     log.message(shop.id, "shopkeeper", "WhatsApp",
                 f"Paytm: Namaste {shop.owner} ji. Nothing has been taken for your Soundbox ({_serial(shop)}). "
                 f"Your sign-up form {s['form']}, done by {s['salesman']['name']} on {_day(s['on'])}, says {signed.name}, "
-                f"₹{signed.price}/month from {_starts(shop)}. A Paytm representative will call you within two days with the right plan. "
-                f"Or choose yourself here: {{link}}",
-                choices(shop), call=call)
+                f"₹{signed.price}/month from {_starts(shop)}. {then}",
+                choices(shop, wants), call=call)
     return _act(shop, "send choices on WhatsApp")
 
 
