@@ -3879,5 +3879,112 @@
   "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
   "manager": true
+ },
+ {
+  "id": "bare-haan-at-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "हाँ",
+    "kind": "unsure",
+    "speaker": "unclear",
+    "reason": "garbled reply"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true
+ },
+ {
+  "id": "bare-boliye-at-name",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "जी, बोलिए",
+    "kind": "unsure",
+    "speaker": "unclear"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true
+ },
+ {
+  "id": "year-two-then-four",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "78... 1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true
+ },
+ {
+  "id": "who-then-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "aap kaun bol rahe ho?",
+    "kind": "question"
+   },
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "asked": [
+   "NAME_AFTER_WHO"
+  ],
+  "honest": true
  }
 ]

@@ -5,6 +5,11 @@ from .year import refused, spoken
 BUSY = ("busy", "bizi", "baad mein", "baad me ", "bad mein", "baad main", "call later", "later call", "call back",
         "callback", "phir se call", "phir call", "fir call", "dobara call", "free nahi", "time nahi",
         "बिज़ी", "बिजी", "व्यस्त", "बाद में", "बाद मे ", "फ्री नहीं", "टाइम नहीं", "फिर से कॉल", "दोबारा कॉल")
+# A bare yes to "am I speaking with him": confirmed in plain code, before the AI reads it,
+# which takes a lone "हाँ" for a garbled scrap.
+YES_WORDS = {"haan", "han", "haa", "ha", "ji", "jee", "yes", "yeah", "boliye", "bolie", "speaking", "हा", "जी", "बोलिए",
+             "बोलिये"}
+YES_PHRASES = ("bol raha hoon", "bol raha hu", "bol rha hu", "बोल रहा हू", "बोल रहा हु")
 from .models import Decision
 from .records import missing
 
@@ -23,6 +28,8 @@ def name(answer, first=True):
     the identity rule that ends the call. Only a clear someone else ends it at once."""
     if refused(answer.words):
         return "failed: refused"
+    if bare_yes(answer.words):
+        return None
     if answer.kind == "haan" and answer.speaker == "shopkeeper":
         return None
     if answer.kind == "na" or answer.speaker == "someone else":
@@ -30,6 +37,15 @@ def name(answer, first=True):
     if first and answer.kind != "no answer":
         return "ask again"
     return "failed: not confirmed"
+
+
+def bare_yes(text):
+    said = spoken(text)
+    if not said.strip():
+        return False
+    for phrase in YES_PHRASES:
+        said = said.replace(spoken(phrase), " ")
+    return set(said.split()) <= YES_WORDS
 
 
 def unverified(rule):

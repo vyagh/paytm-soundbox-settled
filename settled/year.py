@@ -133,6 +133,13 @@ def _runs(text):
         if thousand is not None and word in FILLER:
             continue
         digits = _token_digits(token)
+        if digits is not None and len(digits) == 4 and _key(token) not in DIGIT:
+            # "78... 1978": a year said in four numerals stands alone, never joined to a run before it
+            if run or thousand is not None:
+                runs.append(str((thousand or 0) + int(run or 0)) if thousand is not None else run)
+            runs.append(digits)
+            run, thousand, tens = "", None, False
+            continue
         if digits is None:
             if run or thousand is not None:
                 runs.append(str((thousand or 0) + int(run or 0)) if thousand is not None else run)
@@ -152,16 +159,17 @@ def _tokens(text):
 
 
 def _years(text):
-    """Every year his reply names: four digits as they are, two digits as 19xx ("78", "sann athattar")."""
-    years = []
+    """Every year his reply names: four digits as they are, two digits as 19xx ("78", "sann athattar").
+    When four digits appear anywhere, only they count."""
+    four, two = [], []
     for run in _runs(text):
         if len(run) == 8 and run[:4] == run[4:]:
             run = run[:4]
         if len(run) == 4:
-            years.append(run)
+            four.append(run)
         elif len(run) == 2:
-            years.append("19" + run)
-    return years
+            two.append("19" + run)
+    return four or two
 
 
 def read(text):

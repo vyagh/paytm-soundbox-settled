@@ -13,7 +13,7 @@ A turn at the year question may carry the "intent" the AI would read in it.
 said the year didn't match, and "unread" how many of his
 turns the call never got to. A turn {"hangup": true} is him hanging up there, and
 "ends" names the script line said just before the goodbye, "answered" the answer
-lines that should be said, and "manager" whether his manager got a WhatsApp.
+lines that should be said, "asked" the lines that should get a reply, and "manager" whether his manager got a WhatsApp.
 "retry" says a retry call should be booked, as after a cut line or silence, and
 "call_me" whether an SMS with a Call me now button went out. "callback" on "again"
 makes the second call one he started. "new_round" starts a demo round through
@@ -275,6 +275,9 @@ def main(argv):
                 ending = spoken[-2] if len(spoken) > 1 else None
                 if ending != getattr(script, case["ends"]):
                     wrong.append(f"ended on {next((k for k in dir(script) if getattr(script, k) == ending), ending)}")
+            for line in case.get("asked", []):
+                if getattr(script, line) not in [said for said, _ in heard]:
+                    wrong.append(f"{line} not asked")
             for line in case.get("answered", []):
                 if getattr(script, line) not in spoken:
                     wrong.append(f"{line} not said")
