@@ -2,9 +2,9 @@ import time
 
 from voice import script
 from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, CALL_LATER, CALLBACK, CHARGED,
-                          CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AGAIN,
-                          OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, READ_BACK_B,
-                          REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
+                          CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO,
+                          NAME_AGAIN, OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK,
+                          READ_BACK_B, REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -112,7 +112,7 @@ def _call(shop, listener, state):
                    rule="asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more")
         if asked_who:
             _say(shop, listener, WHO_WHY)
-        line = NAME_AGAIN
+        line = NAME_AFTER_WHO if asked_who else NAME_AGAIN
         reply = listener(shop, line)
         failed = rules.name(reply, first=False)
     _log_reply(shop, state, "identity", line, reply, rule=failed or "name confirmed")
