@@ -160,6 +160,8 @@ def start(shop_id, language=None):
         call = _calls.get(shop_id)
         if call and not call.done:
             raise Busy("a call to this shop is already on")
+        if log.settled(shop_id):
+            raise Busy("rent already settled for this shop, so there is no second call. Run try.py reset to start over")
         call = _calls[shop_id] = Call(shop_id, language)
     call.thread.start()
     return call

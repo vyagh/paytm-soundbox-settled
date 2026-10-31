@@ -65,6 +65,7 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 A few things hold these together:
 
 - Cancelling, changing a plan or booking a pickup only happens through his own tap (`POST /api/consent/<id>/<choice>`, in [`settled/paytm_mock.py`](settled/paytm_mock.py)). A second tap on the same message is refused.
+- A shop's rent is settled once: one charge or one cancel, checked in the same database write that makes it. After that, Settled won't call the shop again until `try.py reset`. A WhatsApp's choices only work for the call that sent them, while the rent is undecided. Once a later call or tap settles it, or a newer call starts, a tap on the old message gets 409, "this link has expired".
 - If the reply comes from someone else (a son, a worker, the salesman), [`ai/reader.py`](ai/reader.py) turns it into unsure, so a yes from them never counts.
 - A lone "hmm" reads as no answer, never haan. On a live call, a reply that reads as no answer gets the line said once more before it counts.
 - If the AI call fails or returns anything outside the expected JSON, the reply reads as unsure, and unsure holds.

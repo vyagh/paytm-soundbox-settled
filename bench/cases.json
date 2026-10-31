@@ -2441,5 +2441,151 @@
   "expect": "charged:plan-a",
   "identity": "verified",
   "recording": true
+ },
+ {
+  "id": "tap-then-call-again",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "nahi",
+    "kind": "na"
+   }
+  ],
+  "tap": "keep_plan",
+  "expect": "charged:plan-a",
+  "identity": "verified",
+  "recording": true,
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, theek hai",
+     "kind": "haan"
+    },
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "3456"
+    },
+    {
+     "text": "haan liya tha",
+     "kind": "haan"
+    },
+    {
+     "text": "haan pakka",
+     "kind": "haan"
+    }
+   ],
+   "expect": "refused"
+  },
+  "note": "he keeps the plan by his tap, then Call again: his rent is settled, so Settled won't call or charge a second time"
+ },
+ {
+  "id": "call-again-then-old-tap",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "na bhaiya, nahi chahiye",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, theek hai",
+     "kind": "haan"
+    },
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "3456"
+    },
+    {
+     "text": "haan ji, Anil aaya tha",
+     "kind": "haan"
+    },
+    {
+     "text": "ji haan, theek hai",
+     "kind": "haan"
+    }
+   ],
+   "expect": "charged"
+  },
+  "old_tap": "cancel",
+  "note": "a second call charges, then he taps cancel in the first call's WhatsApp: that link has expired"
+ },
+ {
+  "id": "two-holds-old-tap",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, theek hai",
+     "kind": "haan"
+    },
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "3456"
+    },
+    {
+     "text": "haan, par ₹1 bola tha",
+     "kind": "unsure"
+    }
+   ],
+   "expect": "held"
+  },
+  "old_tap": "keep_plan",
+  "note": "two held calls: only the latest call's WhatsApp can be tapped"
  }
 ]

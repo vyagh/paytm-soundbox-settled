@@ -4,7 +4,10 @@
 
 Each case lists his replies in order, from the recording ask on. The code line
 gets the bench's fixed app code, 3456. A case with "tap" then taps that choice in
-his WhatsApp through POST /api/consent, on a board started in this process.
+his WhatsApp through POST /api/consent, on a board started in this process. A case
+with "again" calls the shop a second time in the same log, with its own turns and
+expect ("refused" when Settled won't call), and "old_tap" then taps the first
+call's WhatsApp, which should answer 409.
 """
 import argparse
 import json
@@ -47,7 +50,7 @@ def make_reader(name, case):
 
 def play(case, read):
     """The call as calls.py runs it: blanks are no answer, and the code line never reaches the reader."""
-    from settled import flow
+    from settled import flow, log
     from settled.models import Answer, CallState
     from voice import script
 
@@ -69,27 +72,33 @@ def play(case, read):
         heard.append((said, answer))
         return answer
 
-    decision = flow.run(case["shop"], listener, state)
+    try:
+        decision = flow.run(case["shop"], listener, state)
+    except log.AlreadySettled:
+        decision = None
     return decision, heard, state, list(turns)
 
 
 def tap(board, shop):
-    """His tap on the choices in his WhatsApp, through the board's endpoint. Also checks a second tap is refused."""
+    """His tap on the choices in his latest WhatsApp, through the board's endpoint. Also checks a second tap is refused."""
     from settled import log
     with sqlite3.connect(log.path()) as db:
         found = db.execute("SELECT id FROM messages WHERE shop = ? AND choices IS NOT NULL ORDER BY id DESC", (shop,)).fetchone()
     if not found:
         return None, "no choices sent"
+    return poster(board, found[0]), found[0]
 
+
+def poster(board, msg):
     def post(choice):
-        req = urllib.request.Request(f"{board}/api/consent/{found[0]}/{choice}", data=b"", method="POST")
+        req = urllib.request.Request(f"{board}/api/consent/{msg}/{choice}", data=b"", method="POST")
         try:
             with urllib.request.urlopen(req, timeout=10) as resp:
                 return resp.status, json.loads(resp.read())
         except urllib.error.HTTPError as e:
             return e.code, json.loads(e.read() or b"{}")
 
-    return post, found[0]
+    return post
 
 
 def start_board():
@@ -99,7 +108,23 @@ def start_board():
     return board, f"http://127.0.0.1:{board.server_address[1]}"
 
 
+def score(decision, heard, rows):
+    """(identity rule, charged after na or unsure, charged unverified, negative actions) for one call's rows."""
+    from settled import paytm_mock
+    from voice import script
+    identity = next((r["rule"] for r in reversed(rows) if r["step"] == "identity"), None)
+    bad = unverified = 0
+    if decision is not None and decision.outcome == "charged":
+        asked = [a for said, a in heard if said in (script.ASK, script.READ_BACK)]
+        bad = any(a.kind in ("na", "unsure") for a in asked)
+        unverified = identity != "verified"
+    negative = sum(1 for r in rows if r["action"] and r["action"].removesuffix(" (mock)") in paytm_mock.NEGATIVE)
+    return identity, bad, unverified, negative
+
+
 def label(decision):
+    if decision is None:
+        return "refused"
     if decision.outcome == "charged":
         return f"charged:{decision.plan.id}"
     return decision.outcome
@@ -129,7 +154,7 @@ def main(argv):
         from ai import reader as ai
         log_start = len(ai.COST_LOG.read_text(encoding="utf-8").splitlines()) if ai.COST_LOG.exists() else 0
     misread, problems = [], []
-    bad = unverified = negative = honest = honest_charged = matched = taps = 0
+    bad = unverified = negative = honest = honest_charged = matched = taps = double = 0
 
     board, url = start_board()
     print(f"{'case':<26}{'shop':<8}{'expected':<16}{'got':<16}{'identity':<24}")
@@ -141,15 +166,10 @@ def main(argv):
             os.environ["SETTLED_DB"] = str(Path(tmp) / f"{n}.db")
             decision, heard, state, unread = play(case, make_reader(args.reader, case))
             rows = log.rows(case["shop"])
-            identity = next((r["rule"] for r in reversed(rows) if r["step"] == "identity"), None)
+            identity, b, u, neg = score(decision, heard, rows)
+            bad, unverified, negative = bad + b, unverified + u, negative + neg
             got = label(decision)
             wrong = []
-
-            if decision.outcome == "charged":
-                asked = [a for said, a in heard if said in (script.ASK, script.READ_BACK)]
-                bad += any(a.kind in ("na", "unsure") for a in asked)
-                unverified += identity != "verified"
-            negative += sum(1 for r in rows if r["action"] and r["action"].removesuffix(" (mock)") in paytm_mock.NEGATIVE)
 
             if case.get("tap"):
                 post, msg = tap(url, case["shop"])
@@ -170,6 +190,29 @@ def main(argv):
                     if pickups != (case["tap"] == "cancel"):
                         wrong.append(f"{pickups} pickups after a {case['tap']} tap")
 
+            first = log.last_choices(case["shop"])
+            if case.get("again"):
+                later = case["again"]
+                before = len(log.rows(case["shop"]))
+                decision2, heard2, _, unread2 = play({**case, "turns": later["turns"]}, make_reader(args.reader, later))
+                _, b, u, neg = score(decision2, heard2, log.rows(case["shop"])[before:])
+                bad, unverified, negative = bad + b, unverified + u, negative + neg
+                heard += heard2
+                if label(decision2) != expected_label(later["expect"]):
+                    wrong.append(f"second call {label(decision2)}")
+                if unread2 and decision2 is not None:
+                    wrong.append(f"{len(unread2)} turns never read on the second call")
+            if case.get("old_tap"):
+                if not first:
+                    wrong.append("no first-call choices to tap")
+                else:
+                    status, reply = poster(url, first["id"])(case["old_tap"])
+                    taps += 1
+                    if status != 409 or not reply.get("expired"):
+                        wrong.append(f"old tap answered {status}")
+            settles = sum(1 for r in log.rows(case["shop"]) if r["action"] in log.SETTLES)
+            double += settles > 1
+
             want = expected_label(case["expect"])
             if got != want:
                 wrong.append("outcome")
@@ -186,7 +229,7 @@ def main(argv):
             if wrong:
                 problems.append(f"{case['id']}: {', '.join(wrong)}")
 
-            labelled = {t["text"]: t for t in case["turns"] if "kind" in t}
+            labelled = {t["text"]: t for t in case["turns"] + case.get("again", {}).get("turns", []) if "kind" in t}
             for said, a in heard:
                 t = labelled.get(a.words)
                 if t and said != script.CODE and (t["kind"] != a.kind or t.get("speaker", "shopkeeper") != a.speaker):
@@ -198,6 +241,7 @@ def main(argv):
     print(f"charged after na or unsure: {bad}")
     print(f"charged without verified identity: {unverified}")
     print(f"negative actions from the AI: {negative}")
+    print(f"double charges (more than one charge or cancel per shop): {double}")
     print(f"honest yeses charged: {honest_charged}/{honest}")
     print(f"consent taps through the endpoint: {taps}")
     print(f"cases matching expected outcome: {matched}/{len(cases)}")

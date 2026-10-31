@@ -1,6 +1,7 @@
 """Paytm's side of the follow-up, mocked. Each action is logged, and the texts it
 would send go in the messages table. Nothing is actually sent."""
 import json
+import threading
 from datetime import date, datetime
 
 from . import log, records
@@ -8,6 +9,12 @@ from . import log, records
 DONE = "done (mock)"
 # Actions that lose the customer or change his plan. The call never takes one; only his tap does.
 NEGATIVE = ("book pickup", "cancel plan", "change plan")
+
+_tapping = threading.Lock()
+
+
+class Expired(Exception):
+    pass
 
 
 def _act(shop, action, **fields):
@@ -61,9 +68,11 @@ def charge_rent(shop, plan, tapped=False):
     else:
         yes = log.last_answer(shop.id)
         why = f"Your yes on our call{' at ' + _clock(yes['at']) if yes else ''} is noted."
+    log.add_settle(shop.id, "follow-up", action="charge rent (mock)", outcome="charged",
+                   rule=f"₹{plan.price} a month, {plan.name}")
     _sms(shop, f"Your Soundbox rent for {shop.name} is ₹{plan.price}/month ({plan.name}) from {_starts(shop)}. "
                f"{why} Not right? Reply NO to this SMS and we will stop it.")
-    return _act(shop, "charge rent", outcome="charged", rule=f"₹{plan.price} a month, {plan.name}")
+    return DONE
 
 
 def hold_rent(shop, tell=None):
@@ -120,8 +129,9 @@ def choices(shop):
     return out
 
 
-def send_choices(shop):
-    """His WhatsApp: what the record says, that nothing is taken, and the choices only he can make."""
+def send_choices(shop, call):
+    """His WhatsApp: what the record says, that nothing is taken, and the choices only he can make.
+    call is the id of this call's "due" row: the choices hold for this call only."""
     s = shop.signup
     signed = shop.plan(s["plan"])
     log.message(shop.id, "shopkeeper", "WhatsApp",
@@ -129,7 +139,7 @@ def send_choices(shop):
                 f"Your sign-up form {s['form']}, done by {s['salesman']['name']} on {_day(s['on'])}, says {signed.name}, "
                 f"₹{signed.price}/month from {_starts(shop)}. A Paytm person will call you with the right offer. "
                 f"Or choose yourself here: {{link}}",
-                choices(shop))
+                choices(shop), call=call)
     return _act(shop, "send choices on WhatsApp")
 
 
@@ -137,31 +147,51 @@ def _serial(shop):
     return records.record(shop.id).get("device", {}).get("serial", "no serial")
 
 
+def live_link(shop_id):
+    """The one message whose choices he can still tap, or None. It is the latest call's,
+    and only while the shop's rent is undecided: a later call or a settled rent ends it."""
+    msg = log.last_choices(shop_id)
+    due = log.last_step(shop_id, "due")
+    if not msg or not due or msg["call"] != due["id"] or log.settled(shop_id):
+        return None
+    return msg["id"]
+
+
 def tap(message_id, choice):
     """His tap on a WhatsApp choice. The only way a plan is cancelled, changed or a box picked up."""
-    msg = log.get_message(message_id)
-    if not msg or not msg["choices"]:
-        raise KeyError("no message with choices")
-    offered = {c["id"]: c["label"] for c in json.loads(msg["choices"])}
-    if choice not in offered:
-        raise ValueError(f"not a choice on this message: {choice!r}")
-    shop = records.load(msg["shop"])
-    log.tap(message_id, choice)
+    with _tapping:
+        msg = log.get_message(message_id)
+        if not msg or not msg["choices"]:
+            raise KeyError("no message with choices")
+        offered = {c["id"]: c["label"] for c in json.loads(msg["choices"])}
+        if choice not in offered:
+            raise ValueError(f"not a choice on this message: {choice!r}")
+        if message_id in log.taps():
+            raise log.Tapped("he already chose on this message")
+        if live_link(msg["shop"]) != message_id:
+            raise Expired("this link has expired")
+        shop = records.load(msg["shop"])
+        log.tap(message_id, choice)
+        try:
+            return _tapped(shop, choice, f"tapped: {offered[choice]}")
+        except log.AlreadySettled:
+            raise Expired("this link has expired") from None
 
+
+def _tapped(shop, choice, said):
     signed = shop.plan(shop.signup["plan"])
-    said = f"tapped: {offered[choice]}"
     if choice == "keep_plan":
-        log.add(shop.id, "tap", heard=said, rule=f"his tap in WhatsApp → charged at ₹{signed.price} ({signed.name})", outcome="charged")
         charge_rent(shop, signed, tapped=True)
+        log.add(shop.id, "tap", heard=said, rule=f"his tap in WhatsApp → charged at ₹{signed.price} ({signed.name})", outcome="charged")
         return {"outcome": "charged", "plan": signed.id}
     if choice == "cheaper_plan":
         plan = shop.cheaper(signed)
+        charge_rent(shop, plan, tapped=True)
         log.add(shop.id, "tap", heard=said, rule=f"his tap in WhatsApp → {plan.name}, charged at ₹{plan.price}", outcome="charged")
         _act(shop, "change plan", rule=f"{signed.name} → {plan.name}")
-        charge_rent(shop, plan, tapped=True)
         return {"outcome": "charged", "plan": plan.id}
+    log.add_settle(shop.id, "follow-up", action="cancel plan (mock)", outcome="cancelled")
     log.add(shop.id, "tap", heard=said, rule="his tap in WhatsApp → plan cancelled, box picked up", outcome="cancelled")
-    _act(shop, "cancel plan", outcome="cancelled")
     book_pickup(shop)
     return {"outcome": "cancelled", "plan": None}
 

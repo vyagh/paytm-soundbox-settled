@@ -576,13 +576,15 @@ function renderPhone(s) {
     const choices = choicesOf(asking);
     const tap = taps[asking.id] || {};
     const picked = tap.choice || asking.tapped || null;
+    const expired = !picked && !tap.busy && asking.id !== s.shop.link;
+    const note = tap.note || (picked ? 'His tap is recorded' : expired ? 'This link has expired' : 'Only his tap here changes the plan');
     const inText = asking.link && asking.text.includes(asking.link);
     const text = asking.text.replace(/^Paytm:\s*/, '').replace(inText ? asking.link : /$^/, '').replace(/[\s:]+$/, '');
     inner = `<div class="screen wa"><div class="app wa"><i>${CHANNEL_ICONS.WhatsApp.replace('fill="currentColor"', 'fill="#fff"')}</i>WhatsApp<time>${esc(clock(asking.at))}</time></div>
       <div class="wamsg"><p>${esc(text)}</p>${asking.link ? `<span class="walink">${esc(asking.link)}</span>` : ''}</div>
       ${choices.length ? `<div class="choices">${choices.map(c => `<button class="choice" type="button" data-msg="${esc(asking.id)}" data-choice="${esc(c.id)}"
-        aria-pressed="${picked === c.id}"${picked || tap.busy ? ' disabled' : ''}>${esc(c.label)}</button>`).join('')}</div>` : ''}
-      <p class="tapnote${tap.warn ? ' warn' : ''}">${esc(tap.note || (picked ? 'His tap is recorded' : 'Only his tap here changes the plan'))}</p></div>`;
+        aria-pressed="${picked === c.id}"${picked || expired || tap.busy ? ' disabled' : ''}>${esc(c.label)}</button>`).join('')}</div>` : ''}
+      <p class="tapnote${tap.warn ? ' warn' : ''}">${esc(note)}</p></div>`;
   }
   box.hidden = !inner;
   html(box, inner ? `<h2>His phone</h2><div class="handset">${inner}</div>` : '');
@@ -598,6 +600,7 @@ $('phone').addEventListener('click', async e => {
     const res = await fetch(`/api/consent/${encodeURIComponent(id)}/${encodeURIComponent(b.dataset.choice)}`, {method: 'POST'});
     const got = await res.json().catch(() => ({}));
     if (res.ok) Object.assign(tap, {choice: b.dataset.choice, note: got.note || 'His tap is recorded'});
+    else if (got.expired) Object.assign(tap, {note: 'This link has expired'});
     else Object.assign(tap, {warn: true, note: got.error || 'Could not send his tap'});
   } catch (e) {
     Object.assign(tap, {warn: true, note: 'Network failed, tap again'});

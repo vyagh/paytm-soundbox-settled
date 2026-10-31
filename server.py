@@ -44,6 +44,7 @@ def shops():
             "checked": code not in script.UNCHECKED,
             "record": records.record(shop_id),
             "call": call.state() if call else None,
+            "link": paytm_mock.live_link(shop_id) if log.path().exists() else None,
         })
     return out
 
@@ -184,6 +185,8 @@ class Handler(BaseHTTPRequestHandler):
             return self.json(422, {"error": str(e)})
         except log.Tapped as e:
             return self.json(409, {"error": str(e)})
+        except paytm_mock.Expired as e:
+            return self.json(409, {"error": str(e), "expired": True})
 
     def reply(self, shop_id, url):
         call = calls.get(shop_id)

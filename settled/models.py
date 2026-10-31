@@ -61,7 +61,9 @@ class Decision:
 @dataclass
 class CallState:
     """What the board shows about a call in progress. code is the one in his mock
-    Paytm app, set when it is sent; recording only turns true on his clear haan."""
+    Paytm app, set when it is sent; recording only turns true on his clear haan.
+    call is the id of the call's "due" row."""
     step: str | None = None
     code: str | None = None
     recording: bool = False
+    call: int | None = None

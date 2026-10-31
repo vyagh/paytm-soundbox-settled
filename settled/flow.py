@@ -14,6 +14,8 @@ def run(shop_id, listener, state=None):
     """
     state = state if state is not None else CallState()
     shop = records.load(shop_id)
+    if log.settled(shop.id):
+        raise log.AlreadySettled(f"{shop.name}'s rent is already settled, so there is nothing to call about")
     try:
         return _run(shop, listener, state)
     finally:
@@ -21,7 +23,7 @@ def run(shop_id, listener, state=None):
 
 
 def _run(shop, listener, state):
-    log.add(shop.id, "due", rule=f"first rent due {shop.signup['starts']}" if shop.signup else None)
+    state.call = log.add(shop.id, "due", rule=f"first rent due {shop.signup['starts']}" if shop.signup else None)
     log.add(shop.id, "records checked", reason=_records_seen(shop))
     decision = rules.before_call(shop)
     if decision.outcome != "call":
@@ -78,7 +80,7 @@ def _run(shop, listener, state):
     paytm_mock.hold_rent(shop)
     if any(a.kind == "na" for a in answers):
         paytm_mock.tell_manager(shop, next(a.reason for a in answers if a.kind == "na"))
-    paytm_mock.send_choices(shop)
+    paytm_mock.send_choices(shop, state.call)
     paytm_mock.open_ticket(shop, decision.rule, "na" if answers[-1].kind == "na" else "unclear")
     _say(shop, listener, FOLLOW_UP)
     return decision

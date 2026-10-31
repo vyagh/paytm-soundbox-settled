@@ -31,7 +31,8 @@ CREATE TABLE IF NOT EXISTS messages (
   channel TEXT NOT NULL CHECK (channel IN ('SMS', 'WhatsApp', 'ticket')),
   text TEXT NOT NULL,
   link TEXT,
-  choices TEXT
+  choices TEXT,
+  call INTEGER
 );
 CREATE TRIGGER IF NOT EXISTS messages_no_update BEFORE UPDATE ON messages
 BEGIN SELECT RAISE(ABORT, 'messages are only added, never changed'); END;
@@ -67,14 +68,23 @@ class Tapped(Exception):
     pass
 
 
+class AlreadySettled(Exception):
+    pass
+
+
+# The actions that settle a shop's rent. Settled covers the first rent, so each shop
+# gets at most one of these, and add_settle is the only way one is written.
+SETTLES = ("charge rent (mock)", "cancel plan (mock)")
+
+
 def _connect():
     db = sqlite3.connect(path(), timeout=5)
     db.row_factory = sqlite3.Row
     db.executescript(SCHEMA)
     have = {r[1] for r in db.execute("PRAGMA table_info(messages)")}
-    for column in ("link", "choices"):
+    for column, kind in (("link", "TEXT"), ("choices", "TEXT"), ("call", "INTEGER")):
         if column not in have:
-            db.execute(f"ALTER TABLE messages ADD COLUMN {column} TEXT")
+            db.execute(f"ALTER TABLE messages ADD COLUMN {column} {kind}")
     return db
 
 
@@ -90,6 +100,53 @@ def add(shop, step, **fields):
             [at, shop, step, *fields.values()],
         )
         return cur.lastrowid
+
+
+def add_settle(shop, step, **fields):
+    """Add the row that settles the shop's rent, in the same transaction as the check
+    that none is there yet. Raises AlreadySettled if one is."""
+    if fields.get("action") not in SETTLES:
+        raise ValueError(f"not a settling action: {fields.get('action')!r}")
+    at = datetime.now().isoformat(timespec="seconds")
+    cols = ["at", "shop", "step", *fields]
+    db = _connect()
+    try:
+        db.isolation_level = None
+        db.execute("BEGIN IMMEDIATE")
+        if _settled(db, shop):
+            raise AlreadySettled("this shop's rent is already settled")
+        cur = db.execute(
+            f"INSERT INTO log ({', '.join(cols)}) VALUES ({', '.join('?' * len(cols))})",
+            [at, shop, step, *fields.values()],
+        )
+        db.execute("COMMIT")
+        return cur.lastrowid
+    except BaseException:
+        if db.in_transaction:
+            db.execute("ROLLBACK")
+        raise
+    finally:
+        db.close()
+
+
+def _settled(db, shop):
+    row = db.execute(
+        f"SELECT * FROM log WHERE shop = ? AND action IN ({', '.join('?' * len(SETTLES))}) ORDER BY id LIMIT 1",
+        [shop, *SETTLES],
+    ).fetchone()
+    return dict(row) if row else None
+
+
+def settled(shop):
+    """The row that settled this shop's rent (its charge or cancel), or None."""
+    with closing(_connect()) as db:
+        return _settled(db, shop)
+
+
+def last_step(shop, step):
+    with closing(_connect()) as db:
+        row = db.execute("SELECT * FROM log WHERE shop = ? AND step = ? ORDER BY id DESC LIMIT 1", (shop, step)).fetchone()
+        return dict(row) if row else None
 
 
 def rows(shop=None, after=0):
@@ -151,9 +208,10 @@ def clip(row_id):
     return None
 
 
-def message(shop, to_whom, channel, text, choices=None):
+def message(shop, to_whom, channel, text, choices=None, call=None):
     """Add a message. {ticket} in text becomes this message's ticket id, SET-<4 digits>.
-    With choices, the message gets a mock consent link, and {link} in text becomes it."""
+    With choices, the message gets a mock consent link, and {link} in text becomes it.
+    call is the id of the "due" row of the call that sent it."""
     at = datetime.now().isoformat(timespec="seconds")
     db = _connect()
     try:
@@ -162,9 +220,9 @@ def message(shop, to_whom, channel, text, choices=None):
         msg_id = db.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM messages").fetchone()[0]
         link = consent_link(msg_id) if choices else None
         db.execute(
-            "INSERT INTO messages (id, at, shop, to_whom, channel, text, link, choices) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO messages (id, at, shop, to_whom, channel, text, link, choices, call) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
             (msg_id, at, shop, to_whom, channel, text.replace("{ticket}", ticket_id(msg_id)).replace("{link}", link or ""),
-             link, json.dumps(choices, ensure_ascii=False) if choices else None),
+             link, json.dumps(choices, ensure_ascii=False) if choices else None, call),
         )
         db.execute("COMMIT")
         return msg_id
@@ -187,6 +245,14 @@ def consent_link(msg_id):
 def get_message(msg_id):
     with closing(_connect()) as db:
         row = db.execute("SELECT * FROM messages WHERE id = ?", (int(msg_id),)).fetchone()
+        return dict(row) if row else None
+
+
+def last_choices(shop):
+    """The latest message to this shop that carries choices, or None."""
+    with closing(_connect()) as db:
+        row = db.execute("SELECT * FROM messages WHERE shop = ? AND choices IS NOT NULL ORDER BY id DESC LIMIT 1",
+                         (shop,)).fetchone()
         return dict(row) if row else None
 
 
