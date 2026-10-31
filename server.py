@@ -5,12 +5,33 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
+from settled import records
+from voice import calls, script
+
 ROOT = Path(__file__).resolve().parent
 PAGE = ROOT / "board" / "index.html"
 DB = Path(os.environ.get("SETTLED_DB") or ROOT / "settled.db").resolve()
 PORT = int(os.environ.get("BOARD_PORT") or 8080)
+MAX_REPLY = 5_000_000
 
 COLUMNS = ("id", "at", "shop", "step", "said", "heard", "read_as", "reason", "rule", "outcome", "action")
+
+
+def shops():
+    out = []
+    for shop_id in records.shop_ids():
+        shop = records.load(shop_id)
+        language = script.LANGUAGES[shop.language]
+        call = calls.get(shop_id)
+        out.append({
+            "id": shop_id,
+            "name": shop.name,
+            "owner": shop.owner,
+            "language": {"name": language["name"], "own": language["own"]},
+            "lines": {said: language[said] for said in (script.ASK, script.READ_BACK, script.NA_FOLLOW_UP)},
+            "call": call.state() if call else None,
+        })
+    return out
 
 
 def rows_after(after):
@@ -42,10 +63,55 @@ class Handler(BaseHTTPRequestHandler):
                 after = int(parse_qs(url.query).get("after", ["0"])[0])
             except ValueError:
                 after = 0
-            body = json.dumps(rows_after(after), ensure_ascii=False).encode("utf-8")
-            self.send(200, "application/json; charset=utf-8", body)
+            self.json(200, rows_after(after))
+        elif url.path == "/api/shops":
+            self.json(200, shops())
+        elif len(parts := url.path.split("/")) == 6 and parts[1:3] == ["api", "call"] and parts[4] == "audio":
+            call = calls.get(parts[3])
+            if call and call.audio and str(call.seq) == parts[5]:
+                self.send(200, "audio/wav", call.audio)
+            else:
+                self.send(404, "text/plain; charset=utf-8", b"no audio")
         else:
             self.send(404, "text/plain; charset=utf-8", b"not found")
+
+    def do_POST(self):
+        url = urlparse(self.path)
+        parts = url.path.split("/")
+        if len(parts) != 5 or parts[1:3] != ["api", "call"] or parts[3] not in records.shop_ids():
+            return self.send(404, "text/plain; charset=utf-8", b"not found")
+        shop_id, what = parts[3], parts[4]
+        try:
+            if what == "start":
+                calls.start(shop_id)
+                return self.json(200, {"started": shop_id})
+            if what == "reply":
+                return self.reply(shop_id, url)
+        except calls.Busy as e:
+            return self.json(409, {"error": str(e)})
+        except Exception as e:
+            return self.json(502, {"error": f"{type(e).__name__}: {e}"})
+        self.send(404, "text/plain; charset=utf-8", b"not found")
+
+    def reply(self, shop_id, url):
+        call = calls.get(shop_id)
+        if call is None:
+            raise calls.Busy("no call on")
+        length = int(self.headers.get("Content-Length") or 0)
+        if length > MAX_REPLY:
+            return self.json(413, {"error": "reply too long"})
+        body = self.rfile.read(length)
+        seq = int(parse_qs(url.query).get("seq", ["0"])[0])
+        ctype = self.headers.get("Content-Type") or ""
+        if ctype.startswith("audio/"):
+            seconds = float(self.headers.get("X-Seconds") or 0)
+            got = call.reply(seq, audio=body, ctype=ctype, seconds=seconds)
+        else:
+            got = call.reply(seq, text=json.loads(body or b"{}").get("text", ""))
+        self.json(200, got)
+
+    def json(self, status, data):
+        self.send(status, "application/json; charset=utf-8", json.dumps(data, ensure_ascii=False).encode("utf-8"))
 
     def send(self, status, ctype, body):
         self.send_response(status)
