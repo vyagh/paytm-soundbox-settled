@@ -44,7 +44,8 @@ def typed_reader(case):
         from settled.models import Answer
         turn = labelled[text]
         return Answer(turn["kind"], text, reason=turn.get("reason"), speaker=turn.get("speaker", "shopkeeper"),
-                      topic=turn.get("topic"), promise=turn.get("promise"), upset=turn.get("upset", False))
+                      topic=turn.get("topic"), promise=turn.get("promise"), upset=turn.get("upset", False),
+                      cancel=turn.get("cancel", False))
 
     return read
 

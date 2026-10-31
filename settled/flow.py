@@ -2,7 +2,7 @@ import time
 
 from voice import script
 from voice.script import (A_CHARGE, A_EXTRA, A_HOW, A_OTHER, A_PRICE, A_START, A_STOP, A_WHO, ASK, ASK_AGAIN, AUTOMATED,
-                          CALL_LATER, CALLBACK, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER,
+                          CALL_LATER, CALLBACK, CANCEL, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER,
                           GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO, NAME_AGAIN, OFFER_AGAIN, OFFER_B, ON_THE_LINE,
                           PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, REASSURE, SOFT, SUPPORT, TAP_B, WHO_WHY, YEAR,
                           YEAR_AGAIN, YEAR_WAIT, YEAR_WRONG)
@@ -184,8 +184,10 @@ def _call(shop, listener, state):
         _say(shop, listener, CLOSING)
         return decision
     paytm_mock.open_ticket(shop, decision.rule, "na" if last.kind == "na" else "unclear")
-    # the apology only for anger, a complaint or distress; calm doubt gets time to think
-    if offered or not any(a.upset for _, a in answers):
+    # a cancel ask gets where to tap; the apology only for anger, a complaint or distress; calm doubt gets time to think
+    if any(a.cancel for _, a in answers):
+        ending = CANCEL
+    elif offered or not any(a.upset for _, a in answers):
         ending = SOFT if last.kind == "unsure" and not offered else CALLBACK
     else:
         ending = FOLLOW_UP

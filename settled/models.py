@@ -48,6 +48,8 @@ class Answer:
     promise: str | None = None
     # angry, complaining or in real distress, as the AI read it
     upset: bool = False
+    # asks to cancel, return the box or for a refund, as the AI read it
+    cancel: bool = False
 
     def __post_init__(self):
         if self.kind not in KINDS:

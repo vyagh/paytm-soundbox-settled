@@ -106,6 +106,8 @@ def decide(shop, answers, verified):
     cheaper = shop.cheaper(signed)
     haans, questions, offered, complaints = {}, 0, False, 0
     for plan, answer in answers:
+        if answer.cancel:
+            return Decision("held", "asked to cancel or for a refund → nothing taken, the cancel waits for his tap in WhatsApp")
         if answer.kind == "question":
             questions += 1
             complaints += answer.topic == "support"
