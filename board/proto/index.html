@@ -67,13 +67,12 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .st.k-not,.st.k-cancelled{color:var(--not)} .st.k-not::before,.st.k-cancelled::before{background:var(--not)}
 .st.k-on{color:var(--accent)} .st.k-on::before{background:var(--accent)}
 .st.k-rec{color:var(--rec)} .st.k-rec::before{background:var(--rec)}
-.phone{margin-top:auto;display:flex;flex-direction:column;gap:.45rem}
-.phone h2{padding-top:0}
-.handset{background:#1d1d1f;border-radius:1.6rem;padding:.4rem;box-shadow:0 10px 28px -14px rgb(20 20 40 / .45)}
-.screen{position:relative;border-radius:1.25rem;padding:1.3rem .55rem .6rem;display:flex;flex-direction:column;gap:.5rem;
-  background:linear-gradient(180deg,#e9edf5,#dfe4ee)}
-.screen::before{content:"";position:absolute;top:.45rem;left:50%;width:2.6rem;height:.4rem;border-radius:999px;background:#1d1d1f;transform:translateX(-50%)}
-.screen.wa{background:#ece5dd}
+.phonepanel{display:flex;flex-direction:column;min-height:0;flex:1}
+.screen{position:relative;flex:1;min-height:0;margin:0 1rem 1rem;border-radius:1.4rem;padding:.75rem .7rem .8rem;display:flex;flex-direction:column;gap:.5rem;
+  background:#ece5dd;box-shadow:inset 0 0 0 .35rem #1d1d1f;padding:1rem 1rem 1rem;overflow:auto;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen .empty{margin:auto;color:var(--muted);font-size:.875rem;text-align:center}
+.notif.top{position:sticky;top:0;z-index:1;box-shadow:0 6px 18px -8px rgb(20 20 40 / .35)}
 .notif{background:rgb(255 255 255 / .9);border-radius:.9rem;padding:.55rem .65rem .65rem;box-shadow:0 1px 2px rgb(20 20 40 / .08)}
 .app{display:flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:600;color:var(--muted)}
 .app i{width:1.05rem;height:1.05rem;border-radius:.3rem;background:var(--accent);flex:none;display:grid;place-items:center}
@@ -82,20 +81,21 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .app time{margin-left:auto;font-weight:500;color:var(--faint)}
 .notif p{font-size:.78rem;line-height:1.35;color:var(--ink);margin-top:.3rem}
 .code{display:block;font-size:1.55rem;font-weight:700;letter-spacing:.14em;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:.15rem}
-.wamsg{background:#fff;border-radius:.2rem .9rem .9rem .9rem;padding:.55rem .65rem .6rem;box-shadow:0 1px 1px rgb(20 20 40 / .1)}
-.wamsg p{font-size:.75rem;line-height:1.4;color:var(--ink);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+.wamsg{background:#fff;border-radius:.2rem .9rem .9rem .9rem;padding:.55rem .7rem .6rem;box-shadow:0 1px 1px rgb(20 20 40 / .1);max-width:94%}
+.wamsg .from{display:flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:650;color:var(--muted);margin-bottom:.2rem}
+.wamsg .from time{margin-left:auto;font-weight:500;color:var(--faint)}
+.wamsg p{font-size:.8125rem;line-height:1.42;color:var(--ink)}
 .walink{display:block;margin-top:.35rem;font-size:.7rem;color:#1a6fb5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .choices{display:flex;flex-direction:column;gap:.3rem}
-.choice{border:0;background:#fff;color:#1f7a45;font-size:.74rem;padding:0 .4rem;font-weight:600;height:2.1rem;border-radius:.7rem;cursor:pointer;box-shadow:0 1px 1px rgb(20 20 40 / .1);
+.choice{border:0;background:#fff;color:#1f7a45;font-size:.8125rem;padding:0 .6rem;font-weight:600;height:2.3rem;border-radius:.7rem;cursor:pointer;box-shadow:0 1px 1px rgb(20 20 40 / .1);
   transition:background-color .15s,color .15s,transform .12s var(--ease)}
 .choice:hover:not(:disabled){background:#f4fbf6}
 .choice:active:not(:disabled){transform:scale(.98)}
 .choice:disabled{cursor:default;color:var(--faint)}
 .choice[aria-pressed="true"]{background:#1f8a4c;color:#fff}
-.tapnote{font-size:.68rem;line-height:1.35;color:var(--muted);text-align:center;padding:0 .2rem}
+.tapnote{font-size:.75rem;line-height:1.35;color:var(--muted);text-align:center;padding:0 .2rem}
 .tapnote.warn{color:var(--rec)}
-.phone:not([hidden])+.railfoot #fresh-note{display:none}
-.railfoot{display:flex;flex-direction:column;gap:.6rem;padding:0 .75rem .25rem}
+.railfoot{margin-top:auto;display:flex;flex-direction:column;gap:.6rem;padding:0 .75rem .25rem}
 .railfoot p{font-size:.75rem;color:var(--faint);line-height:1.4}
 .ghost{align-self:flex-start;border:0;background:var(--fill2);color:var(--ink2);font-size:.75rem;font-weight:600;height:1.9rem;padding:0 .85rem;border-radius:999px;cursor:pointer;transition:background-color .15s}
 .ghost:hover{background:#dcdce2}
@@ -133,15 +133,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .steps .stop{color:var(--held)}
 .steps .skip{text-decoration:line-through;text-decoration-color:var(--fill2)}
 
-.scene{position:relative;flex:1 1 12rem;min-height:11rem;border-radius:1rem;overflow:hidden;background:var(--fill)}
-.scene iframe{position:absolute;inset:0;width:100%;height:100%;border:0;opacity:0;transition:opacity .5s var(--ease)}
-.scene iframe.ready{opacity:1}
-.wait{position:absolute;inset:0;display:grid;place-items:center;align-content:center;gap:.4rem;text-align:center;
-  background:radial-gradient(circle at 1px 1px,rgb(20 20 40 / .07) 1px,transparent 0) 0 0/1.1rem 1.1rem,linear-gradient(180deg,#f7f7f9,#efeff3)}
-.wait strong{font-size:1.35rem;font-weight:650;color:var(--ink);letter-spacing:-.02em}
-.wait span{font-size:.8125rem;color:var(--faint)}
-
-.convo{flex:0 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;scrollbar-width:thin;padding:.1rem}
+.convo{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;scrollbar-width:thin;padding:.1rem}
 .bub{max-width:88%;border-radius:1.15rem;padding:.75rem 1rem .8rem}
 .bub .label{margin-bottom:.25rem;display:flex;align-items:center;gap:.5rem}
 .bub.settled{align-self:flex-start;background:var(--accent-soft);border-top-left-radius:.4rem}
@@ -199,7 +191,7 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 /* result */
 .side{display:flex;flex-direction:column;gap:1rem;min-height:0}
 .result{padding:1.1rem 1.4rem 1.15rem;display:flex;flex-direction:column;gap:.75rem;flex:none}
-.result h3,.texts h3{font-size:.75rem;font-weight:600;color:var(--muted)}
+.result h3{font-size:.75rem;font-weight:600;color:var(--muted)}
 .verdict{display:flex;align-items:center;gap:.9rem}
 .verdict svg{width:2.9rem;height:2.9rem;flex:none}
 .verdict strong{display:block;font-size:2rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums}
@@ -219,23 +211,14 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .outs li span{grid-column:2;font-size:.8125rem;color:var(--muted)}
 .outs b{font-weight:650;color:var(--c)}
 .recs{font-size:.875rem;color:var(--ink);line-height:1.45}
+.team{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.team li{font-size:.8125rem;line-height:1.4;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acts-label{display:flex;align-items:center;gap:.4rem}
+.team b{font-weight:650;color:var(--ink)}
 
-.texts{display:flex;flex-direction:column;min-height:0;flex:1}
-.texthead{display:flex;align-items:baseline;justify-content:space-between;padding:1rem 1.4rem .4rem}
+.texthead{display:flex;align-items:baseline;justify-content:space-between;padding:1rem 1.4rem .6rem}
+.texthead h3{font-size:.75rem;font-weight:600;color:var(--muted)}
 .texthead p{font-size:.75rem;color:var(--faint)}
-.msglist{list-style:none;overflow:auto;min-height:0;flex:1;padding:.25rem 1rem 1rem;display:flex;flex-direction:column;gap:.5rem;scrollbar-width:none;
-  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 1.5rem);mask-image:linear-gradient(to bottom,transparent 0,#000 1.5rem)}
-.msglist::-webkit-scrollbar{display:none}
-.msg{display:grid;grid-template-columns:2.1rem minmax(0,1fr);gap:.7rem;background:var(--fill);border-radius:1rem;padding:.65rem .9rem .7rem .7rem}
-.msg .av{display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:50%;color:#fff;background:var(--accent)}
-.msg .av svg{width:1rem;height:1rem}
-.msg.to-manager .av{background:#1f8a4c}
-.msg.to-support .av{background:var(--not)}
-.msg-top{display:flex;align-items:baseline;gap:.4rem;font-size:.75rem;color:var(--muted);min-width:0}
-.msg-top b{font-weight:650;color:var(--ink);font-size:.875rem;white-space:nowrap}
-.msg-top time{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--faint)}
-.msg p{font-size:.8125rem;line-height:1.45;color:var(--ink2);margin-top:.15rem}
-.msglist .empty{color:var(--faint);text-align:center;padding:2rem 1rem;font-size:.875rem}
 
 /* his voice */
 .clip{--p:0;flex:none;display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;font-weight:600;color:var(--accent);background:none;border:0;border-radius:999px;cursor:pointer;padding:0}
@@ -288,7 +271,6 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
   <nav class="rail" aria-label="Shops">
     <h2>Rent due 1 Nov</h2>
     <ul class="shops" id="shops"></ul>
-    <div class="phone" id="phone" hidden></div>
     <div class="railfoot">
       <p id="fresh-note"></p>
       <button class="ghost" type="button" id="fresh"></button>
@@ -302,10 +284,6 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
       <div class="pill" id="pill"></div>
     </div>
     <ol class="steps" id="steps" aria-label="Steps of the call" hidden></ol>
-    <div class="scene" id="scene">
-      <iframe id="frame" title="Live scene" tabindex="-1"></iframe>
-      <div class="wait" id="wait"><strong id="wait-line"></strong><span>Live scene</span></div>
-    </div>
     <div class="convo" id="convo"></div>
     <div class="controls" id="controls">
       <select class="lang" id="lang" aria-label="Language for the next call"></select>
@@ -318,9 +296,9 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 
   <aside class="side">
     <section class="panel result" id="result" aria-label="Result"></section>
-    <section class="panel texts" aria-label="Who gets what">
-      <div class="texthead"><h3>Who gets what</h3><p>Mock, nothing is sent</p></div>
-      <ol class="msglist" id="msgs"></ol>
+    <section class="panel phonepanel" aria-label="His phone">
+      <div class="texthead"><h3 id="phone-title">His phone</h3><p>Mock, nothing is sent</p></div>
+      <div class="screen" id="phone"></div>
     </section>
   </aside>
 </main>
@@ -449,13 +427,10 @@ function render() {
   renderHead(s);
   renderSteps(s);
   renderPhone(s);
-  renderScene(s);
   renderConvo(s);
   renderControls(s);
   renderResult(s);
-  renderTexts(s);
   syncClips();
-  tellScene(focus);
   html($('fresh'), fresh ? 'Show all' : 'Fresh board');
   html($('fresh-note'), fresh ? `Showing calls from ${esc(fresh.t)}. The log keeps every row.` : 'Every call is logged. Fresh board clears the view for the next group.');
 }
@@ -496,33 +471,6 @@ function renderHead(s) {
   pill.textContent = text;
 }
 
-/* the live scene is another page; until it answers, a quiet stand-in carries the state */
-let sceneUp = false;
-let sceneTried = 0;
-async function probeScene() {
-  if (sceneUp || Date.now() - sceneTried < 4000) return;
-  sceneTried = Date.now();
-  try {
-    const res = await fetch('/proto/d-scene.html', {cache: 'no-store'});
-    if (res.ok) { sceneUp = true; render(); }
-  } catch (e) {}
-}
-
-function renderScene(s) {
-  const frame = $('frame');
-  if (sceneUp) {
-    const src = `/proto/d-scene.html?shop=${encodeURIComponent(focus)}&embed=1`;
-    if (frame.dataset.src !== src) {
-      frame.dataset.src = src;
-      frame.classList.remove('ready');
-      frame.onload = () => { frame.classList.add('ready'); frame._told = null; tellScene(focus); };
-      frame.src = src;
-    }
-  }
-  $('wait').hidden = sceneUp && frame.classList.contains('ready');
-  html($('wait-line'), esc(statusLine(focus, s)[1]));
-}
-
 /* Consent, Identity, Plan question, Read-back, Result */
 const STEPS = [['consent', 'Consent'], ['identity', 'Identity'], ['ask', 'Plan question'], ['readback', 'Read-back'], ['done', 'Result']];
 const STEP_AT = {consent: 0, identity: 1, ask: 2, readback: 3, followup: 4, done: 4};
@@ -542,9 +490,12 @@ function renderSteps(s) {
   const ended = at === 4 && !call.active;
   html(box, STEPS.map(([k, name], i) => {
     let kind = i < at ? 'done' : i === at ? 'now' : '';
+    if (at === 4 && i < 4) {
+      const asked = s.asked?.length || 0;
+      const reached = [s.recording !== null, !!s.identity?.ok, asked > 0, asked > 1 && s.asked[0].read_as === 'haan'][i];
+      kind = reached ? 'done' : i === 3 && asked === 1 ? 'skip' : '';
+    }
     if (failed && i === 1) kind = 'stop';
-    if (ended && i === 3 && !(s.asked?.[0]?.read_as === 'haan' && s.asked.length > 1)) kind = 'skip';
-    if (failed && i > 1 && i < 4) kind = '';
     if (ended && i === 4) kind = 'done';
     const mark = kind === 'done' ? TICK : kind === 'stop' ? '!' : i + 1;
     return `<li class="${kind}"${kind === 'now' ? ' aria-current="step"' : ''}><i>${mark}</i>${name}</li>`;
@@ -566,28 +517,41 @@ function choicesOf(m) {
 
 function renderPhone(s) {
   const call = s.shop.call || {};
-  const box = $('phone');
-  const asking = s.msgs.filter(m => m.to_whom === 'shopkeeper' && m.channel === 'WhatsApp' && (m.link || m.choices)).pop();
-  let inner = '';
+  const who = s.shop.owner || 'the shopkeeper';
+  html($('phone-title'), `${esc(s.shop.owner ? s.shop.owner.split(' ')[0] + "'s" : 'His')} phone`);
+  const mine = s.msgs.filter(m => m.to_whom === 'shopkeeper');
+  const asking = mine.filter(m => m.channel === 'WhatsApp' && (m.link || m.choices)).pop();
+  const parts = [];
   if (call.active && call.step === 'identity' && call.app_code) {
-    inner = `<div class="screen"><div class="notif pop"><div class="app"><i>${APP_ICON}</i>Paytm<time>now</time></div>
-      <p>Your Settled verification code: <span class="code">${esc(call.app_code)}</span></p></div></div>`;
-  } else if (asking) {
-    const choices = choicesOf(asking);
-    const tap = taps[asking.id] || {};
-    const picked = tap.choice || asking.tapped || null;
-    const expired = !picked && !tap.busy && asking.id !== s.shop.link;
-    const note = tap.note || (picked ? 'His tap is recorded' : expired ? 'This link has expired' : 'Only his tap here changes the plan');
-    const inText = asking.link && asking.text.includes(asking.link);
-    const text = asking.text.replace(/^Paytm:\s*/, '').replace(inText ? asking.link : /$^/, '').replace(/[\s:]+$/, '');
-    inner = `<div class="screen wa"><div class="app wa"><i>${CHANNEL_ICONS.WhatsApp.replace('fill="currentColor"', 'fill="#fff"')}</i>WhatsApp<time>${esc(clock(asking.at))}</time></div>
-      <div class="wamsg"><p>${esc(text)}</p>${asking.link ? `<span class="walink">${esc(asking.link)}</span>` : ''}</div>
-      ${choices.length ? `<div class="choices">${choices.map(c => `<button class="choice" type="button" data-msg="${esc(asking.id)}" data-choice="${esc(c.id)}"
-        aria-pressed="${picked === c.id}"${picked || expired || tap.busy ? ' disabled' : ''}>${esc(c.label)}</button>`).join('')}</div>` : ''}
-      <p class="tapnote${tap.warn ? ' warn' : ''}">${esc(note)}</p></div>`;
+    parts.push(`<div class="notif top pop"><div class="app"><i>${APP_ICON}</i>Paytm<time>now</time></div>
+      <p>Your Settled verification code: <span class="code">${esc(call.app_code)}</span></p></div>`);
   }
-  box.hidden = !inner;
-  html(box, inner ? `<h2>His phone</h2><div class="handset">${inner}</div>` : '');
+  for (const m of mine) {
+    const wa = m.channel === 'WhatsApp';
+    const inText = m.link && m.text.includes(m.link);
+    const text = m.text.replace(/^Paytm:\s*/, '').replace(inText ? m.link : /$^/, '').replace(/[\s:]+$/, '');
+    let extra = '';
+    if (m === asking) {
+      const choices = choicesOf(m);
+      const tap = taps[m.id] || {};
+      const picked = tap.choice || m.tapped || null;
+      const expired = !picked && !tap.busy && m.id !== s.shop.link;
+      const note = tap.note || (picked ? 'His tap is recorded' : expired ? 'This link has expired' : 'Only his tap here changes the plan');
+      extra = (m.link ? `<span class="walink">${esc(m.link)}</span>` : '') + `</div>
+        ${choices.length ? `<div class="choices">${choices.map(c => `<button class="choice" type="button" data-msg="${esc(m.id)}" data-choice="${esc(c.id)}"
+          aria-pressed="${picked === c.id}"${picked || expired || tap.busy ? ' disabled' : ''}>${esc(c.label)}</button>`).join('')}</div>` : ''}
+        <p class="tapnote${tap.warn ? ' warn' : ''}">${esc(note)}</p>`;
+    }
+    parts.push(`<div class="wamsg"><div class="from"><span class="app${wa ? ' wa' : ''}"><i>${wa ? CHANNEL_ICONS.WhatsApp.replace('fill="currentColor"', 'fill="#fff"') : APP_ICON}</i>${wa ? 'WhatsApp' : 'SMS'} · Paytm</span><time>${esc(clock(m.at))}</time></div>
+      <p>${esc(text)}</p>${extra || '</div>'}`);
+  }
+  const box = $('phone');
+  const before = box.childElementCount;
+  if (html(box, parts.length ? parts.join('') : `<p class="empty">${s.startAt ? `Nothing sent to ${esc(who)} yet` : `What ${esc(who)} gets on his phone shows here`}</p>`)) {
+    if (box._focus === focus && box.childElementCount > before) [...box.children].slice(before).forEach(k => k.classList.add('enter'));
+    box._focus = focus;
+    box.scrollTop = box.scrollHeight;
+  }
 }
 
 $('phone').addEventListener('click', async e => {
@@ -608,19 +572,6 @@ $('phone').addEventListener('click', async e => {
   tap.busy = false;
   await refreshShops().catch(() => render());
 });
-
-/* the scene can't hear the mic or the line playing here, so tell it */
-function tellScene(key, level) {
-  const frame = $('frame');
-  if (!sceneUp || key !== focus || !frame.contentWindow) return;
-  const m = me(key);
-  const msg = {type: 'settled-scene', shop: key, speaking: !!m.speaking, rec: !!m.rec, level: m.rec ? level ?? m.level ?? 0 : 0};
-  const sig = `${msg.shop}:${msg.speaking}:${msg.rec}:${msg.level.toFixed(2)}`;
-  if (frame._told === sig) return;
-  frame._told = sig;
-  m.level = msg.level;
-  frame.contentWindow.postMessage(msg, location.origin);
-}
 
 function bubbleSettled(said, shop, old, speaking) {
   const native = shop.lines[said];
@@ -767,8 +718,8 @@ function renderResult(s) {
       <div class="facts">
         ${s.why ? `<p><span class="label">Rule that fired</span>${arrows(s.why)}</p>` : ''}
         ${!s.called && s.records ? `<p><span class="label">Records</span>${esc(cap(day(s.records)))}</p>` : ''}
-        ${s.acts.length ? `<p class="acts"><span class="label">Paytm actions <span class="mock">mock</span></span>${[...new Set(s.acts)].map(a => esc(cap(a))).join('<span class="sep"> · </span>')}</p>` : ''}
-      </div>`);
+        ${teamLines(s) ? `<div><span class="label acts-label">Paytm team gets <span class="mock">mock</span></span><ul class="team">${teamLines(s)}</ul></div>` : ''}
+              </div>`);
     return;
   }
   box.dataset.v = '';
@@ -781,26 +732,13 @@ function renderResult(s) {
     </ul>`);
 }
 
-const TO = {manager: 'Manager', support: 'Support'};
-const CHANNEL = {SMS: 'SMS', WhatsApp: 'WhatsApp', ticket: 'Support'};
-function renderTexts(s) {
-  const shop = s.shop;
-  const list = $('msgs');
-  const items = s.msgs || [];
-  const before = list.querySelectorAll('.msg').length;
-  const changed = html(list, items.length ? items.map(m => {
-    const to = m.to_whom === 'shopkeeper' ? (shop.owner || 'Shopkeeper') : TO[m.to_whom] || m.to_whom;
-    const text = m.text.replace(/^\{ticket\}\s*·\s*/, '').replace(/^For [^:]+:\s*/, '').replace(/^Paytm:\s*/, '');
-    const whom = m.to_whom === 'manager' ? (m.text.match(/^For ([^:]+):/)?.[1] || 'Manager') : to;
-    return `<li class="msg to-${esc(m.to_whom)}"><span class="av">${CHANNEL_ICONS[m.channel] || CHANNEL_ICONS.SMS}</span>
-      <div><div class="msg-top"><b>${esc(cap(whom))}</b><span>${esc(m.channel === 'ticket' ? 'Ticket' : m.channel)}</span><time>${esc(clock(m.at))}</time></div><p>${esc(text)}</p></div></li>`;
-  }).join('') : `<li class="empty">${s.startAt ? 'Texts appear once the rules decide' : 'The SMS, WhatsApp and ticket show here'}</li>`);
-  if (changed) {
-    const kids = list.querySelectorAll('.msg');
-    if (list._focus === focus && kids.length > before) [...kids].slice(before).forEach(k => k.classList.add('enter'));
-    list._focus = focus;
-    list.scrollTop = list.scrollHeight;
-  }
+const TEAM = {manager: 'Manager', support: 'Support'};
+function teamLines(s) {
+  return (s.msgs || []).filter(m => m.to_whom !== 'shopkeeper').map(m => {
+    const whom = m.to_whom === 'manager' ? (m.text.match(/^For ([^:]+):/)?.[1] || 'Manager') : m.channel === 'ticket' ? 'Support ticket' : TEAM[m.to_whom] || m.to_whom;
+    const text = m.text.replace(/^\{ticket\}\s*·\s*/, '').replace(/^For [^:]+:\s*/, '');
+    return `<li><b>${esc(cap(whom))}:</b> ${esc(text)}</li>`;
+  }).join('');
 }
 
 /* call actions */
@@ -894,7 +832,6 @@ function meterStart(key, m, el) {
         levels.shift();
         levels.push(Math.min(1, Math.max(0, (db + 58) / 46)));
         bars.forEach((b, i) => { b.style.transform = `scaleY(${(0.08 + levels[i] * 0.92).toFixed(3)})`; });
-        tellScene(key, levels[levels.length - 1]);
       }
       m.raf = requestAnimationFrame(tick);
     };
@@ -1052,7 +989,6 @@ async function poll() {
     await pollLog();
     await pollMessages();
     await refreshShops();
-    probeScene();
     dot.className = 'live';
     dot.textContent = 'Live';
   } catch (e) {
