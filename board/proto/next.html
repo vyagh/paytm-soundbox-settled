@@ -1,0 +1,1143 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settled</title>
+<style>
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Board Devanagari";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/noto-sans-devanagari.woff2) format("woff2");
+  unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF}
+:root{
+  color-scheme:light;
+  --bg:#f5f5f7; --surface:#fff; --fill:#f2f2f5; --fill2:#e6e6eb; --hair:rgb(0 0 0 / .08);
+  --ink:#1d1d1f; --ink2:#424245; --muted:#6e6e73; --faint:#a1a1a6;
+  --accent:#1f5fc9; --accent-soft:#edf3fd; --accent-ink:#164a9e;
+  --ai:#6a45d1; --ai-soft:#f1edfc;
+  --tap:#1f8a4c; --tap-soft:#e5f4eb;
+  --charged:#1e7d3c; --charged-soft:#e5f3e9;
+  --held:#b25300; --held-soft:#fcf0e2;
+  --not:#5c5d66; --not-soft:#eeeef1;
+  --rec:#d42a3c; --rec-soft:#fde7ea; --mock:#8c5600;
+  --sans:"Board Sans","Board Devanagari",system-ui,-apple-system,"Segoe UI","Nirmala UI","Noto Sans",sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --r:1.4rem;
+  --card:0 1px 2px rgb(0 0 0 / .04),0 10px 30px -18px rgb(0 0 0 / .22);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(13px,min(1.1vw,1.95vh),22px)}
+body{background:var(--bg);color:var(--ink2);font-family:var(--sans);line-height:1.45;font-feature-settings:"cv11";-webkit-font-smoothing:antialiased;
+  height:100vh;overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr);padding:.9rem 1.5rem 1.4rem;gap:.9rem}
+q{quotes:"\201C" "\201D"}
+[hidden]{display:none!important}
+button,select,input{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.label{display:block;font-size:.875rem;font-weight:600;color:var(--muted)}
+
+/* header: who Settled is, which shop, the demo round */
+.bar{display:flex;align-items:center;gap:1.5rem;min-height:3.1rem}
+.brand{display:flex;align-items:center;gap:.75rem;min-width:0}
+.mark{width:2.4rem;height:2.4rem;flex:none}
+h1{font-size:1.45rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font-weight:700}
+.brand p{font-size:.875rem;color:var(--muted)}
+.shops{list-style:none;display:flex;gap:.25rem;margin:0 auto;padding:.25rem;background:var(--fill2);border-radius:1.1rem}
+.shop{border:0;background:transparent;border-radius:.85rem;padding:.4rem 1.1rem .45rem;cursor:pointer;display:grid;gap:.05rem;text-align:left;min-width:10.5rem;
+  transition:background-color .2s var(--ease),box-shadow .25s var(--ease)}
+.shop:hover{background:rgb(255 255 255 / .5)}
+.shop[aria-current="true"]{background:var(--surface);box-shadow:0 1px 3px rgb(0 0 0 / .1)}
+.shop b{font-size:.95rem;font-weight:650;color:var(--ink);letter-spacing:-.01em}
+.shop .st{display:flex;align-items:center;gap:.4rem;font-size:.8125rem;font-weight:550;color:var(--muted);white-space:nowrap}
+.shop .st::before{content:"";width:.45rem;height:.45rem;border-radius:50%;background:var(--faint);flex:none}
+.st.k-charged{color:var(--charged)} .st.k-charged::before{background:var(--charged)}
+.st.k-held{color:var(--held)} .st.k-held::before{background:var(--held)}
+.st.k-not,.st.k-cancelled{color:var(--not)} .st.k-not::before,.st.k-cancelled::before{background:var(--not)}
+.st.k-on{color:var(--accent)} .st.k-on::before{background:var(--accent)}
+.st.k-rec{color:var(--rec)} .st.k-rec::before{background:var(--rec)}
+.round{display:flex;align-items:center;gap:1rem}
+.freshnote{font-size:.8125rem;color:var(--rec);max-width:12rem;line-height:1.3}
+.freshnote:not(:has(.warn)){display:none}
+.ghost{border:0;background:var(--fill2);color:var(--ink2);font-size:.875rem;font-weight:600;height:2.3rem;padding:0 1rem;border-radius:999px;cursor:pointer;white-space:nowrap;transition:background-color .15s}
+.ghost:hover{background:#dcdce2}
+.live{display:flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:600;color:var(--charged);white-space:nowrap}
+.live::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:currentColor;box-shadow:0 0 0 .2rem color-mix(in srgb,currentColor 16%,transparent)}
+.live.off{color:var(--rec)}
+
+/* three columns: the call, what decides the money, his phone */
+main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;min-height:0}
+.panel{background:var(--surface);border-radius:var(--r);box-shadow:var(--card);min-height:0}
+
+/* who does what: the AI only reads, code and his tap move money */
+.by{display:inline-flex;align-items:center;height:1.35rem;padding:0 .45rem;border-radius:.4rem;font-size:.75rem;font-weight:750;letter-spacing:.05em;text-transform:uppercase;flex:none;line-height:1}
+.by.ai{color:var(--ai);background:var(--ai-soft)}
+.by.code{color:#fff;background:var(--ink)}
+.by.tap{color:#fff;background:var(--tap)}
+
+/* the call */
+.call{display:flex;flex-direction:column;padding:1.25rem 1.5rem 1.25rem;gap:.9rem;overflow:hidden}
+.callhead{display:flex;align-items:center;gap:1rem;flex:none}
+.callhead h2{font-size:1.75rem;line-height:1.15;color:var(--ink);letter-spacing:-.03em;font-weight:700}
+.callhead .sub{font-size:1rem;color:var(--muted);margin-top:.1rem}
+.pill{margin-left:auto;display:flex;align-items:center;gap:.55rem;font-size:1rem;font-weight:600;height:2.4rem;padding:0 1.1rem;border-radius:999px;white-space:nowrap;color:var(--muted);background:var(--fill)}
+.pill::before{content:"";width:.55rem;height:.55rem;border-radius:50%;background:currentColor}
+.pill.k-on{color:var(--accent);background:var(--accent-soft)}
+.pill.k-rec{color:var(--rec);background:var(--rec-soft)}
+.pill.k-charged{color:var(--charged);background:var(--charged-soft)}
+.pill.k-held{color:var(--held);background:var(--held-soft)}
+.pill.k-not,.pill.k-cancelled{color:var(--not);background:var(--not-soft)}
+
+.convo{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:.7rem;scrollbar-width:none;padding:.1rem .1rem .2rem}
+.convo::-webkit-scrollbar{display:none}
+.convo.scrolled{-webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 3rem);mask-image:linear-gradient(to bottom,transparent 0,#000 3rem)}
+.convo>:first-child{margin-top:auto}
+.convo>.preview:only-child{margin:auto 0}
+.bub{max-width:84%;border-radius:1.3rem;padding:.8rem 1.15rem .9rem;flex:none}
+.bub .label{margin-bottom:.2rem;display:flex;align-items:center;gap:.5rem;font-size:.875rem}
+.bub.settled{align-self:flex-start;background:var(--accent-soft);border-top-left-radius:.45rem}
+.bub.settled .label{color:var(--accent-ink)}
+.bub.him{align-self:flex-end;background:var(--fill);border-top-right-radius:.45rem;min-width:17rem}
+.bub.him .label{color:var(--ink2)}
+.native{font-size:1.25rem;line-height:1.45;color:var(--ink);font-weight:500}
+.gloss{font-size:1rem;line-height:1.4;color:var(--muted);margin-top:.2rem}
+.words{font-size:1.3rem;line-height:1.38;color:var(--ink);font-weight:600}
+.words .none{font-size:1.05rem;font-weight:500;color:var(--faint)}
+.read{display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-top:.5rem;padding-top:.5rem;border-top:1px solid var(--hair);font-size:1rem;font-weight:500;color:var(--ink2)}
+.read .why{flex-basis:100%;font-size:.875rem;color:var(--muted);font-weight:450}
+.kind{display:inline-flex;align-items:center;height:1.6rem;padding:0 .6rem;border-radius:999px;font-size:1rem;font-weight:700;background:var(--surface);color:var(--ink2)}
+.kind.haan,.kind.ok{color:var(--charged);background:var(--charged-soft)}
+.kind.na,.kind.bad{color:var(--held);background:var(--held-soft)}
+.bub.old{padding:.6rem 1rem .65rem}
+.bub.old .label{display:none}
+.bub.old .native{font-size:1.05rem;color:var(--ink2)}
+.bub.old .gloss{font-size:.875rem}
+.bub.old .words{font-size:1.05rem;color:var(--ink2)}
+.bub.old .read{margin-top:.35rem;padding-top:.35rem;font-size:.875rem}
+.bub.old .kind{height:1.35rem;font-size:.875rem}
+.bub.old .read .why{display:none}
+.sys{align-self:center;display:flex;flex-direction:column;align-items:center;gap:.2rem;text-align:center;padding:.5rem 1rem;max-width:80%;flex:none}
+.sys b{font-size:1.05rem;font-weight:600;color:var(--ink)}
+.sys span{font-size:.9375rem;color:var(--muted)}
+.eq{display:inline-flex;gap:2px;align-items:center;height:.75rem}
+.eq i{width:3px;height:100%;background:currentColor;border-radius:2px}
+.meter{display:flex;align-items:center;gap:3px;height:1.9rem;width:100%}
+.meter i{flex:1;height:100%;border-radius:3px;background:var(--rec);transform:scaleY(.08);transition:transform 60ms linear}
+.dots{display:inline-flex;gap:.3rem}
+.dots i{width:.4rem;height:.4rem;border-radius:50%;background:var(--faint)}
+
+/* controls */
+.controls{display:flex;align-items:center;gap:.75rem;min-height:3.25rem;flex:none}
+.btn{border:0;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-weight:600;white-space:nowrap;
+  transition:background-color .15s,transform .12s var(--ease),box-shadow .2s}
+.btn svg{width:1.1em;height:1.1em;flex:none}
+.btn:disabled{opacity:.5;cursor:default}
+.start{font-size:1.05rem;height:3.25rem;padding:0 1.75rem;background:var(--ink);color:#fff;margin-left:auto}
+.start:hover{background:#000}
+.start.again{background:var(--fill2);color:var(--ink)}
+.start.again:hover{background:#dcdce2}
+.talk{font-size:1.05rem;height:3.25rem;padding:0 1.75rem;background:var(--accent);color:#fff;touch-action:none;user-select:none;-webkit-user-select:none;min-width:13rem}
+.talk.on{background:var(--rec);transform:scale(.97);box-shadow:0 0 0 .4rem var(--rec-soft)}
+.typed{display:flex;gap:.5rem;flex:1;min-width:0}
+.typed input{flex:1;min-width:0;font-size:1rem;height:3.25rem;padding:0 1.25rem;border:0;border-radius:999px;background:var(--fill);color:var(--ink)}
+.typed input::placeholder{color:var(--faint)}
+.typed input:focus{outline:2px solid var(--accent);outline-offset:0;background:#fff}
+.typed button{font-size:1rem;font-weight:600;border:0;border-radius:999px;background:var(--fill2);color:var(--ink2);height:3.25rem;padding:0 1.25rem;cursor:pointer}
+.typed button:hover{background:#dcdce2}
+.lang{appearance:none;font-size:.9375rem;font-weight:600;color:var(--ink2);background:var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M2 5l3-3 3 3M2 9l3 3 3-3' fill='none' stroke='%236e6e73' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .8rem center/.5rem;
+  border:0;border-radius:999px;height:3.25rem;padding:0 2.2rem 0 1.15rem;cursor:pointer;max-width:14rem}
+.lang:hover{background-color:var(--fill2)}
+.note{font-size:.875rem;color:var(--muted);flex:none;max-width:14rem;line-height:1.35}
+.note:empty{display:none}
+.note .warn{color:var(--rec);font-weight:600}
+.note span{display:block}
+
+/* the money: one verdict, and the checks plain code needs before it takes rent */
+.ledger{display:flex;flex-direction:column;padding:1.15rem 1.4rem 1.1rem;gap:.9rem;overflow:hidden}
+.verdict{display:flex;flex-direction:column;gap:.3rem;flex:none}
+.verdict strong{display:block;font-size:2.15rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+.verdict strong small{font-size:1rem;font-weight:550;letter-spacing:0;color:var(--muted);margin-left:.35rem}
+.verdict .now{font-size:1rem;font-weight:600;color:var(--muted)}
+.verdict .rule{display:flex;align-items:baseline;gap:.5rem;font-size:.9375rem;line-height:1.4;color:var(--ink2);margin-top:.3rem}
+.verdict .rule .by{transform:translateY(-.1rem)}
+.v-charged strong,.v-charged .now{color:var(--charged)}
+.v-held strong,.v-held .now{color:var(--held)}
+.v-not strong,.v-cancelled strong{color:var(--not)}
+.arr{width:.95em;height:.6em;color:var(--muted);vertical-align:.05em;margin:0 .1em}
+.gates{list-style:none;display:flex;flex-direction:column;flex:none;padding-top:.9rem;border-top:1px solid var(--hair)}
+.gates h3{margin-bottom:.6rem}
+.gate{position:relative;display:grid;grid-template-columns:1.6rem minmax(0,1fr);column-gap:.75rem;padding-bottom:.7rem}
+.gate:last-child{padding-bottom:0}
+.gate:not(:last-child)::after{content:"";position:absolute;left:.8rem;top:1.75rem;bottom:.1rem;width:2px;margin-left:-1px;background:var(--fill2);border-radius:2px}
+.gate.pass:not(:last-child)::after{background:color-mix(in srgb,var(--charged) 35%,transparent)}
+.gate .ic{display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;box-shadow:inset 0 0 0 2px var(--fill2);color:var(--faint);background:var(--surface)}
+.gate .ic svg{width:.8rem;height:.8rem}
+.gate.pass .ic{background:var(--charged);box-shadow:none;color:#fff}
+.gate.fail .ic{background:var(--held);box-shadow:none;color:#fff}
+.gate.skip .ic{background:var(--fill);box-shadow:none;color:var(--faint)}
+.gate.now .ic{box-shadow:inset 0 0 0 2px var(--accent),0 0 0 .25rem var(--accent-soft)}
+.gate.now .ic::after{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--accent)}
+.gate .t{display:flex;align-items:center;gap:.4rem;min-height:1.6rem;font-size:1rem;font-weight:600;color:var(--ink);line-height:1.25}
+.gate .t>span:first-child{flex:1;min-width:0}
+.gate.todo .t,.gate.skip .t{color:var(--muted);font-weight:550}
+.gate.skip .t span{text-decoration:line-through;text-decoration-color:var(--faint)}
+.gate p{grid-column:2;font-size:.875rem;line-height:1.35;color:var(--muted);display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.gate.fail p{color:var(--held)}
+.team{display:flex;flex-direction:column;gap:.35rem;padding-top:.9rem;border-top:1px solid var(--hair);min-height:0;overflow:hidden}
+.team .label{display:flex;align-items:center;gap:.45rem}
+.team p{font-size:.875rem;line-height:1.35;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.team b{font-weight:650;color:var(--ink)}
+.mock{display:inline-flex;align-items:center;font-size:.6875rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);background:#fff;border-radius:999px;height:1.2rem;padding:0 .45rem;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mock) 40%,transparent)}
+.legend{margin-top:auto;display:flex;flex-direction:column;gap:.3rem;padding-top:.8rem;border-top:1px solid var(--hair);flex:none}
+.legend p{display:flex;align-items:center;gap:.55rem;font-size:.875rem;color:var(--ink2)}
+.legend .by{min-width:4.6rem;justify-content:center}
+
+/* his phone */
+.phonecol{display:flex;flex-direction:column;gap:.55rem;min-height:0}
+.phonecap{display:flex;align-items:baseline;justify-content:space-between;padding:0 .4rem;flex:none}
+.phonecap h3{font-size:.875rem;font-weight:600;color:var(--ink2)}
+.phonecap p{font-size:.8125rem;color:var(--faint)}
+.device{position:relative;flex:1;min-height:0;border-radius:2.6rem;background:#1d1d1f;padding:.5rem;box-shadow:0 1px 2px rgb(0 0 0 / .2),0 24px 40px -24px rgb(0 0 0 / .45),inset 0 0 0 1px rgb(255 255 255 / .08)}
+.glass{position:relative;height:100%;border-radius:2.15rem;overflow:hidden;background:#f2f2f7;display:flex;flex-direction:column}
+.island{position:absolute;top:.55rem;left:50%;width:5.4rem;height:1.45rem;margin-left:-2.7rem;border-radius:999px;background:#000;z-index:3}
+.status{display:flex;align-items:center;justify-content:space-between;height:2.6rem;padding:.35rem 1.5rem 0 1.7rem;font-size:.8125rem;font-weight:650;color:var(--ink);flex:none;position:relative;z-index:2;font-variant-numeric:tabular-nums}
+.status svg{height:.7rem;width:auto}
+.glass.dark .status{color:#fff}
+.screen{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.glass.dark{background:linear-gradient(180deg,#2b2d33 0%,#141518 100%)}
+.empty{margin:auto;color:var(--muted);font-size:.9375rem;text-align:center;padding:0 1.5rem;line-height:1.4}
+
+/* during the call: what his screen shows */
+.oncall{flex:1;display:flex;flex-direction:column;align-items:center;padding:2.2rem 1rem 2rem;color:#fff;text-align:center}
+.oncall .who{width:4.6rem;height:4.6rem;border-radius:50%;background:linear-gradient(180deg,#5b5e66,#3a3c42);display:grid;place-items:center;margin-bottom:.9rem}
+.oncall .who svg{width:2.1rem;height:2.1rem;color:#d7d8dc}
+.oncall b{font-size:1.5rem;font-weight:600;letter-spacing:-.02em}
+.oncall .timer{font-size:1rem;color:rgb(255 255 255 / .62);font-variant-numeric:tabular-nums;margin-top:.15rem}
+.oncall .hears{margin-top:1.4rem;display:flex;align-items:center;gap:.5rem;font-size:.875rem;color:rgb(255 255 255 / .72);min-height:1.2rem}
+.endcall{margin-top:auto;display:flex;flex-direction:column;align-items:center;gap:.45rem;border:0;background:none;color:#fff;font-size:.875rem;font-weight:500;cursor:pointer}
+.endcall i{display:grid;place-items:center;width:4.1rem;height:4.1rem;border-radius:50%;background:#eb4d3d;transition:transform .12s var(--ease),background-color .15s}
+.endcall i svg{width:2rem;height:2rem}
+.endcall:hover i{background:#d63f30}
+.endcall:active i{transform:scale(.94)}
+.endcall:disabled{opacity:.6;cursor:default}
+
+/* after the call: his messages from Paytm */
+.appbar{display:flex;align-items:center;gap:.6rem;padding:.35rem 1rem .6rem;border-bottom:1px solid var(--hair);background:rgb(246 246 248 / .92);flex:none}
+.appbar .av{width:2rem;height:2rem;border-radius:50%;background:var(--ink);display:grid;place-items:center;flex:none}
+.appbar .av svg{width:1.1rem;height:1.1rem}
+.appbar b{display:block;font-size:.9375rem;font-weight:650;color:var(--ink);line-height:1.2}
+.appbar span{display:block;font-size:.75rem;color:var(--muted)}
+.thread{flex:1;min-height:0;overflow-y:auto;scrollbar-width:none;display:flex;flex-direction:column;gap:.55rem;padding:.75rem .7rem .8rem;background:#ece5dd}
+.thread::-webkit-scrollbar{display:none}
+.thread>:first-child{margin-top:auto}
+.wamsg{background:#fff;border-radius:.3rem 1rem 1rem 1rem;padding:.55rem .75rem .6rem;box-shadow:0 1px 1px rgb(0 0 0 / .1);max-width:96%;flex:none}
+.wamsg .from{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:650;color:var(--muted);margin-bottom:.2rem}
+.wamsg .from time{margin-left:auto;font-weight:500;color:var(--faint)}
+.wamsg p{font-size:.875rem;line-height:1.42;color:var(--ink)}
+.app{display:flex;align-items:center;gap:.4rem}
+.app i{width:1.1rem;height:1.1rem;border-radius:.3rem;background:var(--accent);flex:none;display:grid;place-items:center}
+.app i svg{width:.68rem;height:.68rem}
+.app.wa i{background:#1f8a4c}
+.walink{display:block;margin-top:.35rem;font-size:.75rem;color:#1a6fb5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wamsg p.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:4;overflow:hidden}
+.more{border:0;background:none;padding:0;margin-top:.15rem;font-size:.8125rem;font-weight:600;color:var(--muted);cursor:pointer}
+.more:hover{color:var(--ink2)}
+.choicebar{display:flex;flex-direction:column;gap:.45rem;flex:none}
+.choices{display:flex;flex-direction:column;gap:.35rem}
+.choice{border:0;background:#fff;color:#1f7a45;font-size:.875rem;padding:0 .6rem;font-weight:600;min-height:2.55rem;border-radius:.8rem;cursor:pointer;box-shadow:0 1px 1px rgb(0 0 0 / .1);
+  transition:background-color .15s,color .15s,transform .12s var(--ease)}
+.choice:hover:not(:disabled){background:#f4fbf6}
+.choice:active:not(:disabled){transform:scale(.98)}
+.choice:disabled{cursor:default;color:var(--faint)}
+.choice[aria-pressed="true"]{background:#1f8a4c;color:#fff}
+.tapnote{display:flex;align-items:center;justify-content:center;gap:.4rem;font-size:.8125rem;line-height:1.35;color:var(--ink2);text-align:center;padding:0 .2rem}
+.tapnote.warn{color:var(--rec)}
+.callme{display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;margin-top:.5rem;border:0;background:#1f8a4c;color:#fff;font-size:.875rem;font-weight:600;height:2.5rem;border-radius:.8rem;cursor:pointer;
+  transition:background-color .15s,transform .12s var(--ease)}
+.callme svg{width:.9rem;height:.9rem}
+.callme:hover:not(:disabled){background:#1a7a43}
+.callme:active:not(:disabled){transform:scale(.98)}
+.callme:disabled{cursor:default;background:var(--fill2);color:var(--faint)}
+
+@media (prefers-reduced-motion:no-preference){
+  .pill.breathe::before{animation:breathe 1.6s ease-in-out infinite}
+  .gate.now .ic::after{animation:breathe 1.6s ease-in-out infinite}
+  .eq i{animation:eq .7s var(--ease) infinite alternate}
+  .eq i:nth-child(2){animation-delay:-.25s}
+  .eq i:nth-child(3){animation-delay:-.5s}
+  .dots i{animation:breathe 1.2s ease-in-out infinite}
+  .dots i:nth-child(2){animation-delay:.2s}
+  .dots i:nth-child(3){animation-delay:.4s}
+  .enter{animation:enter .45s var(--ease) both}
+  .pop{animation:pop .5s var(--ease) both}
+  .gate .ic{transition:background-color .35s var(--ease),box-shadow .35s var(--ease)}
+}
+@keyframes breathe{50%{opacity:.3}}
+@keyframes eq{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#1d1d1f"/><path d="M11 13.5h18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-9l-5.5 4v-4H11a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3z" fill="#fff"/><path d="M15 20.5l3.4 3.2 6.6-6.7" fill="none" stroke="#1d1d1f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>
+      <h1>Settled</h1>
+      <p>Asks the shopkeeper before the first Soundbox rent is taken</p>
+    </div>
+  </div>
+  <ul class="shops" id="shops" aria-label="Shops, rent due 1 Nov"></ul>
+  <div class="round">
+    <p class="freshnote" id="fresh-note"></p>
+    <button class="ghost" type="button" id="fresh"></button>
+    <div class="live off" id="live">Connecting</div>
+  </div>
+</header>
+
+<main>
+  <section class="panel call" aria-label="The call">
+    <div class="callhead">
+      <div><h2 id="name"></h2><p class="sub" id="sub"></p></div>
+      <div class="pill" id="pill"></div>
+    </div>
+    <div class="convo" id="convo"></div>
+    <div class="controls" id="controls">
+      <select class="lang" id="lang" aria-label="Language for the next call"></select>
+      <button class="btn talk" type="button" id="talk" hidden></button>
+      <form class="typed" id="typed" hidden><input name="text" placeholder="Type his reply instead" autocomplete="off" aria-label="Type his reply instead"><button>Send</button></form>
+      <div class="note" id="note"></div>
+      <button class="btn start" type="button" id="start"></button>
+    </div>
+  </section>
+
+  <section class="panel ledger" id="result" aria-label="His rent"></section>
+
+  <section class="phonecol" aria-label="His phone">
+    <div class="phonecap"><h3 id="phone-title">His phone</h3><p>Mock, nothing is sent</p></div>
+    <div class="device">
+      <div class="glass" id="glass">
+        <div class="island"></div>
+        <div class="status"><span id="clock"></span><svg viewBox="0 0 44 12" aria-hidden="true"><g fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="1"/><rect x="5" y="5.5" width="3" height="6.5" rx="1"/><rect x="10" y="3" width="3" height="9" rx="1"/><rect x="15" y=".5" width="3" height="11.5" rx="1"/><rect x="24" y="1" width="17" height="10" rx="3" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".5"/><rect x="25.8" y="2.8" width="11" height="6.4" rx="1.6"/><rect x="42" y="4.2" width="1.6" height="3.6" rx=".8" opacity=".5"/></g></svg></div>
+        <div class="screen" id="phone"></div>
+      </div>
+    </div>
+  </section>
+</main>
+<script>
+let SHOPS = {};
+let focus = null;
+let rows = [];
+let lastId = 0;
+let lastAt = null;
+let msgs = [];
+let msgLast = 0;
+let msgLastAt = null;
+let refetch = false;
+const live = {};
+const BARS = 30;
+const FINAL = {'charged': 'charged', 'held': 'held', 'not charged': 'not', 'cancelled': 'cancelled'};
+const ICONS = {
+  charged: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M12.5 20.5l5 4.8 10-10.3" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  held: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><rect x="14.5" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/><rect x="21.9" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/></svg>',
+  not: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M13 20h14" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5l2.6-.6 1.9 4.4-2 1.7a12 12 0 0 0 5.9 5.9l1.7-2 4.4 1.9-.6 2.6a2 2 0 0 1-2 1.6A16.5 16.5 0 0 1 3.5 5.5a2 2 0 0 1 1.6-2z" fill="currentColor"/></svg>',
+  tick: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5" fill="currentColor"/><path d="M4.8 8.2l2.2 2.1 4.2-4.4" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+};
+const CHANNEL_ICONS = {
+  SMS: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h14a2.5 2.5 0 0 1 2.5 2.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5v-3.5H5A2.5 2.5 0 0 1 2.5 15V7A2.5 2.5 0 0 1 5 4.5z" fill="currentColor"/></svg>',
+  WhatsApp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="currentColor"/><circle cx="8" cy="12" r="1.3" fill="#1f8a4c"/><circle cx="12" cy="12" r="1.3" fill="#1f8a4c"/><circle cx="16" cy="12" r="1.3" fill="#1f8a4c"/></svg>',
+  ticket: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h15A1.5 1.5 0 0 1 21 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 16.5V14a2 2 0 0 0 0-4z" fill="currentColor"/></svg>'
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const clock = at => (at || '').split('T').pop().slice(0, 5);
+const arrows = s => esc(s).replace(/\s*→\s*/g, ' <svg class="arr" viewBox="0 0 16 10" aria-label="then"><path d="M1 5h13M10 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ');
+const html = (el, str) => { if (el._html !== str) { el._html = str; el.innerHTML = str; return true; } return false; };
+const me = key => live[key] || (live[key] = {});
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const day = s => s.replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g, (_, y, m, d) => `${+d} ${MONTHS[+m - 1]}`);
+
+/* "Fresh board" hides earlier rows from view for the next group at the table; the log keeps them */
+const FRESH_KEY = 'settled-fresh-board';
+let fresh = null;
+try { fresh = JSON.parse(localStorage.getItem(FRESH_KEY)); } catch (e) { fresh = null; }
+const view = () => fresh ? rows.filter(r => r.id > fresh.id) : rows;
+const viewMsgs = () => fresh ? msgs.filter(m => m.id > fresh.msg) : msgs;
+
+function setFresh(on) {
+  fresh = on ? {id: lastId, at: lastAt, msg: msgLast, t: new Date().toTimeString().slice(0, 5)} : null;
+  if (!on && rows[0]?.id > 1) refetch = true;
+  try {
+    if (fresh) localStorage.setItem(FRESH_KEY, JSON.stringify(fresh));
+    else localStorage.removeItem(FRESH_KEY);
+  } catch (e) {}
+  render();
+}
+
+/* a new demo round resets every shop on the server, so each can be called again; the log keeps every row */
+let roundNote = '';
+let seenRound = null;
+$('fresh').onclick = async () => {
+  if (fresh) return setFresh(false);
+  roundNote = '';
+  try {
+    const res = await fetch('/api/round/new', {method: 'POST'});
+    if (res.ok) seenRound = (await res.json()).round;
+    else if (res.status !== 404) roundNote = (await res.json().catch(() => ({}))).error || 'Could not start a new round';
+  } catch (e) {
+    roundNote = 'Network failed, try again';
+  }
+  if (roundNote) return render();
+  setFresh(true);
+};
+
+function watchRound(list) {
+  const round = Math.max(0, ...list.map(x => x.round || 0));
+  if (!round) return;
+  if (seenRound !== null && round > seenRound && !fresh) {
+    seenRound = round;
+    setFresh(true);
+  }
+  seenRound = Math.max(seenRound ?? 0, round);
+}
+
+/* one shop's latest run, read from its log rows */
+function runOf(key) {
+  let s = null;
+  for (const r of view()) {
+    if (r.shop !== key) continue;
+    /* a second call in the same run is him calling back from the SMS: the conversation starts again */
+    if (r.step === 'calling' && s?.called) s = {status: 'waiting', settled: false, startAt: s.startAt, why: null, turns: [], acts: [], charge: null, pick: null, records: s.records, called: false, rule: null, identity: null, callback: true};
+    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null, identity: null};
+    if (FINAL[r.outcome]) {
+      s.status = FINAL[r.outcome];
+      s.settled = true;
+    } else if (!s.settled) {
+      if (r.outcome === 'ask again' || r.outcome === 'call' || r.step === 'calling' || r.step === 'answered') s.status = 'on';
+      else if (r.step === 'records checked') s.status = 'on';
+    }
+    if (r.step === 'decided' && r.rule && (!s.pinned || (FINAL[r.outcome] && r.rule !== s.why))) {
+      s.why = r.rule;
+      if (FINAL[r.outcome]) s.pinned = true;
+    }
+    if (r.said) s.turns.push(r);
+    if (r.step === 'answered' && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
+    if (r.step === 'tap' && r.rule) { s.why = r.rule; s.pinned = true; s.tap = {said: (r.heard || '').replace(/^tapped:\s*/, ''), outcome: r.outcome}; }
+    if (r.step === 'records checked') s.records = r.reason;
+    if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
+    if (r.step === 'calling') { s.called = true; s.callAt = r.at; }
+    if (r.step === 'identity' && /^name confirmed/i.test(r.rule || '')) s.nameOk = true;
+    if ((r.step === 'due' || r.step === 'calling') && /call(ed)?[\s_]?back|call_me/i.test([r.rule, r.action, r.reason].join(' '))) s.callback = true;
+    if (r.step === 'identity' && isYear(r) && /^\d{4}$/.test(r.read_as || '')) s.year = {said: r.read_as, ok: /^verified/i.test(r.rule || '')};
+    if (r.step === 'identity') s.idTried = true;
+    if (/send code/i.test(r.action || '')) s.codeAt = r.at;
+    if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
+    if (r.step === 'follow-up' && r.outcome === 'charged') s.charge = r.rule;
+    if (r.step === 'follow-up' && /confirm by SMS/i.test(r.action || '')) s.pick = r.rule;
+  }
+  if (s) {
+    s.msgs = viewMsgs().filter(m => m.shop === key && m.at >= s.startAt);
+    const call = SHOPS[key]?.call;
+    /* a call that stopped without a decided row still ended: nothing was taken */
+    if (!call?.active && s.called && !s.settled) {
+      s.settled = true;
+      s.status = 'held';
+      s.ended = true;
+      if (!s.why) s.why = s.idTried && !s.identity?.ok ? 'not verified → nothing changes' : 'call ended before a decision → nothing taken';
+    }
+    if (s.called && !s.tap && /restart|got cut|line dropped|\bhung up\b|\bhang up\b/i.test(s.why || '')) s.ended = true;
+    s.unverified = s.settled && s.called && s.idTried && !s.identity?.ok && !s.tap && !s.ended;
+  }
+  return s || {status: 'waiting', settled: false, turns: [], acts: [], msgs: []};
+}
+
+function statusLine(key, s) {
+  const call = SHOPS[key]?.call || {};
+  const m = me(key);
+  const active = !!call.active;
+  const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0] || '';
+  if (m.rec) return ['rec', 'Recording his reply'];
+  if (active) {
+    if (m.speaking) return ['on', 'Settled is speaking'];
+    if (call.hearing || m.sending) return ['on', 'Hearing his reply'];
+    if (call.waiting) return ['on', 'Listening for his reply'];
+    if (!call.seq) return ['on', 'Checking records'];
+    return ['on', 'Deciding'];
+  }
+  if (s.unverified) return ['not', 'Not verified, nothing changed'];
+  if (s.ended) return ['not', 'Call ended, nothing taken'];
+  if (s.status === 'charged') return ['charged', `Charged ${amount}`.trim()];
+  if (s.status === 'held') return ['held', 'Held'];
+  if (s.status === 'not') return ['not', 'Not charged'];
+  if (s.status === 'cancelled') return ['cancelled', 'Cancelled by his tap'];
+  return ['', 'Ready'];
+}
+
+function render() {
+  const keys = Object.keys(SHOPS);
+  if (!keys.length) return;
+  if (!focus || !SHOPS[focus]) focus = keys[0];
+  renderRail(keys);
+  const s = runOf(focus);
+  s.shop = SHOPS[focus];
+  renderHead(s);
+  renderPhone(s);
+  renderConvo(s);
+  renderControls(s);
+  renderResult(s);
+  html($('fresh'), fresh ? 'Show all' : 'New demo round');
+  html($('fresh-note'), roundNote ? `<span class="warn">${esc(roundNote)}</span>` : '');
+  $('fresh').title = fresh ? `New round from ${fresh.t}. The log keeps every row.` : 'Every call is logged. A new round makes every shop ready to call again.';
+}
+
+function renderRail(keys) {
+  const list = $('shops');
+  if (list.children.length !== keys.length) {
+    list.innerHTML = keys.map(k => `<li><button class="shop" type="button" data-shop="${esc(k)}"></button></li>`).join('');
+  }
+  for (const b of list.querySelectorAll('.shop')) {
+    const k = b.dataset.shop;
+    const shop = SHOPS[k];
+    const [kind, text] = statusLine(k, runOf(k));
+    b.setAttribute('aria-current', k === focus);
+    html(b, `<b>${esc(shop.name)}</b><span class="st k-${kind}">${esc(text)}</span>`);
+  }
+}
+
+$('shops').addEventListener('click', e => {
+  const b = e.target.closest('.shop');
+  if (!b || b.dataset.shop === focus) return;
+  focus = b.dataset.shop;
+  try { localStorage.setItem('settled-focus', focus); } catch (e) {}
+  render();
+});
+
+function renderHead(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  html($('name'), esc(shop.name));
+  const lang = call.active ? shop.language : shop.languages.find(l => l.code === (me(focus).lang || shop.default));
+  html($('sub'), [esc(shop.owner || 'Shopkeeper'), lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
+  /* the pill says what the call is doing; the money has its own column */
+  const [kind, text] = call.active || me(focus).rec ? statusLine(focus, s) : s.called ? ['not', 'Call ended'] : s.settled ? ['not', 'No call made'] : ['', 'Ready to call'];
+  const pill = $('pill');
+  pill.className = `pill k-${kind}${call.active && call.waiting && !me(focus).speaking ? ' breathe' : ''}`;
+  pill.textContent = text;
+}
+
+const WHY_NOT = {'someone else': 'someone else answered', 'not confirmed': 'no clear answer', 'no code': 'no code given', 'wrong code': 'wrong code',
+  'no year': 'no year of birth given', 'wrong year': 'year of birth did not match', 'refused': 'he would not say his year of birth', 'angry': 'he was upset, so Settled stopped'};
+
+
+/* his phone: the live call while Settled talks to him, then the SMS and WhatsApp he gets */
+const CHOICES = {keep_plan: 'Keep my plan', cheaper_plan: 'Show me a cheaper plan', cancel: 'Cancel'};
+const APP_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.5h6v7H3z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 7.5h2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>';
+const PERSON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8.5" r="4.2" fill="currentColor"/><path d="M3.8 20.5c.9-4 4.2-6.3 8.2-6.3s7.3 2.3 8.2 6.3" fill="currentColor"/></svg>';
+const HANG = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9c-2.6 0-5 .6-7.2 1.7-.6.3-.9.9-.9 1.5v2.4c0 .7.6 1.2 1.3 1.1l2.9-.5c.6-.1 1-.6 1-1.2v-1.7c1.9-.6 3.9-.6 5.8 0V14c0 .6.4 1.1 1 1.2l2.9.5c.7.1 1.3-.4 1.3-1.1v-2.4c0-.6-.3-1.2-.9-1.5C17 9.6 14.6 9 12 9z" fill="#fff"/></svg>';
+const taps = {};
+let hangupMissing = false;
+let callbackMissing = false;
+const callMe = m => m.action === 'call_me' || /call_me/.test(m.choices || '') || /\bTap Call me now\b/i.test(m.text);
+
+/* he cuts the call: the server ends it in plain code, nothing is taken */
+async function hangUp() {
+  const key = focus;
+  const m = me(key);
+  m.hanging = true;
+  render();
+  try {
+    const res = await fetch(`/api/call/${key}/hangup`, {method: 'POST'});
+    if (res.status === 404) hangupMissing = true;
+    else if (!res.ok) m.note = (await res.json().catch(() => ({}))).error || 'Could not hang up';
+  } catch (e) {
+    m.note = 'Network failed, could not hang up';
+  }
+  m.hanging = false;
+  await refreshShops().catch(() => render());
+}
+const opened = new Set();
+
+function choicesOf(m) {
+  let c = m.choices;
+  if (typeof c === 'string') { try { c = JSON.parse(c); } catch (e) { c = c.split(/[,|]/); } }
+  if (!Array.isArray(c)) return [];
+  return c.map(x => typeof x === 'string' ? {id: x.trim(), label: CHOICES[x.trim()] || x.trim()} : {id: x.id || x.choice, label: x.label || CHOICES[x.id || x.choice] || x.id})
+    .filter(x => x.id in CHOICES);
+}
+
+const pad = n => String(n).padStart(2, '0');
+function tickClock() {
+  const now = new Date();
+  $('clock').textContent = `${now.getHours()}:${pad(now.getMinutes())}`;
+  const timer = $('timer');
+  const since = $('phone').dataset.since;
+  if (timer && since) {
+    const t = Math.max(0, Math.floor((now - new Date(since)) / 1000));
+    timer.textContent = `${pad(Math.floor(t / 60))}:${pad(t % 60)}`;
+  }
+}
+setInterval(tickClock, 1000);
+
+function renderPhone(s) {
+  const call = s.shop.call || {};
+  const box = $('phone');
+  const who = s.shop.owner || 'the shopkeeper';
+  html($('phone-title'), `${esc(s.shop.owner ? s.shop.owner.split(' ')[0] + "'s" : 'His')} phone`);
+  $('glass').classList.toggle('dark', !!call.active);
+  if (call.active) {
+    box.dataset.since = s.callAt || '';
+    html(box, `<div class="oncall"><div class="who">${PERSON}</div><b>Paytm</b><span class="timer" id="timer">${s.callAt ? '' : 'calling…'}</span>
+      ${hangupMissing ? '' : `<button class="endcall" type="button"${me(focus).hanging ? ' disabled' : ''}><i>${HANG}</i>Hang up</button>`}</div>`);
+    box._focus = null;
+    return tickClock();
+  }
+  box.dataset.since = '';
+  const mine = s.msgs.filter(m => m.to_whom === 'shopkeeper');
+  const asking = mine.filter(m => m.channel === 'WhatsApp' && (m.link || m.choices)).pop();
+  const callNow = callbackMissing ? null : mine.filter(callMe).pop();
+  const parts = [];
+  for (const m of mine) {
+    const wa = m.channel === 'WhatsApp';
+    const inText = m.link && m.text.includes(m.link);
+    const text = m.text.replace(/^Paytm:\s*/, '').replace(inText ? m.link : /$^/, '').replace(/[\s:]+$/, '');
+    let extra = '';
+    if (m === callNow) {
+      const busy = !!me(focus).calling || !!call.active || !!s.callback;
+      extra = `<button class="callme" type="button" data-callme="${esc(focus)}"${busy ? ' disabled' : ''}>${ICONS.phone}Call me now</button></div>`;
+    }
+    if (m === asking) {
+      const choices = choicesOf(m);
+      const tap = taps[m.id] || {};
+      const picked = tap.choice || m.tapped || null;
+      const expired = !picked && !tap.busy && m.id !== s.shop.link;
+      const note = tap.note || (picked ? 'His tap is recorded' : expired ? 'This link has expired' : 'Only his tap here changes the plan');
+      extra = (m.link ? `<span class="walink">${esc(m.link)}</span>` : '') + `</div>
+        <div class="choicebar">${choices.length ? `<div class="choices">${choices.map(c => `<button class="choice" type="button" data-msg="${esc(m.id)}" data-choice="${esc(c.id)}"
+          aria-pressed="${picked === c.id}"${picked || expired || tap.busy ? ' disabled' : ''}>${esc(c.label)}</button>`).join('')}</div>` : ''}
+        <p class="tapnote${tap.warn ? ' warn' : ''}">${tap.warn || expired ? '' : '<span class="by tap">His tap</span>'}${esc(note)}</p></div>`;
+    }
+    parts.push(`<div class="wamsg"><div class="from"><span class="app${wa ? ' wa' : ''}"><i>${wa ? CHANNEL_ICONS.WhatsApp.replace('fill="currentColor"', 'fill="#fff"') : APP_ICON}</i>${wa ? 'WhatsApp' : 'SMS'}</span><time>${esc(clock(m.at))}</time></div>
+      <p${m === asking && !opened.has(m.id) ? ' class="clamp"' : ''}>${esc(text)}</p>${m === asking ? `<button class="more" type="button" data-more="${esc(m.id)}">${opened.has(m.id) ? 'Less' : 'More'}</button>` : ''}${extra || '</div>'}`);
+  }
+  const thread = () => box.querySelector('.thread');
+  const before = thread()?.childElementCount || 0;
+  const head = `<div class="appbar"><span class="av">${APP_ICON}</span><div><b>Paytm</b><span>SMS and WhatsApp</span></div></div>`;
+  if (html(box, `${head}<div class="thread">${parts.length ? parts.join('') : `<p class="empty">${s.startAt ? `Nothing sent to ${esc(who)} yet` : `What ${esc(who)} gets from Paytm shows here`}</p>`}</div>`)) {
+    const t = thread();
+    if (box._focus === focus && t.childElementCount > before) [...t.children].slice(before).forEach(k => k.classList.add('enter'));
+    box._focus = focus;
+    t.scrollTop = t.scrollHeight;
+  }
+}
+
+$('phone').addEventListener('click', async e => {
+  const end = e.target.closest('.endcall');
+  if (end) return end.disabled || hangUp();
+  const more = e.target.closest('.more');
+  if (more) {
+    const id = +more.dataset.more;
+    if (!opened.delete(id)) opened.add(id);
+    return render();
+  }
+  const back = e.target.closest('.callme');
+  if (back) return back.disabled || callBack(back.dataset.callme);
+  const b = e.target.closest('.choice');
+  if (!b || b.disabled) return;
+  const id = b.dataset.msg;
+  const tap = taps[id] = {busy: true, note: 'Sending his tap…'};
+  render();
+  try {
+    const res = await fetch(`/api/consent/${encodeURIComponent(id)}/${encodeURIComponent(b.dataset.choice)}`, {method: 'POST'});
+    const got = await res.json().catch(() => ({}));
+    if (res.ok) Object.assign(tap, {choice: b.dataset.choice, note: got.note || 'His tap is recorded'});
+    else if (got.expired) Object.assign(tap, {note: 'This link has expired'});
+    else Object.assign(tap, {warn: true, note: got.error || 'Could not send his tap'});
+  } catch (e) {
+    Object.assign(tap, {warn: true, note: 'Network failed, tap again'});
+  }
+  tap.busy = false;
+  await refreshShops().catch(() => render());
+});
+
+function bubbleSettled(said, shop, old, speaking) {
+  const native = shop.lines[said];
+  return `<div class="bub settled${old ? ' old' : ''}"><span class="label">Settled${speaking ? ' <span class="eq" aria-label="speaking"><i></i><i></i><i></i></span>' : ''}</span>
+    <p class="native">${esc(native || said)}</p>${native && native !== said ? `<p class="gloss">${esc(said)}</p>` : ''}</div>`;
+}
+
+function bubbleHim(who, inner, read, old) {
+  return `<div class="bub him${old ? ' old' : ''}"><span class="label">${esc(who)}</span>${inner}${read || ''}</div>`;
+}
+
+/* identity rows from the year of birth check, as against the older app code */
+const isYear = r => /year|refused/i.test(r.rule || '');
+
+/* under his words: who read them. The AI sorts a reply; the year is checked in plain code */
+function readAs(r) {
+  if (!r.read_as) return '';
+  if (r.step === 'identity' && isYear(r)) {
+    if (r.read_as === 'wait') return `<p class="read"><span class="by code">Code</span>No year yet, Settled gives him a moment</p>`;
+    const ok = /^verified/i.test(r.rule || '');
+    return `<p class="read"><span class="by code">Code</span>Year of birth <span class="kind ${ok ? 'ok' : 'bad'}">${esc(r.read_as)}</span>${ok ? 'matches his record' : ''}</p>`;
+  }
+  const said = (r.heard || '').toLowerCase();
+  const why = r.reason && !said.includes(r.reason.slice(0, 24).toLowerCase()) ? `<span class="why">${esc(r.reason)}</span>` : '';
+  return `<p class="read"><span class="by ai">AI</span>understood <span class="kind ${esc(r.read_as)}">${esc(r.read_as)}</span>${why}</p>`;
+}
+
+function renderConvo(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const m = me(focus);
+  const who = shop.owner || 'Shopkeeper';
+  const active = !!call.active;
+  const turns = s.turns.slice();
+  const pending = active && call.said && (!turns.length || turns[turns.length - 1].said !== call.said);
+  const parts = [];
+  if (!s.startAt || (s.status === 'waiting' && !active)) {
+    const own = (m.lang || shop.default) === shop.language.code;
+    const ask = Object.keys(shop.lines)[0];
+    parts.push(`<div class="bub settled preview"><span class="label">Settled will ask</span>${own ? `<p class="native">${esc(shop.lines[ask])}</p>` : ''}<p class="gloss">${esc(ask)}</p></div>`);
+  } else if (!s.called && s.settled) {
+    parts.push(`<div class="sys enter"><b>No call made</b><span>Records checked: ${esc(day(s.records || ''))}</span></div>`);
+  } else if (!turns.length && !pending) {
+    parts.push(`<div class="sys"><b>${active ? 'Calling' : 'Call ended'}</b>${s.records ? `<span>Records checked: ${esc(day(s.records))}</span>` : ''}</div>`);
+  }
+  if (s.callback && s.called) parts.unshift(`<div class="sys"><b>He called back</b><span>${esc(shop.owner || 'The shopkeeper')} tapped Call me now on the SMS</span></div>`);
+  const total = turns.length + (pending ? 1 : 0);
+  turns.forEach((r, i) => {
+    const old = i < total - 1;
+    parts.push(bubbleSettled(r.said, shop, old, false));
+    if (r.step === 'said') return;
+    const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q></p>` : `<p class="words"><span class="none">No reply</span></p>`;
+    parts.push(bubbleHim(who, inner, readAs(r), old));
+  });
+  if (((s.identity && !s.identity.ok) || s.unverified) && !pending) {
+    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity?.why] || s.identity?.why || 'no clear answer')}. Nothing taken, nothing changed.</span></div>`);
+  }
+  if (pending) {
+    parts.push(bubbleSettled(call.said, shop, false, m.speaking));
+    let inner;
+    if (m.rec) inner = `<div class="meter" id="meter">${'<i></i>'.repeat(BARS)}</div>`;
+    else if (m.heard && m.heardSeq === call.seq) inner = `<p class="words"><q>${esc(m.heard)}</q></p>`;
+    else if (call.hearing || m.sending) inner = `<p class="words"><span class="none">Hearing his reply <span class="dots"><i></i><i></i><i></i></span></span></p>`;
+    else if (call.waiting) inner = `<p class="words"><span class="none">Listening <span class="dots"><i></i><i></i><i></i></span></span></p>`;
+    else inner = `<p class="words"><span class="none">…</span></p>`;
+    parts.push(bubbleHim(m.rec ? `${who} is speaking` : `${who}`, inner, ''));
+  }
+  const box = $('convo');
+  const keep = m.rec && $('meter');
+  if (keep) return;
+  const before = box.childElementCount;
+  if (html(box, parts.join(''))) {
+    const kids = [...box.children];
+    if (box._focus === focus && kids.length > before) kids.slice(before).forEach(k => k.classList.add('enter'));
+    box._focus = focus;
+    box.scrollTop = box.scrollHeight;
+  }
+  box.classList.toggle('scrolled', box.scrollTop > 4);
+}
+$('convo').addEventListener('scroll', e => e.target.classList.toggle('scrolled', e.target.scrollTop > 4), {passive: true});
+
+function renderControls(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const m = me(focus);
+  const active = !!call.active;
+  const listening = active && call.waiting;
+
+  const pick = $('lang');
+  if (pick._shop !== focus) {
+    pick._shop = focus;
+    pick.innerHTML = shop.languages.map(l => `<option value="${esc(l.code)}">${esc(l.name)} · ${esc(l.own)}</option>`).join('');
+  }
+  pick.hidden = active;
+  const lang = m.lang || shop.default;
+  if (pick.value !== lang && document.activeElement !== pick) pick.value = lang;
+
+  const start = $('start');
+  start.hidden = active;
+  html(start, `${ICONS.phone}${s.startAt ? 'Call again' : 'Start call'}`);
+  start.classList.toggle('again', !!s.settled);
+
+  const talk = $('talk');
+  talk.hidden = !listening || !m.stream;
+  talk.disabled = call.hearing || m.sending;
+  talk.classList.toggle('on', !!m.rec);
+  html(talk, `${ICONS.mic}${m.rec ? 'Let go to send' : call.hearing || m.sending ? 'Hearing…' : 'Hold to speak'}`);
+  const typed = $('typed');
+  typed.hidden = !listening;
+  typed.querySelector('input').disabled = call.hearing || m.sending;
+
+  if (active && !m.stream && !m.asking && !m.micTried) {
+    m.micTried = true;
+    askMic(m).then(render);
+  }
+  let note = m.note || '';
+  if (!active && /^Heard/.test(note)) note = '';
+  if (call.problem) note = call.problem;
+  const mic = active && !m.stream && m.mic ? m.mic : '';
+  html($('note'), [mic, note].filter(Boolean).map(n =>
+    `<span${/Try again|Hold the button|heard nothing|problem|stopped|no voice|could not/i.test(n) ? ' class="warn"' : ''}>${esc(n)}</span>`).join(''));
+
+  playLine(focus, call);
+}
+
+/* every line Settled says plays once, in order: its audio is fetched as soon as the line
+   shows up (the server keeps only the latest), and played after the one before ends */
+function playLine(key, call) {
+  const m = me(key);
+  if (call.active) m.tracking = true;
+  if (!m.tracking || !call.seq || m.played === call.seq) return;
+  m.played = call.seq;
+  if (call.waiting) m.note = '';
+  if (!call.voice) return;
+  const url = `/api/call/${key}/audio/${call.seq}`;
+  const got = fetch(url, {cache: 'no-store'}).then(r => r.ok ? r.blob() : null).catch(() => null);
+  m.unplayed = (m.unplayed || 0) + 1;
+  m.voices = (m.voices || Promise.resolve()).then(() => got).then(blob => blob && new Promise(done => {
+    const audio = new Audio(URL.createObjectURL(blob));
+    const end = () => { URL.revokeObjectURL(audio.src); m.speaking = false; render(); done(); };
+    m.speaking = true;
+    render();
+    audio.onended = end;
+    audio.onerror = end;
+    audio.play().catch(end);
+  })).then(() => { m.unplayed--; });
+}
+
+/* his rent: one verdict, then what plain code needs before it takes anything */
+const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.2 4.7-4.8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const CROSS = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3.5 3.5l5 5M8.5 3.5l-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const DASH = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+const BY = {ai: '<span class="by ai">AI</span>', code: '<span class="by code">Code</span>', tap: '<span class="by tap">His tap</span>'};
+
+function renderResult(s) {
+  const box = $('result');
+  const shop = s.shop;
+  const call = shop.call || {};
+  const step = call.active ? call.step : null;
+  const price = shop.record?.signup?.price;
+  const rent = price ? `₹${price}` : 'the rent';
+  const asked = s.asked || [];
+  const noCall = s.settled && !s.called;
+  const failedId = (s.identity && !s.identity.ok) || s.unverified;
+  const first = asked[0]?.read_as, second = asked[1]?.read_as;
+
+  const gates = [
+    {t: 'Records in order', by: ['code'], state: noCall ? 'fail' : s.records ? 'pass' : call.active ? 'now' : 'todo',
+      p: s.records ? cap(day(s.records).replace(/ for ₹\s?\d+ a month from [^,]+/, '')) : 'Sign-up, delivery and return'},
+    {t: `It's ${shop.owner || 'the shopkeeper'}`, by: ['ai', 'code'],
+      state: s.identity?.ok ? 'pass' : failedId ? 'fail' : step === 'identity' ? 'now' : 'todo',
+      p: s.identity?.ok ? `Said it's him, born ${s.year?.said || 'as on record'}` : failedId ? cap(WHY_NOT[s.identity?.why] || s.identity?.why || 'not confirmed')
+        : s.nameOk ? `Said it's him, now his year of birth` : 'His name, then his year of birth'},
+    {t: `Haan to the ${rent} plan`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
+      p: first ? `AI understood ${first}` : 'Asked from his sign-up record'},
+    {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : first && first !== 'haan' ? 'skip' : step === 'readback' ? 'now' : 'todo',
+      p: second ? `AI understood ${second}` : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
+  ];
+  if (s.tap) gates.push({t: s.tap.said || 'His choice', by: ['tap'], state: 'pass', p: 'His tap in WhatsApp, after the call'});
+  for (const g of gates) if (s.settled && g.state === 'todo') { g.state = 'skip'; g.p = noCall ? 'No call made' : 'Not reached'; }
+
+  const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0];
+  const kind = s.unverified || s.ended ? 'not' : s.settled ? s.status : 'wait';
+  const choices = s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices));
+  const head = {
+    wait: [`${rent}<small>a month</small>`, call.active ? 'Nothing taken during the call' : 'Nothing taken yet'],
+    charged: [`Charged ${amount || ''}`.trim(), s.tap ? 'By his tap, from 1 Nov' : 'By plain code, from 1 Nov'],
+    held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : choices ? '₹0 taken. Only his tap changes the plan' : '₹0 taken, a person follows up'],
+    not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made'],
+    cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp'],
+    unverified: ['Nothing changed', '₹0 taken. Paytm calls the registered number'],
+    ended: ['Call ended', '₹0 taken. Paytm calls again']
+  }[s.unverified ? 'unverified' : s.ended ? 'ended' : kind] || ['', ''];
+  const rule = s.why && s.settled ? `<p class="rule">${s.tap ? BY.tap : BY.code}<span>${arrows(s.why)}</span></p>`
+    : `<p class="rule">${BY.code}<span>takes it only when every check below is ticked</span></p>`;
+  const sig = `${focus}:${kind}:${s.startAt}`;
+  const pop = box.dataset.v !== sig && s.settled;
+  box.dataset.v = sig;
+  const team = teamLines(s);
+  html(box, `<div class="verdict v-${kind}${pop ? ' pop' : ''}"><span class="label">His rent, due 1 Nov</span>
+      <strong>${head[0]}</strong><span class="now">${esc(head[1])}</span>${rule}</div>
+    <ol class="gates" aria-label="Checks before rent is taken">${gates.map(g => `<li class="gate ${g.state}"${g.state === 'now' ? ' aria-current="step"' : ''}>
+      <span class="ic">${g.state === 'pass' ? TICK : g.state === 'fail' ? CROSS : g.state === 'skip' ? DASH : ''}</span>
+      <span class="t"><span>${esc(g.t)}</span>${g.by.map(b => BY[b]).join('')}</span><p>${esc(g.p)}</p></li>`).join('')}</ol>
+    ${team ? `<div class="team"><span class="label">Paytm team gets <span class="mock">mock</span></span>${team}</div>` : ''}
+    <div class="legend"><p>${BY.ai}only sorts what he says</p><p>${BY.code}decides the money</p><p>${BY.tap}is the only way to change his plan</p></div>`);
+}
+
+const TEAM = {manager: 'Manager', support: 'Support'};
+function teamLines(s) {
+  return (s.msgs || []).filter(m => m.to_whom !== 'shopkeeper').map(m => {
+    const whom = m.to_whom === 'manager' ? (m.text.match(/^For ([^:]+):/)?.[1] || 'Manager') : m.channel === 'ticket' ? 'Support ticket' : TEAM[m.to_whom] || m.to_whom;
+    let text = m.text.replace(/^\{ticket\}\s*·\s*/, '').replace(/^For [^:]+:\s*/, '');
+    /* one line each, so lead with what the person is asked to do, not the shop's name again */
+    const shop = s.shop;
+    text = text.replace(`${shop.name} (${shop.owner}) `, 'He ');
+    const ticket = text.match(/^(\S+) · /)?.[1];
+    const ask = text.match(/Please [^.]+\./)?.[0];
+    if (ticket) text = ask || text.slice(ticket.length + 3);
+    return `<p><b>${esc(cap(whom))}${ticket ? ` ${esc(ticket)}` : ''}:</b> ${esc(text)}</p>`;
+  }).join('');
+}
+
+/* call actions */
+function freshCall(m) {
+  m.note = '';
+  m.played = 0;
+  m.tracking = false;
+  m.speaking = false;
+  m.heard = null;
+  m.micTried = true;
+  askMic(m).then(render);
+}
+
+/* he taps Call me now on the SMS: the call starts again as if he rang back */
+async function callBack(key) {
+  const m = me(key);
+  m.calling = true;
+  freshCall(m);
+  render();
+  try {
+    const res = await fetch(`/api/call/${key}/callback`, {method: 'POST'});
+    if (res.status === 404) callbackMissing = true;
+    else if (!res.ok) m.note = (await res.json().catch(() => ({}))).error || 'Could not call back';
+  } catch (e) {
+    m.note = 'Network failed, could not call back';
+  }
+  m.calling = false;
+  await refreshShops().catch(() => render());
+}
+
+$('start').onclick = async () => {
+  const key = focus;
+  const m = me(key);
+  freshCall(m);
+  const language = m.lang || SHOPS[key].default;
+  try {
+    const res = await fetch(`/api/call/${key}/start`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({language})});
+    if (!res.ok) m.note = (await res.json()).error || 'could not start';
+  } catch (e) {
+    m.note = 'Network failed, could not start';
+  }
+  await refreshShops();
+};
+
+$('lang').onchange = e => { me(focus).lang = e.target.value; render(); };
+
+$('typed').onsubmit = e => {
+  e.preventDefault();
+  const input = e.target.elements.text;
+  const text = input.value.trim();
+  if (text) sendReply(focus, JSON.stringify({text}), 'application/json').then(ok => { if (ok) input.value = ''; });
+};
+
+const talk = $('talk');
+talk.addEventListener('pointerdown', e => { e.preventDefault(); talk.setPointerCapture(e.pointerId); holdStart(focus); });
+for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) talk.addEventListener(ev, () => holdEnd(focus));
+
+function askMic(m) {
+  if (m.stream) return Promise.resolve();
+  if (m.asking) return m.asking;
+  if (!navigator.mediaDevices?.getUserMedia) {
+    m.mic = 'No mic here, type his reply';
+    return Promise.resolve();
+  }
+  m.asking = navigator.mediaDevices.getUserMedia({audio: true})
+    .then(stream => { m.stream = stream; m.mic = ''; })
+    .catch(() => { m.mic = 'No mic, type his reply'; })
+    .finally(() => { m.asking = null; });
+  return m.asking;
+}
+
+function holdStart(key) {
+  const m = live[key];
+  if (!m?.stream || m.rec) return;
+  const chunks = [];
+  const rec = new MediaRecorder(m.stream);
+  rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = () => {
+    meterStop(m);
+    const seconds = (performance.now() - m.t0) / 1000;
+    m.rec = null;
+    if (seconds < 0.4) { m.note = 'Hold the button while you talk'; render(); return; }
+    const blob = new Blob(chunks, {type: rec.mimeType || 'audio/webm'});
+    sendReply(key, blob, blob.type, seconds);
+  };
+  m.rec = rec;
+  m.t0 = performance.now();
+  rec.start();
+  render();
+  meterStart(key, m, $('meter'));
+}
+
+function meterStart(key, m, el) {
+  if (!el) return;
+  try {
+    const ctx = m.ctx || (m.ctx = new AudioContext());
+    ctx.resume();
+    const src = ctx.createMediaStreamSource(m.stream);
+    const an = ctx.createAnalyser();
+    an.fftSize = 1024;
+    src.connect(an);
+    const buf = new Float32Array(an.fftSize);
+    const bars = [...el.children];
+    const levels = new Array(bars.length).fill(0);
+    let at = 0;
+    const tick = t => {
+      if (t - at > 45) {
+        at = t;
+        an.getFloatTimeDomainData(buf);
+        let sum = 0;
+        for (const v of buf) sum += v * v;
+        const db = 20 * Math.log10(Math.sqrt(sum / buf.length) + 1e-9);
+        levels.shift();
+        levels.push(Math.min(1, Math.max(0, (db + 58) / 46)));
+        bars.forEach((b, i) => { b.style.transform = `scaleY(${(0.08 + levels[i] * 0.92).toFixed(3)})`; });
+      }
+      m.raf = requestAnimationFrame(tick);
+    };
+    m.meter = src;
+    m.raf = requestAnimationFrame(tick);
+  } catch (e) {
+    m.meter = null;
+  }
+}
+
+function meterStop(m) {
+  cancelAnimationFrame(m.raf);
+  m.meter?.disconnect();
+  m.meter = null;
+}
+
+function holdEnd(key) {
+  const m = live[key];
+  if (m?.rec && m.rec.state === 'recording') m.rec.stop();
+}
+
+async function sendReply(key, body, type, seconds) {
+  const m = me(key);
+  const call = SHOPS[key].call;
+  m.sending = true;
+  m.note = '';
+  render();
+  const headers = {'Content-Type': type};
+  if (seconds) headers['X-Seconds'] = seconds.toFixed(2);
+  let ok = false;
+  try {
+    const res = await fetch(`/api/call/${key}/reply?seq=${call.seq}`, {method: 'POST', headers, body});
+    const got = await res.json();
+    ok = res.ok;
+    if (ok) { m.heard = got.heard; m.heardSeq = call.seq; }
+    m.note = ok ? '' : `${got.error || 'failed'}. Try again or type it.`;
+  } catch (e) {
+    m.note = 'Network failed. Try again or type it.';
+  }
+  m.sending = false;
+  await refreshShops();
+  return ok;
+}
+
+/* polling */
+async function refreshShops() {
+  const res = await fetch('/api/shops', {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  const list = await res.json();
+  SHOPS = Object.fromEntries(list.map(s => [s.id, s]));
+  watchRound(list);
+  if (!focus) {
+    let saved = null;
+    try { saved = localStorage.getItem('settled-focus'); } catch (e) {}
+    focus = list.find(s => s.call?.active)?.id || (SHOPS[saved] ? saved : list[0]?.id);
+  }
+  render();
+}
+
+async function fetchAfter(id, what = 'log') {
+  const res = await fetch(`/api/${what}?after=${id}`, {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+
+async function fetchAll(id) {
+  let got = await fetchAfter(id);
+  for (let page = got; page.length >= 500;) {
+    page = await fetchAfter(page[page.length - 1].id);
+    got = got.concat(page);
+  }
+  return got;
+}
+
+async function pollLog() {
+  let reset = refetch;
+  refetch = false;
+  let got = lastId > 0 && !reset ? await fetchAll(lastId - 1) : [];
+  if (lastId > 0 && !reset && (!got[0] || got[0].id !== lastId || got[0].at !== lastAt)) reset = true;
+  if (lastId === 0 || reset) {
+    rows = [];
+    got = await fetchAll(0);
+    if (fresh && fresh.id && !got.some(r => r.id === fresh.id && r.at === fresh.at)) {
+      fresh = null;
+      try { localStorage.removeItem(FRESH_KEY); } catch (e) {}
+    }
+  } else {
+    got = got.slice(1);
+  }
+  rows = rows.concat(got);
+  const last = rows[rows.length - 1];
+  lastId = last ? last.id : 0;
+  lastAt = last ? last.at : null;
+}
+
+async function pollMessages() {
+  let got = await fetchAfter(Math.max(msgLast - 1, 0), 'messages');
+  if (msgLast > 0) {
+    const anchor = got[0];
+    if (!anchor || anchor.id !== msgLast || anchor.at !== msgLastAt) {
+      msgs = [];
+      got = await fetchAfter(0, 'messages');
+    } else {
+      got = got.slice(1);
+    }
+  }
+  msgs = msgs.concat(got);
+  const last = msgs[msgs.length - 1];
+  msgLast = last ? last.id : 0;
+  msgLastAt = last ? last.at : null;
+}
+
+async function poll() {
+  const dot = $('live');
+  try {
+    await pollLog();
+    await pollMessages();
+    await refreshShops();
+    dot.className = 'live';
+    dot.textContent = 'Live';
+  } catch (e) {
+    dot.className = 'live off';
+    dot.textContent = 'Not connected';
+  }
+  setTimeout(poll, 800);
+}
+
+poll();
+
+let seenVersion;
+async function checkVersion() {
+  try {
+    const v = await (await fetch('/api/version', {cache: 'no-store'})).text();
+    if (seenVersion === undefined) seenVersion = v;
+    const busy = Object.keys(SHOPS).some(k => SHOPS[k].call?.active || live[k]?.rec || live[k]?.sending || live[k]?.unplayed > 0);
+    if (v !== seenVersion && !busy) location.reload();
+  } catch (e) {}
+}
+checkVersion();
+setInterval(checkVersion, 2500);
+</script>
+</body>
+</html>
