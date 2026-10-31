@@ -1,0 +1,37 @@
+case                  shop    expected        got             
+no-1                  gupta   held            held            
+no-silent-after       sharma  held            held            
+no-reason-1           gupta   held            held            
+no-reason-2           sharma  held            held            
+no-reason-3           gupta   held            held            
+no-then-b-1           gupta   charged:plan-b  charged:plan-b  
+no-then-b-2           sharma  charged:plan-b  charged:plan-b  
+no-then-b-3           sharma  charged:plan-b  charged:plan-b  
+no-then-a             gupta   charged:plan-a  charged:plan-a  
+no-then-haan-no-plan  sharma  held            held            
+no-then-question      gupta   held            held            
+someone-else-1        gupta   held            held            
+someone-else-2        sharma  held            held            
+someone-else-3        gupta   held            held            
+someone-else-4        sharma  held            held            
+salesman-twice        sharma  held            held            
+yes-then-no           sharma  held            held            
+ta-yes-yes            gupta   charged:plan-a  charged:plan-a  
+ta-no-reason          sharma  held            held            
+ta-but                gupta   held            held            
+te-yes-yes            sharma  charged:plan-a  charged:plan-a  
+te-no-reason          gupta   held            held            
+te-someone-else       sharma  held            held            
+bn-yes-yes            gupta   charged:plan-a  charged:plan-a  
+bn-no-reason          sharma  held            held            
+bn-but                gupta   held            held            
+mr-yes-yes            sharma  charged:plan-a  charged:plan-a  
+stopped: ₹7.0304 spent, cap ₹7.012
+
+charged after na or unsure: 0
+honest yeses charged: 4/4
+cases matching expected outcome: 27/35
+lines read differently from their label: 1
+  someone-else-4: 'bhaiya dukaan pe customer hai, baad mein call karo' labelled unsure, read no answer
+ai calls: 46, errors: 1, average 0.30s per reply
+cost this run: ₹0.8183 (incl. GST), all runs: ₹7.0304
