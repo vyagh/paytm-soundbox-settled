@@ -10,6 +10,7 @@ from voice import calls, script
 
 ROOT = Path(__file__).resolve().parent
 PAGE = ROOT / "board" / "index.html"
+FONTS = ROOT / "board" / "fonts"
 DB = Path(os.environ.get("SETTLED_DB") or ROOT / "settled.db").resolve()
 PORT = int(os.environ.get("BOARD_PORT") or 8080)
 MAX_REPLY = 5_000_000
@@ -63,6 +64,9 @@ class Handler(BaseHTTPRequestHandler):
         url = urlparse(self.path)
         if url.path in ("/", "/index.html"):
             self.send(200, "text/html; charset=utf-8", PAGE.read_bytes())
+        elif url.path.startswith("/fonts/") and (font := FONTS / url.path.removeprefix("/fonts/")).parent == FONTS \
+                and font.suffix == ".woff2" and font.is_file():
+            self.send(200, "font/woff2", font.read_bytes())
         elif url.path == "/api/log":
             try:
                 after = int(parse_qs(url.query).get("after", ["0"])[0])
