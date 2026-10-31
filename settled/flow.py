@@ -2,9 +2,9 @@ import time
 
 from voice import script
 from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, CALL_LATER, CALLBACK, CHARGED,
-                          CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AGAIN,
-                          OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, READ_BACK_B,
-                          REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
+                          CLOSING, DECLINED, FACTS, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING,
+                          NAME_AGAIN, NAME_SHORT, OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE,
+                          READ_BACK, READ_BACK_B, REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -104,28 +104,36 @@ def _busy_aware(listener):
 def _call(shop, listener, state):
     state.step = "identity"
     line = GREETING
+    _turn(state, "name")
     reply = listener(shop, line)
+    unused = _checked(shop, state, reply, reply.kind)
     failed = rules.name(reply)
     if failed == "ask again":
         asked_who = reply.kind == "question" or year.asks_who(reply.words)
-        _log_reply(shop, state, "identity", line, reply,
-                   rule="asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more")
-        if asked_who:
-            _say(shop, listener, WHO_WHY)
-        line = NAME_AGAIN
+        _log_reply(shop, state, "identity", line, reply, rule=_noted(
+            "asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more", unused))
+        if reply.say:
+            _say(shop, listener, script.Fresh(reply.say))
+            line = NAME_SHORT
+        else:
+            if asked_who:
+                _say(shop, listener, WHO_WHY)
+            line = NAME_AGAIN
         reply = listener(shop, line)
+        unused = _checked(shop, state, reply, reply.kind)
         failed = rules.name(reply, first=False)
-    _log_reply(shop, state, "identity", line, reply, rule=failed or "name confirmed")
+    _log_reply(shop, state, "identity", line, reply, rule=_noted(failed or "name confirmed", unused))
     if reply.kind == "no answer":
         return _silent(shop)
     if failed:
         return _unverified(shop, listener, failed)
 
-    rule, silent = _year(shop, state, listener)
+    rule, silent, calmed = _year(shop, state, listener)
     if silent:
         return _silent(shop)
     if rule != year.VERIFIED:
-        return _unverified(shop, listener, rule, DECLINED if rule in ("failed: refused", "failed: angry") else None)
+        return _unverified(shop, listener, rule, DECLINED if rule in ("failed: refused", "failed: angry") else None,
+                           calmed)
 
     decision, answers, offered = _plan(shop, state, listener)
     signed = shop.plan(shop.signup["plan"])
@@ -158,7 +166,10 @@ def _call(shop, listener, state):
     paytm_mock.send_choices(shop, state.call)
     paytm_mock.open_ticket(shop, decision.rule, "na" if last.kind == "na" else "unclear")
     # the apology only for anger, a complaint or distress; calm doubt gets time to think
-    if offered or not any(a.upset for _, a in answers):
+    if last.say:
+        _say(shop, listener, script.Fresh(last.say))
+        ending = FACTS
+    elif offered or not any(a.upset for _, a in answers):
         ending = SOFT if last.kind == "unsure" and not offered else CALLBACK
     else:
         ending = FOLLOW_UP
@@ -176,18 +187,21 @@ def _plan(shop, state, listener):
     plan, line, answers, offered = signed, ASK, [], False
     state.step = "ask"
     while True:
+        _turn(state, state.step if plan == signed else f"{state.step}_b", plan == signed and bool(shop.cheaper(signed)))
         answer = _ask(shop, state, line, listener)
         answers.append((plan, answer))
         decision = rules.decide(shop, answers, verified=True)
         if decision.outcome != "ask again":
             return decision, answers, offered
         _decided(shop, decision)
+        if answer.say:
+            _say(shop, listener, script.Fresh(answer.say))
         if answer.kind == "question":
             if answer.topic == "cheaper" and plan == signed and shop.cheaper(signed):
-                plan, line = shop.cheaper(signed), OFFER_B
+                plan, line = shop.cheaper(signed), OFFER_AGAIN if answer.say else OFFER_B
                 state.step = "ask"
                 continue
-            if answer.topic in ANSWERS and not (answer.topic == "price" and plan != signed):
+            if not answer.say and answer.topic in ANSWERS and not (answer.topic == "price" and plan != signed):
                 _say(shop, listener, ANSWERS[answer.topic])
             line = AGAIN.get(line, line)
         elif answer.kind == "haan":
@@ -195,13 +209,14 @@ def _plan(shop, state, listener):
             line = READ_BACK if plan == signed else READ_BACK_B
             state.step = "readback"
         else:
-            plan, line, offered = decision.plan, PROMISES[answer.promise], True
+            plan, offered = decision.plan, True
+            line = OFFER_AGAIN if answer.say else PROMISES[answer.promise]
             state.step = "ask"
 
 
 def _year(shop, state, listener):
     """(year.VERIFIED once his reply names the year of birth on record, else the identity
-    rule that ends the call; True when every ask got silence).
+    rule that ends the call; True when every ask got silence; the AI's line for an angry end).
 
     A reply with no year in it carries what the AI read he meant. Plain code picks the
     answer: a who or why gets who's calling, a scared reply gets told no money, OTP or
@@ -209,7 +224,9 @@ def _year(shop, state, listener):
     line, last, heard = YEAR, "failed: no year", False
     until = time.monotonic() + YEAR_WAIT_SECONDS
     for asked in range(1, YEAR_ASKS + 1):
+        _turn(state, "year")
         reply = listener(shop, line)
+        unused = _checked(shop, state, reply, reply.intent)
         got, rule = year.check(reply.words, shop.born)
         if rule == "failed: no year" and reply.intent:
             if reply.intent == "busy":
@@ -228,18 +245,19 @@ def _year(shop, state, listener):
         else:
             note = f"{rule.removeprefix('failed: ')} → {EXPLAINED.get(rule, '')}asked again, {asked} of {YEAR_ASKS} asks"
         read_as = reply.intent or (rule if rule in ("wait", "who") else got or "no year")
-        _log_reply(shop, state, "identity", line, reply, rule=note, read_as=read_as)
+        _log_reply(shop, state, "identity", line, reply, rule=_noted(note, unused), read_as=read_as)
         if done:
-            return last, not heard
+            calmed = script.Fresh(reply.say) if reply.say and rule == "failed: angry" else None
+            return last, not heard, calmed
         if rule in EXPLAIN:
-            _say(shop, listener, EXPLAIN[rule])
+            _say(shop, listener, script.Fresh(reply.say) if reply.say else EXPLAIN[rule])
             line = YEAR
         else:
             line = YEAR_WAIT if waited else YEAR_WRONG if rule == "failed: wrong year" else YEAR_AGAIN
-    return last, not heard
+    return last, not heard, None
 
 
-def _unverified(shop, listener, rule, line=None):
+def _unverified(shop, listener, rule, line=None, first=None):
     """Nothing changes. An SMS lets him call back, and unless he said no to telling us,
     Paytm calls the registered number again this evening."""
     decision = _decided(shop, rules.unverified(rule))
@@ -248,6 +266,8 @@ def _unverified(shop, listener, rule, line=None):
     paytm_mock.open_ticket(shop, rule, "identity")
     if rule not in ("failed: refused", "failed: angry"):
         paytm_mock.book_retry(shop, "call him again this evening")
+    if first:
+        _say(shop, listener, first)
     _say(shop, listener, line or (GOODBYE_OTHER if rule == "failed: someone else" else GOODBYE_UNVERIFIED))
     return decision
 
@@ -273,8 +293,48 @@ def cut(shop_id, why):
 
 def _ask(shop, state, line, listener):
     answer = listener(shop, line)
-    _log_reply(shop, state, "answered", line, answer, read_as=_read_as(answer))
+    unused = _checked(shop, state, answer, answer.kind)
+    if answer.next == "answer":
+        answer.topic = "other"
+    elif answer.next == "offer_plan_b" and answer.kind == "question":
+        answer.topic = "cheaper"
+    elif answer.next == "offer_plan_b":
+        answer.promise = answer.promise or "something else"
+    elif answer.next == "end":
+        answer.promise = None
+    _log_reply(shop, state, "answered", line, answer, rule=unused, read_as=_read_as(answer))
     return answer
+
+
+def _turn(state, step, can_offer=False):
+    state.turn = {"step": step, "allowed": rules.allowed(step, can_offer)}
+
+
+def _checked(shop, state, answer, kind):
+    """None when the AI's line and next step can be used, else why not. A line or step
+    code won't take is cleared, so the call goes on with its fixed lines."""
+    if not answer.say and not answer.next:
+        answer.say = answer.next = None
+        return None
+    why = None
+    if answer.next not in state.turn["allowed"].get(kind, []):
+        why = f"next step {answer.next!r} not allowed"
+    elif answer.next in ("read_back", "confirm"):
+        # the price read-back and the charge stay fixed lines
+        answer.say = None
+    elif answer.say:
+        why = rules.say_ok(answer.say, shop, answer.words, kind, answer.next)
+    elif not (kind == "haan" or answer.next == "wait" or (answer.next == "offer_plan_b" and kind == "question")):
+        why = "no line where one is needed"
+    if why:
+        answer.say = answer.next = None
+        return f"ai's line not used: {why} → fixed line"
+    answer.say = answer.say or None
+    return None
+
+
+def _noted(rule, unused):
+    return f"{rule}; {unused}" if unused else rule
 
 
 def _read_as(answer):
