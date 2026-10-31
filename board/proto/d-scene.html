@@ -1402,7 +1402,13 @@ function buildScene(host) {
     place(coin, where === "held" ? [CAGE.x + CAGE.w / 2, CAGE.y + CAGE.d / 2, 4.4] : where === "ledger" ? [LEDGER.x + 23, LEDGER.y + 18, LEDGER_TOP + 1] : COIN_REST);
   }
 
+  let gen = 0;
+  const stale = g => g !== gen;
+
   function reset() {
+    gen++;
+    inFlight = null;
+    for (const tw of tweens) tw.done();
     tweens.clear();
     setNeedle(DIAL_AT.rest);
     setCarriage(HOME_X);
@@ -1430,15 +1436,18 @@ function buildScene(host) {
   }
 
   async function records(instant) {
+    const g = gen;
     if (instant) { setCard(1); return; }
     lamp("carriage-lamp", null);
     await tween(1400, setCard);
+    if (stale(g)) return;
   }
 
   async function call() {}
 
   let inFlight = null;
   async function answer(kind, instant) {
+    const g = gen;
     const bin = BINS[kind] ?? 2;
     const slot = $(`bin-slot-${bin}`);
     const n = slot.childElementCount;
@@ -1450,18 +1459,22 @@ function buildScene(host) {
     inFlight = {t0: performance.now(), ms: 1500};
     wakeFn();
     await wait(1500);
+    if (stale(g)) return;
     inFlight = null;
     lamp("carriage-lamp", "accent");
     const from = st.carriageX;
     await tween(Math.max(450, Math.abs(BIN_X(bin) - from) * 9), t => setCarriage(from + (BIN_X(bin) - from) * t));
+    if (stale(g)) return;
     slot.appendChild(tok);
     const z0 = RAIL_Z - 18;
     await tween(520, t => place(tok, [BIN_X(bin), CARRIAGE_Y + (rest[1] - CARRIAGE_Y) * t, z0 + (rest[2] - z0) * t * t]), t => t);
+    if (stale(g)) return;
     tint();
     lamp("carriage-lamp", null);
   }
 
   async function decide(outcome, instant) {
+    const g = gen;
     const a = DIAL_AT[outcome] ?? DIAL_AT.rest;
     const from = st.needle;
     live.outcome = outcome;
@@ -1471,15 +1484,19 @@ function buildScene(host) {
     };
     if (instant) { setNeedle(a); show(); }
     else { await tween(900, t => setNeedle(from + (a - from) * t), spring); show(); }
+    if (stale(g)) return;
     if (!lamps[outcome]) return;
     await moveCoin(outcome, instant);
+    if (stale(g)) return;
   }
 
   async function moveCoin(outcome, instant) {
+    const g = gen;
     if (outcome === "not charged") {
       lamp("lamp-kept", "charged");
       $("kept-ring").setAttribute("opacity", 1);
       if (!instant) await tween(600, t => place(coin, [COIN_REST[0], COIN_REST[1], COIN_REST[2] + Math.sin(t * Math.PI) * 6]));
+      if (stale(g)) return;
       return;
     }
     const to = outcome === "charged" ? [LEDGER.x + 23, LEDGER.y + 18, LEDGER_TOP + 1] : [CAGE.x + CAGE.w / 2, CAGE.y + CAGE.d / 2, 4.4];
@@ -1491,15 +1508,18 @@ function buildScene(host) {
         const p = [from[0] + (to[0] - from[0]) * t, from[1] + (to[1] - from[1]) * t, from[2] + (to[2] - from[2]) * t + Math.sin(t * Math.PI) * (peak - Math.max(from[2], to[2]) * .4)];
         place(coin, p);
       });
+      if (stale(g)) return;
     }
     coinTo(outcome === "charged" ? "ledger" : "held");
     if (outcome === "held") {
       if (instant) setCage(1); else await tween(800, setCage, t => 1 - Math.pow(1 - t, 2) * Math.abs(Math.cos(t * 7.5)) * (1 - t));
+      if (stale(g)) return;
       $("padlock").setAttribute("opacity", 1);
     }
   }
 
   async function message(m, instant) {
+    const g = gen;
     const to = m.to_whom;
     const cls = to === "manager" ? "sc-held" : to === "support" ? "sc-not" : "sc-accent";
     const env = make("g", {}, envSvg(cls));
@@ -1514,6 +1534,7 @@ function buildScene(host) {
         const p = [from[0] + (dest[0] - from[0]) * t, from[1] + (dest[1] - from[1]) * t, from[2] + (dest[2] - from[2]) * t + Math.sin(t * Math.PI) * 46];
         place(env, p);
       });
+      if (stale(g)) return;
     }
     place(env, dest);
     if (to === "support") $("spike-tickets").appendChild(env);
