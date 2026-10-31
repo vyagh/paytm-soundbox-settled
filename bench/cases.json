@@ -3436,9 +3436,10 @@
     "kind": "haan"
    }
   ],
-  "expect": "charged:plan-b",
+  "expect": "held",
   "identity": "verified: year of birth matches",
-  "manager": false
+  "manager": false,
+  "ends": "CALLBACK"
  },
  {
   "id": "cheaper-at-ask",
@@ -3466,7 +3467,9 @@
    }
   ],
   "expect": "charged:plan-b",
-  "identity": "verified: year of birth matches"
+  "identity": "verified: year of birth matches",
+  "tap": "cheaper_plan",
+  "note": "haan twice to Plan B holds the rent on the call; his tap starts it"
  },
  {
   "id": "cheaper-then-na",
@@ -3559,8 +3562,9 @@
     "kind": "haan"
    }
   ],
-  "expect": "charged:plan-b",
-  "identity": "verified: year of birth matches"
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "CALLBACK"
  },
  {
   "id": "two-questions-then-yes",
@@ -3686,7 +3690,9 @@
   ],
   "expect": "charged:plan-b",
   "identity": "verified: year of birth matches",
-  "manager": true
+  "manager": true,
+  "tap": "cheaper_plan",
+  "note": "haan twice to Plan B holds the rent on the call; his tap starts it"
  },
  {
   "id": "his-promise-then-na",
