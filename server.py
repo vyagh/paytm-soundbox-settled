@@ -64,7 +64,7 @@ def with_clips(rows):
     folder = log.clips()
     saved = {f.stem for f in folder.iterdir() if f.suffix != ".part"} if folder.is_dir() else set()
     for row in rows:
-        row["clip"] = f"/api/clip/{row['id']}" if str(row["id"]) in saved else None
+        row["clip"] = f"/api/clip/{row['id']}" if log.clip_name(row["id"], row["at"]) in saved else None
     return rows
 
 

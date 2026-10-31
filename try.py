@@ -6,6 +6,7 @@
 Answers: haan, na, unsure, question, silent, plan:<id>.
 A quoted text right after na or unsure is his reason.
 """
+import shutil
 import sys
 
 from settled import flow, log, records
@@ -69,6 +70,9 @@ def main(args):
     if args[0] == "reset":
         log.path().unlink(missing_ok=True)
         print(f"deleted {log.path()}")
+        if log.clips().is_dir():
+            shutil.rmtree(log.clips())
+            print(f"deleted {log.clips()}")
         return
 
     shop_id, answers = args[0], parse(args[1:])

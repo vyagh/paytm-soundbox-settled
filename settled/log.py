@@ -98,18 +98,33 @@ def last_answer(shop, read_as=None):
         return dict(row) if row else None
 
 
+def clip_name(row_id, at):
+    """A clip's file stem: the row id and its time, so a reset log never picks up an old clip."""
+    return f"{int(row_id)}-{''.join(c for c in at if c.isdigit())}"
+
+
+def _row_at(row_id):
+    with closing(_connect()) as db:
+        row = db.execute("SELECT at FROM log WHERE id = ?", (int(row_id),)).fetchone()
+        return row[0] if row else None
+
+
 def save_clip(row_id, audio, ctype):
     ext = CLIP_EXTS.get(ctype.split(";")[0].strip().lower(), "audio")
     folder = clips()
     folder.mkdir(exist_ok=True)
-    tmp = folder / f"{row_id}.{ext}.part"
+    name = clip_name(row_id, _row_at(row_id))
+    tmp = folder / f"{name}.{ext}.part"
     tmp.write_bytes(audio)
-    os.replace(tmp, folder / f"{row_id}.{ext}")
+    os.replace(tmp, folder / f"{name}.{ext}")
 
 
 def clip(row_id):
     """The saved clip for an answered row, as (path, content type), or None."""
-    for found in clips().glob(f"{int(row_id)}.*"):
+    at = _row_at(row_id)
+    if not at:
+        return None
+    for found in clips().glob(f"{clip_name(row_id, at)}.*"):
         ext = found.suffix[1:]
         if ext != "part":
             return found, CLIP_TYPES.get(ext, "application/octet-stream")
