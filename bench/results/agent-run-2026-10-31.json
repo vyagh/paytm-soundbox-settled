@@ -1,0 +1,907 @@
+[
+ {
+  "id": "one-rupee",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "haan, then haan again to Plan B → nothing changes on the call, his tap in WhatsApp starts it",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "हाँ लिया तो था, पर ये तो तुम झूठ बोल रहे हो। जो सेल्समैन आया था वो एक रुपया बता के गया था, आप एक सौ पच्चीस बोल रहे हो। ये कोई बात थोड़ी हुई?",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": "one rupee",
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, सेल्समैन ने आपको एक रुपया बताया था, ये गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+    "seconds": 0.39,
+    "used": true,
+    "said_as": "माफ़ कीजिए जी, सेल्समैन ने आपको एक रुपया बताया था, ये गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+    "kept_next": "offer_plan_b"
+   },
+   {
+    "step": "ask_b",
+    "his": "haan theek hai",
+    "kind": "haan",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "read_back",
+    "say": "",
+    "seconds": 0.33,
+    "used": false,
+    "said_as": null,
+    "kept_next": "read_back"
+   },
+   {
+    "step": "readback_b",
+    "his": "haan pakka",
+    "kind": "haan",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "confirm",
+    "say": "",
+    "seconds": 0.33,
+    "used": false,
+    "said_as": null,
+    "kept_next": "confirm"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "माफ़ कीजिए जी, सेल्समैन ने आपको एक रुपया बताया था, ये गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+   "So, would you like Plan B at ₹79 a month?",
+   "So ₹79 every month from 1 November. Shall I confirm it?",
+   "No problem. Nothing will be taken now. A Paytm representative will call you within two days with the right plan, and we're also sending everything on WhatsApp.",
+   "Thank you, have a good day."
+  ]
+ },
+ {
+  "id": "loot-at-year",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "year",
+    "his": "तू मेरे पैसे लूटेगा?",
+    "kind": "scared",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "ask_year",
+    "say": "नहीं जी, बिल्कुल नहीं। हम आपसे कोई पैसा, OTP या PIN नहीं माँग रहे, बस पक्का कर रहे हैं कि बात आप ही से हो रही है।",
+    "seconds": 0.38,
+    "used": true,
+    "said_as": "नहीं जी, बिल्कुल नहीं। हम आपसे कोई पैसा, OTP या PIN नहीं माँग रहे, बस पक्का कर रहे हैं कि बात आप ही से हो रही है।",
+    "kept_next": "ask_year"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "नहीं जी, बिल्कुल नहीं। हम आपसे कोई पैसा, OTP या PIN नहीं माँग रहे, बस पक्का कर रहे हैं कि बात आप ही से हो रही है।",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?"
+  ]
+ },
+ {
+  "id": "fraud-at-year",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "No problem, take your time. Which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?"
+  ]
+ },
+ {
+  "id": "fraud-plain",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "year",
+    "his": "ye fraud call hai kya? mujhe bharosa nahi",
+    "kind": "scared",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "ask_year",
+    "say": "नहीं जी, बिल्कुल नहीं। Paytm आपसे कोई पैसा, OTP या PIN नहीं माँग रहा, बस यह पक्का कर रहा है कि बात आप ही से हो रही है।",
+    "seconds": 0.41,
+    "used": true,
+    "said_as": "नहीं जी, बिल्कुल नहीं। Paytm आपसे कोई पैसा, OTP या PIN नहीं माँग रहा, बस यह पक्का कर रहा है कि बात आप ही से हो रही है।",
+    "kept_next": "ask_year"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "नहीं जी, बिल्कुल नहीं। Paytm आपसे कोई पैसा, OTP या PIN नहीं माँग रहा, बस यह पक्का कर रहा है कि बात आप ही से हो रही है।",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?"
+  ]
+ },
+ {
+  "id": "otp-worry",
+  "shop": "sharma",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "year",
+    "his": "OTP to nahi mangoge na? mere bhai ke saath fraud hua tha",
+    "kind": "scared",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "ask_year",
+    "say": "नहीं जी, बिल्कुल नहीं। हम आपसे कोई पैसा, OTP या PIN नहीं माँग रहे, बस पक्का कर रहे हैं कि बात आप ही से हो रही है। कृपया अपनी जन्मतिथि बता दीजिए।",
+    "seconds": 0.41,
+    "used": true,
+    "said_as": "नहीं जी, बिल्कुल नहीं। हम आपसे कोई पैसा, OTP या PIN नहीं माँग रहे, बस पक्का कर रहे हैं कि बात आप ही से हो रही है। कृपया अपनी जन्मतिथि बता दीजिए।",
+    "kept_next": "ask_year"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Ramesh Sharma ji, I'm calling from Paytm about your Soundbox. Am I speaking with Ramesh Sharma ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "नहीं जी, बिल्कुल नहीं। हम आपसे कोई पैसा, OTP या PIN नहीं माँग रहे, बस पक्का कर रहे हैं कि बात आप ही से हो रही है। कृपया अपनी जन्मतिथि बता दीजिए।",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 25 October has a rent of ₹125 a month from 1 November. Did you take this plan?"
+  ]
+ },
+ {
+  "id": "who-at-name",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "name",
+    "his": "aap kaun bol rahe ho, kahan se?",
+    "kind": "unsure",
+    "speaker": "unclear",
+    "topic": null,
+    "promise": null,
+    "next": "ask_name",
+    "say": "मैं Paytm से बोल रहा हूँ जी, आपके साउंडबॉक्स के बारे में। क्या मेरी बात महेश गुप्ता जी से हो रही है?",
+    "seconds": 0.39,
+    "used": true,
+    "said_as": "मैं Paytm से बोल रहा हूँ जी, आपके साउंडबॉक्स के बारे में।",
+    "kept_next": "ask_name"
+   },
+   {
+    "step": "name",
+    "his": "haan main Mahesh hi hoon",
+    "kind": "haan",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "ask_year",
+    "say": "",
+    "seconds": 0.3,
+    "used": false,
+    "said_as": null,
+    "kept_next": "ask_year"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "मैं Paytm से बोल रहा हूँ जी, आपके साउंडबॉक्स के बारे में।",
+   "Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "No problem, take your time. Which year were you born?",
+   "No problem, take your time. Which year were you born?"
+  ]
+ },
+ {
+  "id": "angry-year",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "identity failed: angry → nothing changes, an SMS lets him call back",
+  "replies": [
+   {
+    "step": "year",
+    "his": "bakwaas band karo, roz roz call aata hai, nahi batana kuch",
+    "kind": "angry",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "end",
+    "say": "माफ़ कीजिए जी, आपको बार-बार परेशान किया, मुझे खेद है। अभी आपके खाते से कुछ नहीं कटेगा। दो दिन में Paytm से कोई आपको संपर्क करेगा और सारी जानकारी WhatsApp पर आ जाएगी।",
+    "seconds": 0.47,
+    "used": true,
+    "said_as": "माफ़ कीजिए जी, आपको बार-बार परेशान किया, मुझे खेद है। अभी आपके खाते से कुछ नहीं कटेगा। दो दिन में Paytm से कोई आपको संपर्क करेगा और सारी जानकारी WhatsApp पर आ जाएगी।",
+    "kept_next": "end"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "माफ़ कीजिए जी, आपको बार-बार परेशान किया, मुझे खेद है। अभी आपके खाते से कुछ नहीं कटेगा। दो दिन में Paytm से कोई आपको संपर्क करेगा और सारी जानकारी WhatsApp पर आ जाएगी।",
+   "That's completely fine, you don't have to tell us. Nothing has changed. We're sending a message to your phone, and you can call this number back whenever it suits you. Thank you."
+  ]
+ },
+ {
+  "id": "cheaper",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "koi sasta plan nahi hai kya? 125 zyada lagta hai",
+    "kind": "question",
+    "speaker": "shopkeeper",
+    "topic": "cheaper",
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "जी, मैं समझ सकता हूँ। एक सस्ता प्लान भी है ₹79 महीने वाला। क्या आप वह लेना चाहेंगे?",
+    "seconds": 0.4,
+    "used": true,
+    "said_as": "जी, मैं समझ सकता हूँ। एक सस्ता प्लान भी है ₹79 महीने वाला।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "जी, मैं समझ सकता हूँ। एक सस्ता प्लान भी है ₹79 महीने वाला।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "cheaper-hinglish",
+  "shop": "sharma",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "bhai kam wala plan batao na, itna nahi de paunga",
+    "kind": "question",
+    "speaker": "shopkeeper",
+    "topic": "cheaper",
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "समझ गया जी, ₹125 ज़्यादा लग रहा है। एक सस्ता प्लान भी है ₹79 महीने का, क्या आप वह लेना चाहेंगे?",
+    "seconds": 0.39,
+    "used": true,
+    "said_as": "समझ गया जी, ₹125 ज़्यादा लग रहा है।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Ramesh Sharma ji, I'm calling from Paytm about your Soundbox. Am I speaking with Ramesh Sharma ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 25 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "समझ गया जी, ₹125 ज़्यादा लग रहा है।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "when-start",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "ye paisa kab se katega?",
+    "kind": "question",
+    "speaker": "shopkeeper",
+    "topic": "start",
+    "promise": null,
+    "next": "answer",
+    "say": "जी, किराया एक नवंबर से शुरू होगा, उससे पहले कुछ नहीं कटेगा।",
+    "seconds": 0.6,
+    "used": true,
+    "said_as": "जी, किराया एक नवंबर से शुरू होगा, उससे पहले कुछ नहीं कटेगा।",
+    "kept_next": "answer"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "जी, किराया एक नवंबर से शुरू होगा, उससे पहले कुछ नहीं कटेगा।",
+   "So, did you take this plan of ₹125 a month?"
+  ]
+ },
+ {
+  "id": "what-charge",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "ye kis cheez ka rent hai? maine to box free mein liya tha",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, सेल्समैन ने आपको मुफ्त में बॉक्स दिया था, ये गलत जानकारी दी गई। अभी कुछ नहीं कटेगा और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है ₹79 का।",
+    "seconds": 0.43,
+    "used": true,
+    "said_as": "माफ़ कीजिए जी, सेल्समैन ने आपको मुफ्त में बॉक्स दिया था, ये गलत जानकारी दी गई। अभी कुछ नहीं कटेगा और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है ₹79 का।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "माफ़ कीजिए जी, सेल्समैन ने आपको मुफ्त में बॉक्स दिया था, ये गलत जानकारी दी गई। अभी कुछ नहीं कटेगा और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है ₹79 का।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "free-promise",
+  "shop": "sharma",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "salesman ne bola tha free hai, ab paise kyun?",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": "free",
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, सेल्समैन ने आपको मुफ्त बताया था, यह गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+    "seconds": 0.46,
+    "used": true,
+    "said_as": "माफ़ कीजिए जी, सेल्समैन ने आपको मुफ्त बताया था, यह गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Ramesh Sharma ji, I'm calling from Paytm about your Soundbox. Am I speaking with Ramesh Sharma ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 25 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "माफ़ कीजिए जी, सेल्समैन ने आपको मुफ्त बताया था, यह गलत हुआ। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "lower-promise",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "nahi bhai, Anil ne 50 rupaye bola tha mahine ka",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, अनिल जी ने आपको पचास रुपये बताया था, यह गलत जानकारी दी गई। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+    "seconds": 0.41,
+    "used": true,
+    "said_as": "माफ़ कीजिए जी, अनिल जी ने आपको पचास रुपये बताया था, यह गलत जानकारी दी गई। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "माफ़ कीजिए जी, अनिल जी ने आपको पचास रुपये बताया था, यह गलत जानकारी दी गई। अभी कुछ नहीं कटेगा, और हम उनके मैनेजर को बता रहे हैं। एक सस्ता प्लान भी है।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "plain-na",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "nahi chahiye mujhe ye, maine nahi liya",
+    "kind": "na",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "ठीक है जी, समझ गया। अगर सेल्समैन ने आपको गलत बताया हो तो माफ़ी चाहूँगा। अभी आपके खाते से कुछ नहीं कटेगा और हम उनके मैनेजर को बता रहे हैं। ₹79 वाला सस्ता प्लान भी है, क्या आप वो लेना चाहेंगे?",
+    "seconds": 0.54,
+    "used": true,
+    "said_as": "ठीक है जी, समझ गया। अगर सेल्समैन ने आपको गलत बताया हो तो माफ़ी चाहूँगा। अभी आपके खाते से कुछ नहीं कटेगा और हम उनके मैनेजर को बता रहे हैं।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "ठीक है जी, समझ गया। अगर सेल्समैन ने आपको गलत बताया हो तो माफ़ी चाहूँगा। अभी आपके खाते से कुछ नहीं कटेगा और हम उनके मैनेजर को बता रहे हैं।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "take-it-back",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "isko wapas le jao, kaam ka nahi hai",
+    "kind": "na",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, मैं समझ सकता हूँ। अगर आप चाहें तो ₹79 वाला सस्ता प्लान भी देख सकते हैं।",
+    "seconds": 0.5,
+    "used": true,
+    "said_as": "माफ़ कीजिए जी, मैं समझ सकता हूँ। अगर आप चाहें तो ₹79 वाला सस्ता प्लान भी देख सकते हैं।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "माफ़ कीजिए जी, मैं समझ सकता हूँ। अगर आप चाहें तो ₹79 वाला सस्ता प्लान भी देख सकते हैं।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "think",
+  "shop": "sharma",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "abhi soch ke batata hoon, ghar pe baat karni padegi",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "कोई बात नहीं जी, आप आराम से सोच लीजिए और घर में बात कर लीजिए। वैसे ₹79 वाला सस्ता प्लान भी है, मैं उसकी जानकारी दे दूँ?",
+    "seconds": 0.41,
+    "used": true,
+    "said_as": "कोई बात नहीं जी, आप आराम से सोच लीजिए और घर में बात कर लीजिए।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Ramesh Sharma ji, I'm calling from Paytm about your Soundbox. Am I speaking with Ramesh Sharma ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 25 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "कोई बात नहीं जी, आप आराम से सोच लीजिए और घर में बात कर लीजिए।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "off-topic",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "unsure → nothing taken, a person follows up",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "mera QR code kaam nahi kar raha, uska kya karu?",
+    "kind": "unsure",
+    "speaker": "someone else",
+    "topic": null,
+    "promise": null,
+    "next": "answer",
+    "say": "जी, QR कोड की समस्या के बारे में Paytm की टीम आपको सही जानकारी देगी। अभी मैं सिर्फ प्लान के बारे में पूछ रहा था, क्या आपने ₹125 वाला प्लान लिया था?",
+    "seconds": 0.46,
+    "used": false,
+    "said_as": null,
+    "kept_next": null
+   }
+  ],
+  "fallbacks": [
+   "ai's line not used: next step 'answer' not allowed → fixed line"
+  ],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "No problem, take your time to think it over. Nothing will be taken now, and we're sending everything on WhatsApp.",
+   "Thank you, have a good day."
+  ]
+ },
+ {
+  "id": "son-answers",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "name",
+    "his": "papa dukaan pe nahi hai, main beta bol raha hoon",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": null,
+    "say": null,
+    "seconds": 0.45,
+    "used": false,
+    "said_as": null,
+    "kept_next": null
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Sorry, I didn't catch that. Am I speaking with Mahesh Gupta?"
+  ]
+ },
+ {
+  "id": "worker-answers",
+  "shop": "sharma",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "name",
+    "his": "seth ji bahar gaye hain, main naukar hoon",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": null,
+    "say": null,
+    "seconds": 0.49,
+    "used": false,
+    "said_as": null,
+    "kept_next": null
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Ramesh Sharma ji, I'm calling from Paytm about your Soundbox. Am I speaking with Ramesh Sharma ji?",
+   "Sorry, I didn't catch that. Am I speaking with Ramesh Sharma?"
+  ]
+ },
+ {
+  "id": "cheated",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "tum log chor ho, dhokha diya hai humein",
+    "kind": "na",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "माफ़ कीजिए जी, आपको परेशानी हुई, इसके लिए हमें खेद है। अभी आपके पैसे नहीं कटेंगे। हम अनिल के मैनेजर को भी इसकी जानकारी दे रहे हैं। एक सस्ता प्लान भी है, क्या आप ₹79 वाला प्लान देखना चाहेंगे?",
+    "seconds": 0.41,
+    "used": true,
+    "said_as": "माफ़ कीजिए जी, आपको परेशानी हुई, इसके लिए हमें खेद है। अभी आपके पैसे नहीं कटेंगे। हम अनिल के मैनेजर को भी इसकी जानकारी दे रहे हैं।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "माफ़ कीजिए जी, आपको परेशानी हुई, इसके लिए हमें खेद है। अभी आपके पैसे नहीं कटेंगे। हम अनिल के मैनेजर को भी इसकी जानकारी दे रहे हैं।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "yes-chatty",
+  "shop": "gupta",
+  "outcome": "charged:plan-a",
+  "want": "charged",
+  "rule": "haan, then haan again → charged at ₹125 (Plan A)",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "haan haan liya tha bhai, Anil aaya tha, sab theek hai",
+    "kind": "haan",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "read_back",
+    "say": "",
+    "seconds": 0.39,
+    "used": false,
+    "said_as": null,
+    "kept_next": "read_back"
+   },
+   {
+    "step": "readback",
+    "his": "haan kar do",
+    "kind": "haan",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "confirm",
+    "say": "",
+    "seconds": 0.32,
+    "used": false,
+    "said_as": null,
+    "kept_next": "confirm"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "So ₹125 every month from 1 November. Shall I confirm it?",
+   "Thank you. Your plan starts on 1 November, and an SMS is on its way."
+  ]
+ },
+ {
+  "id": "readback-question",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "readback",
+    "his": "isme GST alag se lagega kya?",
+    "kind": "question",
+    "speaker": "shopkeeper",
+    "topic": "other",
+    "promise": null,
+    "next": "answer",
+    "say": "GST के बारे में मैं अभी पक्का नहीं बता सकता जी, हमारे प्रतिनिधि आपको दो दिन में कॉल करके सब बता देंगे। किराया एक नवंबर से शुरू होगा, उससे पहले कुछ नहीं कटेगा।",
+    "seconds": 0.42,
+    "used": true,
+    "said_as": "GST के बारे में मैं अभी पक्का नहीं बता सकता जी, हमारे प्रतिनिधि आपको दो दिन में कॉल करके सब बता देंगे। किराया एक नवंबर से शुरू होगा, उससे पहले कुछ नहीं कटेगा।",
+    "kept_next": "answer"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "So ₹125 every month from 1 November. Shall I confirm it?",
+   "GST के बारे में मैं अभी पक्का नहीं बता सकता जी, हमारे प्रतिनिधि आपको दो दिन में कॉल करके सब बता देंगे। किराया एक नवंबर से शुरू होगा, उससे पहले कुछ नहीं कटेगा।",
+   "So ₹125 every month from 1 November. Shall I confirm it?"
+  ]
+ },
+ {
+  "id": "refund-ask",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": null,
+  "rule": "unsure → nothing taken, a person follows up",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "pichle mahine ka paisa wapas karo pehle",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "जी, मैं समझ रहा हूँ कि आप पिछले महीने का पैसा वापस चाहते हैं। अभी कुछ नहीं कटेगा। एक सस्ता प्लान भी है ₹79 महीने वाला, क्या आप वह लेना चाहेंगे?",
+    "seconds": 0.43,
+    "used": false,
+    "said_as": null,
+    "kept_next": null
+   }
+  ],
+  "fallbacks": [
+   "ai's line not used: promises a refund, cancel, pickup or plan change → fixed line"
+  ],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "No problem, take your time to think it over. Nothing will be taken now, and we're sending everything on WhatsApp.",
+   "Thank you, have a good day."
+  ]
+ },
+ {
+  "id": "manager",
+  "shop": "sharma",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "apne manager se baat karao, tum se nahi karni",
+    "kind": "na",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "ठीक है जी, मैं आपके मैनेजर को यह बात बता देता हूँ। अभी कोई पैसा नहीं कटेगा। अगर आप चाहें तो ₹79 वाला सस्ता प्लान भी देख सकते हैं।",
+    "seconds": 0.83,
+    "used": true,
+    "said_as": "ठीक है जी, मैं आपके मैनेजर को यह बात बता देता हूँ। अभी कोई पैसा नहीं कटेगा। अगर आप चाहें तो ₹79 वाला सस्ता प्लान भी देख सकते हैं।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Ramesh Sharma ji, I'm calling from Paytm about your Soundbox. Am I speaking with Ramesh Sharma ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 25 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "ठीक है जी, मैं आपके मैनेजर को यह बात बता देता हूँ। अभी कोई पैसा नहीं कटेगा। अगर आप चाहें तो ₹79 वाला सस्ता प्लान भी देख सकते हैं।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ },
+ {
+  "id": "b-then-yes",
+  "shop": "gupta",
+  "outcome": "held",
+  "want": "held",
+  "rule": "haan, then haan again to Plan B → nothing changes on the call, his tap in WhatsApp starts it",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "79 wala plan hai na, wahi chahiye",
+    "kind": "question",
+    "speaker": "shopkeeper",
+    "topic": "cheaper",
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "जी, समझ गया। ₹79 वाला सस्ता प्लान भी है। क्या आप वह प्लान लेना चाहेंगे?",
+    "seconds": 0.47,
+    "used": true,
+    "said_as": "जी, समझ गया। ₹79 वाला सस्ता प्लान भी है।",
+    "kept_next": "offer_plan_b"
+   },
+   {
+    "step": "ask_b",
+    "his": "haan",
+    "kind": "haan",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "read_back",
+    "say": "",
+    "seconds": 0.35,
+    "used": false,
+    "said_as": null,
+    "kept_next": "read_back"
+   },
+   {
+    "step": "readback_b",
+    "his": "haan ji",
+    "kind": "haan",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "confirm",
+    "say": "",
+    "seconds": 0.31,
+    "used": false,
+    "said_as": null,
+    "kept_next": "confirm"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Mahesh Gupta ji, I'm calling from Paytm about your Soundbox. Am I speaking with Mahesh Gupta ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "जी, समझ गया। ₹79 वाला सस्ता प्लान भी है।",
+   "So, would you like Plan B at ₹79 a month?",
+   "So ₹79 every month from 1 November. Shall I confirm it?",
+   "No problem. Nothing will be taken now. A Paytm representative will call you within two days with the right plan, and we're also sending everything on WhatsApp.",
+   "Thank you, have a good day."
+  ]
+ },
+ {
+  "id": "mixed",
+  "shop": "sharma",
+  "outcome": "held",
+  "want": null,
+  "rule": "no answer → nothing changed, Paytm calls again",
+  "replies": [
+   {
+    "step": "ask",
+    "his": "haan bhi aur na bhi, pehle batao kitne ka hai exactly",
+    "kind": "unsure",
+    "speaker": "shopkeeper",
+    "topic": null,
+    "promise": null,
+    "next": "offer_plan_b",
+    "say": "जी, किराया ₹125 महीना है जी। अगर यह ज़्यादा लग रहा है, तो ₹79 वाला सस्ता प्लान भी है।",
+    "seconds": 0.42,
+    "used": true,
+    "said_as": "जी, किराया ₹125 महीना है जी। अगर यह ज़्यादा लग रहा है, तो ₹79 वाला सस्ता प्लान भी है।",
+    "kept_next": "offer_plan_b"
+   }
+  ],
+  "fallbacks": [],
+  "hit_429": 0,
+  "said": [
+   "Namaste Ramesh Sharma ji, I'm calling from Paytm about your Soundbox. Am I speaking with Ramesh Sharma ji?",
+   "Just to confirm it's you, one quick question: which year were you born?",
+   "The Paytm Soundbox put in your shop on 25 October has a rent of ₹125 a month from 1 November. Did you take this plan?",
+   "जी, किराया ₹125 महीना है जी। अगर यह ज़्यादा लग रहा है, तो ₹79 वाला सस्ता प्लान भी है।",
+   "So, would you like Plan B at ₹79 a month?"
+  ]
+ }
+]
