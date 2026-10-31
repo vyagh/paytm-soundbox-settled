@@ -4066,5 +4066,151 @@
    "ON_THE_LINE"
   ],
   "unread": 1
+ },
+ {
+  "id": "haan-then-complaint",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "हाँ, अच्छा सुनो, कल का पेमेंट अभी तक बैंक में नहीं आया",
+    "kind": "unsure",
+    "reason": "कल का पेमेंट अभी तक बैंक में नहीं आया"
+   },
+   {
+    "text": "1984",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true,
+  "note": "a haan with more words after it is him; the year still guards the money"
+ },
+ {
+  "id": "haan-then-question",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "हां जी, बोलिए क्या बात है",
+    "kind": "unsure"
+   },
+   {
+    "text": "1978",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 1,
+  "honest": true
+ },
+ {
+  "id": "haan-but-not-him",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan, par main nahi hoon",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan, par main nahi hoon",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: not confirmed",
+  "call_me": true,
+  "retry": true,
+  "note": "a haan with a but after it is not taken as him"
+ },
+ {
+  "id": "robot-at-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "are you a robot? कोई इंसान से बात कराओ",
+    "kind": "question",
+    "topic": "who"
+   },
+   {
+    "text": "are you a robot? कोई इंसान से बात कराओ",
+    "kind": "question",
+    "topic": "who"
+   }
+  ],
+  "expect": "held",
+  "identity": "asked if it's a robot or for a person → a person calls back",
+  "retry": true,
+  "answered": [
+   "AUTOMATED"
+  ],
+  "unread": 1,
+  "note": "told it's an automated call, a person calls him back, nothing changed"
+ },
+ {
+  "id": "robot-at-ask",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "ye recording hai kya? mujhe insaan se baat karni hai",
+    "kind": "question",
+    "topic": "other"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "retry": true,
+  "answered": [
+   "AUTOMATED"
+  ]
+ },
+ {
+  "id": "machine-is-the-box",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha, machine chal rahi hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true,
+  "note": "the Soundbox is a machine to him: not a robot question"
  }
 ]

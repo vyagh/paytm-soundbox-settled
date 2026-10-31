@@ -11,11 +11,18 @@ HANDOVER = ("deta hoon", "deta hu", "deti hoon", "deti hu", "de raha hoon", "de 
             "bulati hoon", "bula raha", "bula rahi", "rukiye", "rukie", "ruko", "ek minute", "ek minat", "one minute",
             "hold on", "line pe rahiye", "देता हूँ", "देता हु", "देती हूँ", "दे रहा हूँ", "दे रही हूँ", "बुलाता हूँ",
             "बुलाती हूँ", "बुला रहा", "बुला रही", "रुकिए", "रुकिये", "रुको", "एक मिनट", "होल्ड", "लाइन पर रहिए")
+# He asks if this is a machine, or to talk to a person. Matched in plain code at every step: Settled
+# says it's an automated call and a person calls him back. Never "machine" alone: the Soundbox is one.
+ROBOT = ("robot", "bot ", "recording", "insaan", "insan", "human", "real person", "asli aadmi", "aadmi se baat",
+         "kisi aadmi", "रोबोट", "बॉट", "रिकॉर्डिंग", "इंसान", "इन्सान", "असली आदमी", "आदमी से बात", "किसी आदमी")
 # A bare yes to "am I speaking with him": confirmed in plain code, before the AI reads it,
 # which takes a lone "हाँ" for a garbled scrap.
 YES_WORDS = {"haan", "han", "haa", "ha", "ji", "jee", "yes", "yeah", "boliye", "bolie", "speaking", "हा", "जी", "बोलिए",
              "बोलिये"}
 YES_PHRASES = ("bol raha hoon", "bol raha hu", "bol rha hu", "बोल रहा हू", "बोल रहा हु")
+# A haan with more words after it, read as from him, is still him, unless the words hold a "but" or a hand-over to someone else.
+NOT_HIM = {"par", "pr", "lekin", "magar", "but", "papa", "beta", "deta", "bulata", "पर", "लेकिन", "मगर", "पापा", "बेटा",
+           "देता", "बुलाता"}
 from .models import Decision
 from .records import missing
 
@@ -42,6 +49,8 @@ def name(answer, first=True):
         return "ask again"
     if answer.kind == "na" or answer.speaker == "someone else":
         return "failed: someone else"
+    if answer.speaker == "shopkeeper" and yes_first(answer.words):
+        return None
     if first and answer.kind != "no answer":
         return "ask again"
     return "failed: not confirmed"
@@ -59,6 +68,11 @@ def bare_yes(text):
 def handover(text):
     """True when he says he's handing the phone to someone, or asks to hold."""
     return any(spoken(phrase) in spoken(text) for phrase in HANDOVER)
+
+
+def yes_first(text):
+    words = spoken(text).split()
+    return bool(words) and words[0] in YES_WORDS and not any(w in NOT_HIM or w.startswith(("ruk", "रुक")) for w in words)
 
 
 def unverified(rule):
@@ -142,3 +156,12 @@ def busy(text):
 
 def call_later():
     return Decision("held", "busy, asked for a call later → nothing changed, Paytm calls back")
+
+
+def robot(text):
+    """True when he asks if he's talking to a machine, or asks for a person."""
+    return any(spoken(phrase) in spoken(text) for phrase in ROBOT)
+
+
+def person_later():
+    return Decision("held", "asked if it's a robot or for a person → nothing changed, a person calls back")
