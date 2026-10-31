@@ -14,6 +14,8 @@ DB = Path(os.environ.get("SETTLED_DB") or ROOT / "settled.db").resolve()
 PORT = int(os.environ.get("BOARD_PORT") or 8080)
 MAX_REPLY = 5_000_000
 
+LANGUAGES = [{"code": code, "name": l["name"], "own": l["own"]} for code, l in script.LANGUAGES.items()]
+
 COLUMNS = ("id", "at", "shop", "step", "said", "heard", "read_as", "reason", "rule", "outcome", "action")
 
 
@@ -21,13 +23,16 @@ def shops():
     out = []
     for shop_id in records.shop_ids():
         shop = records.load(shop_id)
-        language = script.LANGUAGES[shop.language]
         call = calls.get(shop_id)
+        code = call.language if call else shop.language
+        language = script.LANGUAGES[code]
         out.append({
             "id": shop_id,
             "name": shop.name,
             "owner": shop.owner,
-            "language": {"name": language["name"], "own": language["own"]},
+            "language": {"code": code, "name": language["name"], "own": language["own"]},
+            "default": shop.language,
+            "languages": LANGUAGES,
             "lines": {said: language[said] for said in (script.ASK, script.READ_BACK, script.NA_FOLLOW_UP)},
             "call": call.state() if call else None,
         })
@@ -83,7 +88,10 @@ class Handler(BaseHTTPRequestHandler):
         shop_id, what = parts[3], parts[4]
         try:
             if what == "start":
-                calls.start(shop_id)
+                length = int(self.headers.get("Content-Length") or 0)
+                if length > MAX_REPLY:
+                    return self.json(413, {"error": "too long"})
+                calls.start(shop_id, json.loads(self.rfile.read(length) or b"{}").get("language"))
                 return self.json(200, {"started": shop_id})
             if what == "reply":
                 return self.reply(shop_id, url)
