@@ -484,7 +484,7 @@ function runOf(key) {
       s.ended = true;
       if (!s.why) s.why = s.idTried && !s.identity?.ok ? 'not verified → nothing changes' : 'call ended before a decision → nothing taken';
     }
-    if (s.called && !s.tap && /restart|got cut|cut off|hung up|hang/i.test(s.why || '')) s.ended = true;
+    if (s.called && !s.tap && /restart|got cut|line dropped|\bhung up\b|\bhang up\b/i.test(s.why || '')) s.ended = true;
     s.unverified = s.settled && s.called && s.idTried && !s.identity?.ok && !s.tap && !s.ended;
   }
   return s || {status: 'waiting', settled: false, turns: [], acts: [], msgs: []};
@@ -686,7 +686,7 @@ addEventListener('resize', () => { for (const k in coinAt) coinAt[k].to = null; 
 const CHOICES = {keep_plan: 'Keep my plan', cheaper_plan: 'Show me a cheaper plan', cancel: 'Cancel'};
 const APP_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.5h6v7H3z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 7.5h2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>';
 const taps = {};
-let hangupMissing = true;
+let hangupMissing = false;
 
 /* he cuts the call: the server ends it in plain code, nothing is taken */
 $('hangup').onclick = async () => {
@@ -753,7 +753,7 @@ function renderPhone(s) {
   }
   const box = $('phone');
   const before = box.childElementCount;
-  if (html(box, parts.length ? parts.join('') : `<p class="empty">${s.startAt ? `Nothing sent to ${esc(who)} yet` : `What ${esc(who)} gets on his phone shows here`}</p>`)) {
+  if (html(box, parts.length ? parts.join('') : `<p class="empty">${call.active ? 'On a call with Paytm' : s.startAt ? `Nothing sent to ${esc(who)} yet` : `What ${esc(who)} gets on his phone shows here`}</p>`)) {
     if (box._focus === focus && box.childElementCount > before) [...box.children].slice(before).forEach(k => k.classList.add('enter'));
     box._focus = focus;
     box.scrollTop = box.scrollHeight;
