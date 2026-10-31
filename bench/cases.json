@@ -2681,5 +2681,109 @@
   "expect": "charged",
   "honest": true,
   "identity": "verified"
+ },
+ {
+  "id": "refused-keeps-choices",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "nahi",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "नहीं बताऊंगा।"
+    }
+   ],
+   "expect": "held"
+  },
+  "old_tap": {
+   "choice": "keep_plan",
+   "status": 200
+  },
+  "note": "he refuses the code on a second call: the first call's WhatsApp still works"
+ },
+ {
+  "id": "silence-keeps-choices",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "retry": true,
+  "again": {
+   "turns": [
+    {
+     "text": "",
+     "kind": "no answer"
+    }
+   ],
+   "expect": "held"
+  },
+  "old_tap": {
+   "choice": "cancel",
+   "status": 200
+  },
+  "note": "nobody speaks on a second call: the first call's WhatsApp still works"
+ },
+ {
+  "id": "busy-at-greeting",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "abhi busy hoon, baad mein call karo",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "identity": "busy → call back later",
+  "retry": true,
+  "note": "busy before his name is confirmed: a callback, nothing changed"
+ },
+ {
+  "id": "busy-at-ask-plain",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "abhi busy hoon, baad mein call karo",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "retry": true
  }
 ]
