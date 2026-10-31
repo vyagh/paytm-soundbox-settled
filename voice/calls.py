@@ -40,6 +40,8 @@ class Call:
         self.hearing = False
         self.heard_at = float("-inf")
         self.done = False
+        self.cut = threading.Event()
+        self.told_cut = False
         self.problem = None
         self.thread = threading.Thread(target=self._run, daemon=True)
 
@@ -72,8 +74,13 @@ class Call:
             self.waiting = wait
             seq = self.seq
         if not wait:
-            time.sleep(length + 1)
+            # a hang-up during a closing line leaves the decision as it stands
+            if self.cut.wait(length + 1) and not self.told_cut:
+                self.told_cut = True
+                log.add(shop.id, "cut", rule="he hung up as Settled finished, the decision stands")
             return None
+        if self.cut.is_set():
+            raise flow.HungUp()
         until = time.monotonic() + length + LISTEN
 
         # the code step does its own waiting in flow, so its lines are never said again here
@@ -81,6 +88,8 @@ class Call:
         while True:
             try:
                 got, answer = self.replies.get(timeout=max(0.2, until - time.monotonic()))
+                if got == "cut":
+                    raise flow.HungUp()
                 if got != seq:
                     continue
                 if answer.kind != "no answer" or not again:
@@ -139,6 +148,14 @@ class Call:
             with self.lock:
                 self.hearing = False
                 self.heard_at = time.monotonic()
+
+    def hangup(self):
+        """He hangs up, or the line drops."""
+        with self.lock:
+            if self.done:
+                raise Busy("no call on")
+            self.cut.set()
+            self.replies.put(("cut", None))
 
     def state(self):
         with self.lock:

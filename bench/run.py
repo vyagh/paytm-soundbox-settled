@@ -9,7 +9,8 @@ with "again" calls the shop a second time in the same log, with its own turns an
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
 call's WhatsApp, which should answer 409 unless it gives another "status".
 "code_asks" checks how many times the code was asked, and "unread" how many of his
-turns the call never got to. "new_round" starts a demo round through
+turns the call never got to. A turn {"hangup": true} is him hanging up there, and
+"retry" says a retry call should be booked, as after a cut line or silence. "new_round" starts a demo round through
 POST /api/round/new between the first call and the rest.
 """
 import argparse
@@ -65,6 +66,8 @@ def play(case, read):
         if not wait:
             return None
         turn = next(turns, None)
+        if turn is not None and turn.get("hangup"):
+            raise flow.HungUp()
         text = "" if turn is None else turn["text"]
         if not text.strip():
             answer = Answer("no answer", "")
@@ -242,6 +245,9 @@ def main(argv):
                 wrong.append(f"recording {state.recording}")
             if len(unread) != case.get("unread", 0):
                 wrong.append(f"{len(unread)} turns never read")
+            retried = any(r["action"] == "book retry call (mock)" for r in log.rows(case["shop"]))
+            if retried != case.get("retry", False):
+                wrong.append("retry call booked" if retried else "no retry call booked")
             asked = sum(1 for said, _ in heard if said in script.CODE_LINES)
             if "code_asks" in case and asked != case["code_asks"]:
                 wrong.append(f"code asked {asked} times")

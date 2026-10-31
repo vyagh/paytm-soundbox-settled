@@ -177,6 +177,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self.json(200, {"started": shop_id})
             if what == "reply":
                 return self.reply(shop_id, url)
+            if what == "hangup":
+                call = calls.get(shop_id)
+                if call is None:
+                    raise calls.Busy("no call on")
+                call.hangup()
+                return self.json(200, {"ok": True})
         except calls.Busy as e:
             return self.json(409, {"error": str(e)})
         except ValueError as e:

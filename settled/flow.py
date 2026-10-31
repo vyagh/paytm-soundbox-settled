@@ -1,7 +1,7 @@
 import time
 
 from voice import script
-from voice.script import (ASK, CHARGED, CODE, CODE_AGAIN, CODE_DECLINED, CODE_WAIT, CONSENT, FOLLOW_UP,
+from voice.script import (ASK, CHARGED, CLOSING, CODE, CODE_AGAIN, CODE_DECLINED, CODE_WAIT, CONSENT, FOLLOW_UP,
                           GOODBYE_OTHER, GOODBYE_UNVERIFIED, NAME_AGAIN, NAME_RECORDED, NAME_UNRECORDED, READ_BACK)
 
 from . import codes, log, paytm_mock, records, rules
@@ -11,6 +11,10 @@ from .models import CallState
 # or silence get "I'm waiting" instead of "that's not it", within about 45 s.
 CODE_ASKS = 3
 CODE_WAIT_SECONDS = 45
+
+
+class HungUp(Exception):
+    """He hung up, or the line dropped, while Settled waited for his reply."""
 
 
 def run(shop_id, listener, state=None):
@@ -25,6 +29,8 @@ def run(shop_id, listener, state=None):
         raise log.AlreadySettled(f"{shop.name}'s rent is already settled this round, so there is nothing to call about")
     try:
         return _run(shop, listener, state)
+    except HungUp:
+        return cut(shop.id, "he hung up or the line dropped")
     except Exception:
         if state.call:
             _decided(shop, rules.stopped())
@@ -52,10 +58,7 @@ def _run(shop, listener, state):
     state.recording = reply.kind == "haan"
     _log_reply(shop, state, "consent", CONSENT, reply, rule=rules.consent(reply))
     if reply.kind == "no answer":
-        decision = _decided(shop, rules.held(reply))
-        paytm_mock.hold_rent(shop, "no answer")
-        paytm_mock.open_ticket(shop, decision.rule, "no answer")
-        return decision
+        return _silent(shop)
 
     state.step = "identity"
     line = NAME_RECORDED if state.recording else NAME_UNRECORDED
@@ -67,12 +70,16 @@ def _run(shop, listener, state):
         reply = listener(shop, line)
         failed = rules.name(reply, first=False)
     _log_reply(shop, state, "identity", line, reply, rule=failed or "name confirmed")
+    if reply.kind == "no answer":
+        return _silent(shop)
     if failed:
         return _unverified(shop, listener, failed)
 
     state.code = state.code or codes.new()
     paytm_mock.send_app_code(shop)
-    rule = _code(shop, state, listener)
+    rule, silent = _code(shop, state, listener)
+    if silent:
+        return _silent(shop)
     if rule != "verified":
         return _unverified(shop, listener, rule, CODE_DECLINED if rule == "failed: declined" else None)
 
@@ -98,6 +105,8 @@ def _run(shop, listener, state):
         state.step = "done"
         _say(shop, listener, CHARGED)
         return decision
+    if answers[-1].kind == "no answer":
+        return _silent(shop)
     _decided(shop, decision)
 
     state.step = "followup"
@@ -107,16 +116,19 @@ def _run(shop, listener, state):
     paytm_mock.send_choices(shop, state.call)
     paytm_mock.open_ticket(shop, decision.rule, "na" if answers[-1].kind == "na" else "unclear")
     _say(shop, listener, FOLLOW_UP)
+    _say(shop, listener, CLOSING)
     return decision
 
 
 def _code(shop, state, listener):
-    """"verified" once his reply has the exact code, else the identity rule that ends the call."""
-    line, last = CODE, "failed: no code"
+    """("verified" once his reply has the exact code, else the identity rule that ends
+    the call; True when every ask got silence)."""
+    line, last, heard = CODE, "failed: no code", False
     until = time.monotonic() + CODE_WAIT_SECONDS
     for asked in range(1, CODE_ASKS + 1):
         reply = listener(shop, line)
         got, rule = codes.check(reply.words, state.code)
+        heard = heard or bool(reply.words.strip())
         waited = rule == "wait"
         if not waited:
             last = rule
@@ -129,9 +141,9 @@ def _code(shop, state, listener):
             note = f"{rule.removeprefix('failed: ')} → asked again, {asked} of {CODE_ASKS} asks"
         _log_reply(shop, state, "identity", line, reply, rule=note, read_as="wait" if waited else got or "no code")
         if done:
-            return last
+            return last, not heard
         line = CODE_WAIT if waited else CODE_AGAIN
-    return last
+    return last, not heard
 
 
 def _unverified(shop, listener, rule, line=None):
@@ -139,6 +151,14 @@ def _unverified(shop, listener, rule, line=None):
     paytm_mock.hold_rent(shop, "unverified")
     paytm_mock.open_ticket(shop, rule, "identity")
     _say(shop, listener, line or (GOODBYE_OTHER if rule == "failed: someone else" else GOODBYE_UNVERIFIED))
+    return decision
+
+
+def _silent(shop):
+    """Silence after the line was said again ends the call the same way as a cut line."""
+    decision = _decided(shop, rules.cut("no answer"))
+    paytm_mock.tell_cut(shop)
+    paytm_mock.book_retry(shop)
     return decision
 
 

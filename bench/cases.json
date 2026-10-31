@@ -781,7 +781,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true
+  "recording": true,
+  "retry": true
  },
  {
   "id": "silence-2",
@@ -805,7 +806,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true
+  "recording": true,
+  "retry": true
  },
  {
   "id": "someone-else-1",
@@ -1042,7 +1044,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true
+  "recording": true,
+  "retry": true
  },
  {
   "id": "mixed-1",
@@ -2021,7 +2024,8 @@
   ],
   "expect": "held",
   "identity": "failed: not confirmed",
-  "recording": true
+  "recording": true,
+  "retry": true
  },
  {
   "id": "wrong-code",
@@ -2104,7 +2108,8 @@
   ],
   "expect": "held",
   "identity": "failed: no code",
-  "recording": true
+  "recording": true,
+  "retry": true
  },
  {
   "id": "code-hindi-words",
@@ -2258,7 +2263,8 @@
    }
   ],
   "expect": "held",
-  "recording": false
+  "recording": false,
+  "retry": true
  },
  {
   "id": "angry-na",
@@ -2363,7 +2369,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true
+  "recording": true,
+  "retry": true
  },
  {
   "id": "tap-cancel",
@@ -3226,6 +3233,76 @@
   "identity": "failed: no code",
   "recording": true,
   "code_asks": 3,
-  "unread": 1
+  "unread": 1,
+  "retry": true
+ },
+ {
+  "id": "hangup-at-ask",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "hangup": true,
+    "text": ""
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "retry": true,
+  "note": "he hangs up at the plan question: nothing changes, an SMS says the call cut, a retry is booked"
+ },
+ {
+  "id": "hangup-keeps-choices",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "nahi",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "retry": true,
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, theek hai",
+     "kind": "haan"
+    },
+    {
+     "hangup": true,
+     "text": ""
+    }
+   ],
+   "expect": "held"
+  },
+  "old_tap": {
+   "choice": "keep_plan",
+   "status": 200
+  },
+  "note": "the line drops on a second call: his WhatsApp choices from the first still work"
  }
 ]
