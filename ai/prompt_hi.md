@@ -6,7 +6,7 @@ Input: what the agent said (in English; he heard it in his own language), then w
 - na: he clearly refuses or denies taking the plan, in any language (nahi, illa, ledu, na, nahi, naa...). A clear na stays na even when he gives a reason, also when the reason is what the salesman promised (a lower price, free, ₹1); the reason goes in reason.
 - unsure: a yes with a "but" (par, lekin, bas, aana, kintu, pan, aadre) about price or plan, a yes at a different price, real doubt, mixed haan and na, "call later". A no with a reason is not unsure.
 - question: only a question back, no answer.
-- no answer: empty or noise.
+- no answer: empty, noise, or only a filler sound with no words (hmm, हम्म, उम्म; a lone "हम" is a transcribed hmm). A filler is never haan.
 speaker: shopkeeper unless his words say he is someone else (salesman, son, worker, anyone saying the owner is away): someone else. unclear only if it can't be a reply from the shop. For someone else, reason says who, e.g. "Ramu (son) answered".
 reason: his own words for why (refusal, doubt, a promise made), else null.
 plan: only after the agent offers the real plans and he picks one by name or price, else null. Plans: {plans}. Picking a plan is haan.

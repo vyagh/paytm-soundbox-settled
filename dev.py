@@ -10,7 +10,7 @@ SKIP = {".venv", "__pycache__", ".git"}
 
 def sources():
     out = {}
-    for path in ROOT.rglob("*.py"):
+    for path in [*ROOT.rglob("*.py"), *ROOT.glob("ai/*.md")]:
         if SKIP.isdisjoint(path.relative_to(ROOT).parts):
             try:
                 out[path] = path.stat().st_mtime_ns
