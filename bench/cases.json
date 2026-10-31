@@ -565,11 +565,23 @@
    },
    {
     "text": "ye plan kya hai?",
-    "kind": "question"
+    "kind": "question",
+    "topic": "charge"
+   },
+   {
+    "text": "achha, haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan, kar do",
+    "kind": "haan"
    }
   ],
-  "expect": "held",
-  "identity": "verified: year of birth matches"
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_CHARGE"
+  ]
  },
  {
   "id": "questions-2",
@@ -584,11 +596,23 @@
    },
    {
     "text": "kitna katega mahine ka?",
-    "kind": "question"
+    "kind": "question",
+    "topic": "price"
+   },
+   {
+    "text": "theek hai, haan",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji",
+    "kind": "haan"
    }
   ],
-  "expect": "held",
-  "identity": "verified: year of birth matches"
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_PRICE"
+  ]
  },
  {
   "id": "questions-3",
@@ -603,11 +627,21 @@
    },
    {
     "text": "kisne bola ye? Anil kaun?",
-    "kind": "question"
+    "kind": "question",
+    "topic": "other"
+   },
+   {
+    "text": "abhi soch ke batata hoon",
+    "kind": "unsure",
+    "reason": "soch ke batata hoon"
    }
   ],
   "expect": "held",
-  "identity": "verified: year of birth matches"
+  "identity": "verified: year of birth matches",
+  "ends": "SOFT",
+  "answered": [
+   "A_OTHER"
+  ]
  },
  {
   "id": "silence-1",
@@ -812,11 +846,19 @@
    },
    {
     "text": "kya matlab pakka?",
-    "kind": "question"
+    "kind": "question",
+    "topic": "other"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
    }
   ],
-  "expect": "held",
-  "identity": "verified: year of birth matches"
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_OTHER"
+  ]
  },
  {
   "id": "yes-then-silence",
@@ -3364,5 +3406,447 @@
   "identity": "verified: year of birth matches",
   "retry": true,
   "call_me": true
+ },
+ {
+  "id": "his-cheaper-at-readback",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "क्या इसमें दूसरा प्लान हो सकता है जिसमें सस्ते में हो जाए?",
+    "kind": "question",
+    "topic": "cheaper"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches",
+  "manager": false
+ },
+ {
+  "id": "cheaper-at-ask",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "koi sasta plan hai kya?",
+    "kind": "question",
+    "topic": "cheaper"
+   },
+   {
+    "text": "haan, wahi de do",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches"
+ },
+ {
+  "id": "cheaper-then-na",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "क्या इसमें दूसरा प्लान हो सकता है जिसमें सस्ते में हो जाए?",
+    "kind": "question",
+    "topic": "cheaper"
+   },
+   {
+    "text": "nahi, rehne do",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "CALLBACK",
+  "manager": false
+ },
+ {
+  "id": "cheaper-then-unsure",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "क्या इसमें दूसरा प्लान हो सकता है जिसमें सस्ते में हो जाए?",
+    "kind": "question",
+    "topic": "cheaper"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "pata nahi, soch ke batata hoon",
+    "kind": "unsure",
+    "reason": "soch ke batata hoon"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "SOFT",
+  "manager": false
+ },
+ {
+  "id": "price-at-b-readback",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "क्या इसमें दूसरा प्लान हो सकता है जिसमें सस्ते में हो जाए?",
+    "kind": "question",
+    "topic": "cheaper"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "kitna bola?",
+    "kind": "question",
+    "topic": "price"
+   },
+   {
+    "text": "haan theek hai",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches"
+ },
+ {
+  "id": "two-questions-then-yes",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "kab se shuru hoga?",
+    "kind": "question",
+    "topic": "start"
+   },
+   {
+    "text": "aap kaun bol rahe ho?",
+    "kind": "question",
+    "topic": "who"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_START",
+   "A_WHO"
+  ]
+ },
+ {
+  "id": "three-questions",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "kab se shuru hoga?",
+    "kind": "question",
+    "topic": "start"
+   },
+   {
+    "text": "ye paisa kis cheez ka hai?",
+    "kind": "question",
+    "topic": "charge"
+   },
+   {
+    "text": "aur kya kya milega?",
+    "kind": "question",
+    "topic": "other"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "CALLBACK",
+  "manager": false
+ },
+ {
+  "id": "soch-ke-batata",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "abhi soch ke batata hoon",
+    "kind": "unsure",
+    "reason": "soch ke batata hoon"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "SOFT",
+  "manager": false
+ },
+ {
+  "id": "his-promise-then-b",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "हाँ लिया तो था, पर ये तो तुम झूठ बोल रहे हो। जो सेल्समैन आया था वो एक रुपया बता के गया था, आप एक सौ पच्चीस बोल रहे हो। ये कोई बात थोड़ी हुई?",
+    "kind": "unsure",
+    "reason": "सेल्समैन एक रुपया बता के गया था",
+    "promise": "one rupee",
+    "upset": true
+   },
+   {
+    "text": "haan, ye theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches",
+  "manager": true
+ },
+ {
+  "id": "his-promise-then-na",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "हाँ लिया तो था, पर ये तो तुम झूठ बोल रहे हो। जो सेल्समैन आया था वो एक रुपया बता के गया था, आप एक सौ पच्चीस बोल रहे हो। ये कोई बात थोड़ी हुई?",
+    "kind": "unsure",
+    "reason": "सेल्समैन एक रुपया बता के गया था",
+    "promise": "one rupee",
+    "upset": true
+   },
+   {
+    "text": "nahi, mujhe ek rupaya wala hi chahiye",
+    "kind": "na",
+    "reason": "ek rupaya wala hi chahiye"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "CALLBACK",
+  "manager": true
+ },
+ {
+  "id": "his-promise-then-unsure",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "हाँ लिया तो था, पर ये तो तुम झूठ बोल रहे हो। जो सेल्समैन आया था वो एक रुपया बता के गया था, आप एक सौ पच्चीस बोल रहे हो। ये कोई बात थोड़ी हुई?",
+    "kind": "unsure",
+    "reason": "सेल्समैन एक रुपया बता के गया था",
+    "promise": "one rupee",
+    "upset": true
+   },
+   {
+    "text": "dekhta hoon",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "CALLBACK",
+  "manager": true
+ },
+ {
+  "id": "free-promise-na",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "nahi, usne to free bola tha",
+    "kind": "na",
+    "reason": "usne to free bola tha",
+    "promise": "free",
+    "upset": true
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   },
+   {
+    "text": "nahi",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "CALLBACK",
+  "manager": true
+ },
+ {
+  "id": "upset-na-apology",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "nahi ji, maine kuch sign nahi kiya",
+    "kind": "na",
+    "reason": "maine kuch sign nahi kiya",
+    "upset": true
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "FOLLOW_UP",
+  "manager": true
+ },
+ {
+  "id": "plain-na-callback",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "nahi chahiye",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "ends": "CALLBACK",
+  "manager": true
+ },
+ {
+  "id": "promise-at-b-not-again",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "हाँ लिया तो था, पर ये तो तुम झूठ बोल रहे हो। जो सेल्समैन आया था वो एक रुपया बता के गया था, आप एक सौ पच्चीस बोल रहे हो। ये कोई बात थोड़ी हुई?",
+    "kind": "unsure",
+    "reason": "सेल्समैन एक रुपया बता के गया था",
+    "promise": "one rupee",
+    "upset": true
+   },
+   {
+    "text": "nahi, wo bhi ek rupaya bola tha",
+    "kind": "na",
+    "promise": "one rupee"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "manager": true
  }
 ]

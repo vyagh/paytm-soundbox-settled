@@ -12,6 +12,8 @@ A turn at the year question may carry the "intent" the AI would read in it.
 "year_asks" checks how many times the year was asked, "year_wrong" how many of those
 said the year didn't match, and "unread" how many of his
 turns the call never got to. A turn {"hangup": true} is him hanging up there, and
+"ends" names the script line said just before the goodbye, "answered" the answer
+lines that should be said, and "manager" whether his manager got a WhatsApp.
 "retry" says a retry call should be booked, as after a cut line or silence, and
 "call_me" whether an SMS with a Call me now button went out. "callback" on "again"
 makes the second call one he started. "new_round" starts a demo round through
@@ -41,7 +43,8 @@ def typed_reader(case):
     def read(text, said):
         from settled.models import Answer
         turn = labelled[text]
-        return Answer(turn["kind"], text, reason=turn.get("reason"), speaker=turn.get("speaker", "shopkeeper"))
+        return Answer(turn["kind"], text, reason=turn.get("reason"), speaker=turn.get("speaker", "shopkeeper"),
+                      topic=turn.get("topic"), promise=turn.get("promise"), upset=turn.get("upset", False))
 
     return read
 
@@ -63,10 +66,11 @@ def play(case, read):
 
     state = CallState()
     turns = iter(case["turns"])
-    heard = []
+    heard, told = [], []
 
     def listener(shop, said, wait=True):
         if not wait:
+            told.append(said)
             return None
         turn = next(turns, None)
         if turn is not None and turn.get("hangup"):
@@ -85,7 +89,7 @@ def play(case, read):
         decision = flow.run(case["shop"], listener, state, callback=case.get("callback", False))
     except log.AlreadySettled:
         decision = None
-    return decision, heard, state, list(turns)
+    return decision, heard, state, list(turns), told
 
 
 def tap(board, shop):
@@ -137,7 +141,10 @@ def score(decision, heard, rows):
     identity = next((r["rule"] for r in reversed(rows) if r["step"] == "identity"), None)
     bad = unverified = 0
     if decision is not None and decision.outcome == "charged":
-        asked = [a for said, a in heard if said in (script.ASK, script.READ_BACK)]
+        # a na or doubt about the plan that was charged; one about Plan A before a Plan B charge is not
+        lines = {script.ASK, script.ASK_AGAIN, script.READ_BACK} if decision.plan.id == "plan-a" else \
+            {script.OFFER_B, script.OFFER_AGAIN, script.PROMISE_ONE, script.PROMISE_FREE, script.PROMISE_LOWER, script.READ_BACK_B}
+        asked = [a for said, a in heard if said in lines]
         bad = any(a.kind in ("na", "unsure") for a in asked)
         unverified = not (identity or "").startswith("verified")
     negative = sum(1 for r in rows if r["action"] and r["action"].removesuffix(" (mock)") in paytm_mock.NEGATIVE)
@@ -186,7 +193,7 @@ def main(argv):
                 print(f"stopped: ₹{ai.spent():.4f} spent, cap ₹{args.cap}")
                 break
             os.environ["SETTLED_DB"] = str(Path(tmp) / f"{n}.db")
-            decision, heard, state, unread = play(case, make_reader(args.reader, case))
+            decision, heard, state, unread, spoken = play(case, make_reader(args.reader, case))
             rows = log.rows(case["shop"])
             identity, b, u, neg = score(decision, heard, rows)
             bad, unverified, negative = bad + b, unverified + u, negative + neg
@@ -220,7 +227,7 @@ def main(argv):
             if case.get("again"):
                 later = case["again"]
                 before = len(log.rows(case["shop"]))
-                decision2, heard2, _, unread2 = play({**case, "turns": later["turns"], "callback": later.get("callback", False)},
+                decision2, heard2, _, unread2, _ = play({**case, "turns": later["turns"], "callback": later.get("callback", False)},
                                                      make_reader(args.reader, later))
                 _, b, u, neg = score(decision2, heard2, log.rows(case["shop"])[before:])
                 bad, unverified, negative = bad + b, unverified + u, negative + neg
@@ -264,6 +271,17 @@ def main(argv):
             told = sum(1 for said, _ in heard if said == script.YEAR_WRONG)
             if "year_wrong" in case and told != case["year_wrong"]:
                 wrong.append(f"year didn't match said {told} times")
+            if "ends" in case:
+                ending = spoken[-2] if len(spoken) > 1 else None
+                if ending != getattr(script, case["ends"]):
+                    wrong.append(f"ended on {next((k for k in dir(script) if getattr(script, k) == ending), ending)}")
+            for line in case.get("answered", []):
+                if getattr(script, line) not in spoken:
+                    wrong.append(f"{line} not said")
+            with sqlite3.connect(log.path()) as db:
+                manager = bool(db.execute("SELECT id FROM messages WHERE shop = ? AND to_whom = 'manager'", (case["shop"],)).fetchall())
+            if manager != case.get("manager", manager):
+                wrong.append("manager told" if manager else "manager not told")
             matched += not wrong
             if case.get("honest"):
                 honest += 1

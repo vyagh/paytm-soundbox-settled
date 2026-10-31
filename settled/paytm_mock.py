@@ -128,10 +128,10 @@ def open_ticket(shop, why, case="unclear"):
     return _act(shop, "open ticket", rule=why)
 
 
-def tell_manager(shop, reason):
-    answer = log.last_answer(shop.id, "na")
+def tell_manager(shop, reason, read_as="na"):
+    answer = log.last_answer(shop.id, read_as)
     s = shop.signup
-    text = (f"{_who(shop)} said no to the ₹{s['price']}/month Soundbox rent that {_salesman(shop)} signed up "
+    text = (f"{_who(shop)} {'said no to' if read_as == 'na' else 'disputed'} the ₹{s['price']}/month Soundbox rent that {_salesman(shop)} signed up "
             f"on {_day(s['on'])} (form {s['form']}). What he said: {_his_words(answer)}. Nothing is taken.")
     log.message(shop.id, "manager", "WhatsApp", f"For {s['salesman']['name']}'s manager: {text}")
     return _act(shop, "tell manager", reason=reason)

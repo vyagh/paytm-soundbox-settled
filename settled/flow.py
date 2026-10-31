@@ -1,9 +1,10 @@
 import time
 
 from voice import script
-from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED,
-                          GREETING, NAME_AGAIN, READ_BACK, REASSURE, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG,
-                          YEAR_WAIT)
+from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, CALL_LATER, CALLBACK, CHARGED,
+                          CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AGAIN,
+                          OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, READ_BACK_B,
+                          REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -17,6 +18,16 @@ INTENT_RULES = {"wait": "wait", "refuse": "failed: refused", "angry": "failed: a
                 "who": "who", "question": "who"}
 EXPLAIN = {"scared": REASSURE, "who": WHO_WHY}
 EXPLAINED = {"scared": "reassured, ", "who": "said who's calling, "}
+# A question at the plan or the read-back, as the AI read it, to the line that answers it.
+# Plain code says the line, then asks the same thing again.
+ANSWERS = {"price": A_PRICE, "start": A_START, "charge": A_CHARGE, "who": A_WHO, "other": A_OTHER}
+TOPICS = {"cheaper": "cheaper plan", "price": "price", "start": "start date", "charge": "what the charge is",
+          "who": "who's calling", "other": "other"}
+# A salesman's promise his na or doubt rests on, to the line that owns it and offers the cheaper plan.
+PROMISES = {"one rupee": PROMISE_ONE, "free": PROMISE_FREE, "lower price": PROMISE_LOWER}
+OFFERS = (OFFER_B, OFFER_AGAIN, *PROMISES.values())
+# the same question again, shorter, after an answer
+AGAIN = {ASK: ASK_AGAIN, **{line: OFFER_AGAIN for line in OFFERS}}
 
 
 class HungUp(Exception):
@@ -116,15 +127,10 @@ def _call(shop, listener, state):
     if rule != year.VERIFIED:
         return _unverified(shop, listener, rule, DECLINED if rule in ("failed: refused", "failed: angry") else None)
 
-    state.step = "ask"
-    answers = [_ask(shop, state, ASK, listener)]
-    decision = rules.decide(shop, answers, verified=True)
-    if decision.outcome == "ask again":
-        _decided(shop, decision)
-        state.step = "readback"
-        answers.append(_ask(shop, state, READ_BACK, listener))
-        decision = rules.decide(shop, answers, verified=True)
-
+    decision, answers, offered = _plan(shop, state, listener)
+    signed = shop.plan(shop.signup["plan"])
+    # a no or a salesman's promise about the plan he signed goes to the salesman's manager, whatever comes after
+    told = next((a for plan, a in answers if plan == signed and (a.kind == "na" or a.promise)), None)
     if decision.outcome == "charged":
         try:
             paytm_mock.charge_rent(shop, decision.plan)
@@ -135,22 +141,62 @@ def _call(shop, listener, state):
             _say(shop, listener, FOLLOW_UP)
             return decision
         _decided(shop, decision)
+        if told:
+            paytm_mock.tell_manager(shop, told.reason, _read_as(told))
         state.step = "done"
         _say(shop, listener, CHARGED)
         return decision
-    if answers[-1].kind == "no answer":
+    last = answers[-1][1]
+    if last.kind == "no answer":
         return _silent(shop)
     _decided(shop, decision)
 
     state.step = "followup"
     paytm_mock.hold_rent(shop)
-    if any(a.kind == "na" for a in answers):
-        paytm_mock.tell_manager(shop, next(a.reason for a in answers if a.kind == "na"))
+    if told:
+        paytm_mock.tell_manager(shop, told.reason, _read_as(told))
     paytm_mock.send_choices(shop, state.call)
-    paytm_mock.open_ticket(shop, decision.rule, "na" if answers[-1].kind == "na" else "unclear")
-    _say(shop, listener, FOLLOW_UP)
+    paytm_mock.open_ticket(shop, decision.rule, "na" if last.kind == "na" else "unclear")
+    # the apology only for anger, a complaint or distress; calm doubt gets time to think
+    if offered or not any(a.upset for _, a in answers):
+        ending = SOFT if last.kind == "unsure" and not offered else CALLBACK
+    else:
+        ending = FOLLOW_UP
+    _say(shop, listener, ending)
     _say(shop, listener, CLOSING)
     return decision
+
+
+def _plan(shop, state, listener):
+    """(decision, the (plan, answer) pairs, whether a promise line offered the cheaper plan).
+
+    Asks the plan from his record, answers his questions, and reads the price back
+    after a haan. rules.decide picks the money and when to stop."""
+    signed = shop.plan(shop.signup["plan"])
+    plan, line, answers, offered = signed, ASK, [], False
+    state.step = "ask"
+    while True:
+        answer = _ask(shop, state, line, listener)
+        answers.append((plan, answer))
+        decision = rules.decide(shop, answers, verified=True)
+        if decision.outcome != "ask again":
+            return decision, answers, offered
+        _decided(shop, decision)
+        if answer.kind == "question":
+            if answer.topic == "cheaper" and plan == signed and shop.cheaper(signed):
+                plan, line = shop.cheaper(signed), OFFER_B
+                state.step = "ask"
+                continue
+            if answer.topic in ANSWERS and not (answer.topic == "price" and plan != signed):
+                _say(shop, listener, ANSWERS[answer.topic])
+            line = AGAIN.get(line, line)
+        elif answer.kind == "haan":
+            plan = decision.plan
+            line = READ_BACK if plan == signed else READ_BACK_B
+            state.step = "readback"
+        else:
+            plan, line, offered = decision.plan, PROMISES[answer.promise], True
+            state.step = "ask"
 
 
 def _year(shop, state, listener):
@@ -227,8 +273,14 @@ def cut(shop_id, why):
 
 def _ask(shop, state, line, listener):
     answer = listener(shop, line)
-    _log_reply(shop, state, "answered", line, answer)
+    _log_reply(shop, state, "answered", line, answer, read_as=_read_as(answer))
     return answer
+
+
+def _read_as(answer):
+    if answer.kind == "question":
+        return f"question: {TOPICS.get(answer.topic, 'other')}"
+    return answer.kind
 
 
 def _log_reply(shop, state, step, line, answer, rule=None, read_as=None):

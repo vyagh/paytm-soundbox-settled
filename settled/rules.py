@@ -36,12 +36,19 @@ def unverified(rule):
     return Decision("held", f"identity {rule} → nothing changes, an SMS lets him call back")
 
 
-def decide(shop, answers, verified):
-    """The money, from his answers to the plan question and the read-back.
+# Questions he may ask at the plan question and the read-back before a person calls back instead.
+QUESTIONS = 2
 
-    The only write straight from what the AI read is a charge, after haan twice from
-    the verified owner. Everything else holds the rent for a person, and a cancel,
-    pickup or plan change waits for his own tap in WhatsApp.
+
+def decide(shop, answers, verified):
+    """The money, from his answers on the plan question, the read-back and any Plan B offer.
+
+    answers holds (plan, Answer) pairs, each answer to a line about that plan. The only
+    write straight from what the AI read is a charge, after haan twice to the same plan
+    from the verified owner, with no na or unsure about that plan. A question gets an
+    answer and the line asked again, up to QUESTIONS. A na or doubt that rests on a
+    salesman's promise gets the cheaper plan offered once. Everything else holds the
+    rent for a person, and a cancel, pickup or plan change waits for his own tap in WhatsApp.
     """
     before = before_call(shop)
     if before.outcome != "call":
@@ -52,14 +59,30 @@ def decide(shop, answers, verified):
         return before
 
     signed = shop.plan(shop.signup["plan"])
-    first, later = answers[0], answers[1:]
-    if first.kind == "haan":
-        if not later:
-            return Decision("ask again", "first clear haan → read the price back")
-        if later[0].kind == "haan":
-            return Decision("charged", f"haan, then haan again → charged at ₹{signed.price} ({signed.name})", signed)
-        return held(later[0])
-    return held(first)
+    cheaper = shop.cheaper(signed)
+    haans, questions, offered = {}, 0, False
+    for plan, answer in answers:
+        if answer.kind == "question":
+            questions += 1
+            if questions > QUESTIONS:
+                return Decision("held", f"{questions} questions → nothing taken, a person calls back")
+            continue
+        if answer.kind == "haan":
+            haans[plan.id] = haans.get(plan.id, 0) + 1
+            if haans[plan.id] == 2:
+                return Decision("charged", f"haan, then haan again → charged at ₹{plan.price} ({plan.name})", plan)
+            continue
+        if answer.promise and plan == signed and cheaper and not offered:
+            offered = True
+            continue
+        return held(answer)
+
+    plan, last = answers[-1]
+    if last.kind == "question":
+        return Decision("ask again", f"question ({last.topic or 'other'}) → answered, asked again, {questions} of {QUESTIONS}", plan)
+    if last.kind != "haan":
+        return Decision("ask again", f"salesman promised {last.promise} → {cheaper.name} offered at ₹{cheaper.price}", cheaper)
+    return Decision("ask again", f"clear haan → read ₹{plan.price} ({plan.name}) back", plan)
 
 
 def held(answer):
