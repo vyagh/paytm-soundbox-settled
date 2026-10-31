@@ -82,6 +82,10 @@ The AI sorts a reply into a kind (haan, na, unsure, question, no answer) and say
 | Haan, then anything else on the read-back | Held, WhatsApp with his choices |
 | A question about the price, start date or charge | Answered, the question asked again |
 | A third question | Held, a person calls back |
+| A question it can't answer for sure | Says so, a person calls him to explain |
+| "Are you a robot?" or "I want a person" | Says it's an automated Paytm call, asks to carry on; a person calls back if he wants one |
+| A complaint about something other than the rent | Passed to support, the plan question asked once more |
+| He asks to cancel or for a refund | Held, the cancel choice is in his WhatsApp |
 | Na, unsure, or no answer | Held, WhatsApp with his choices |
 | The salesman promised ₹1, free or a lower rent | Sorry, Plan B offered once |
 | He asks for a cheaper plan | Plan B offered |
@@ -126,7 +130,7 @@ The Hindi lines are hand-written. The other ten languages are machine-written an
 
 ## Tested on typed calls
 
-[`bench/cases.json`](bench/cases.json) holds typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code. They cover honest yeses, flat nos, nos with a reason, questions, silence, a lone "hmm", the salesman or a relative answering, wrong, missing and refused years, a returned box, scared and angry replies, busy replies, hang-ups, second calls, his taps on the WhatsApp choices, and all 11 languages.
+[`bench/cases.json`](bench/cases.json) holds typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code. They cover honest yeses, flat nos, nos with a reason, questions, silence, a lone "hmm", the salesman or a relative answering, wrong, missing and refused years, a returned box, scared and angry replies, a complaint about something else, a cancel request, "are you a robot?", busy replies, hang-ups, second calls, his taps on the WhatsApp choices, and all 11 languages.
 
 With the Sarvam model sorting every reply, across every saved run:
 
@@ -134,14 +138,14 @@ With the Sarvam model sorting every reply, across every saved run:
 - **Every honest yes was charged.**
 - In the version 2 model run, made before the year-of-birth check replaced an app code, nothing was charged without a verified owner, and the AI caused no cancel, plan change or pickup.
 
-On the code as it stands, with the labels standing in for the AI, [all 179 typed calls end as expected](bench/results/typed-v2-179-cases-2026-10-31.txt): 40/40 honest yeses charged, nothing charged after a na or unsure or without a verified owner. No model run covers this version yet.
+On the code as it stands, with the labels standing in for the AI, [all 189 typed calls end as expected](bench/results/typed-v2-189-cases-2026-10-31.txt): 44/44 honest yeses charged, nothing charged after a na or unsure or without a verified owner. No model run covers this version yet.
 
 <details>
 <summary>Every saved run</summary>
 
 | Run | Outcomes matched | Honest yeses charged | Charged after na or unsure |
 |---|---|---|---|
-| [Version 2 as it stands, labels standing in for the AI, all 179 cases](bench/results/typed-v2-179-cases-2026-10-31.txt) | 179/179 | 40/40 | 0 |
+| [Version 2 as it stands, labels standing in for the AI, all 189 cases](bench/results/typed-v2-189-cases-2026-10-31.txt) | 189/189 | 44/44 | 0 |
 | [Version 2 earlier, labels standing in for the AI, the 144 cases saved then](bench/results/typed-v2-2026-10-31.txt) | 144/144 | 31/31 | 0 |
 | [Version 2 before the year-of-birth check (an app code then), Sarvam model, 16 identity and plan cases picked](bench/results/ai-reader-v2-2026-10-31.txt) | 13 of the 14 run before the spend cap | 2/2 | 0 |
 | [Version 1, Sarvam model, 62 cases](bench/results/ai-reader-2026-10-31.txt) | 62/62 | 13/13 | 0 |
