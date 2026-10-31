@@ -3,8 +3,8 @@ import time
 from voice import script
 from voice.script import (A_CHARGE, A_OTHER, A_PRICE, A_START, A_WHO, ASK, ASK_AGAIN, CALL_LATER, CALLBACK, CHARGED,
                           CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO,
-                          NAME_AGAIN, OFFER_AGAIN, OFFER_B, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK,
-                          READ_BACK_B, REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
+                          NAME_AGAIN, OFFER_AGAIN, OFFER_B, ON_THE_LINE, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE,
+                          READ_BACK, READ_BACK_B, REASSURE, SOFT, WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WRONG, YEAR_WAIT)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -107,12 +107,16 @@ def _call(shop, listener, state):
     reply = listener(shop, line)
     failed = rules.name(reply)
     if failed == "ask again":
-        asked_who = reply.kind == "question" or year.asks_who(reply.words)
+        handed = rules.handover(reply.words)
+        asked_who = not handed and (reply.kind == "question" or year.asks_who(reply.words))
         _log_reply(shop, state, "identity", line, reply,
-                   rule="asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more")
-        if asked_who:
+                   rule="handing the phone over → on the line, asked once more" if handed else
+                   "asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more")
+        if handed:
+            _say(shop, listener, ON_THE_LINE)
+        elif asked_who:
             _say(shop, listener, WHO_WHY)
-        line = NAME_AFTER_WHO if asked_who else NAME_AGAIN
+        line = GREETING if handed else NAME_AFTER_WHO if asked_who else NAME_AGAIN
         reply = listener(shop, line)
         failed = rules.name(reply, first=False)
     _log_reply(shop, state, "identity", line, reply, rule=failed or "name confirmed")
