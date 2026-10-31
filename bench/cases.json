@@ -4226,13 +4226,15 @@
    }
   ],
   "expect": "held",
-  "identity": "asked if it's a robot or for a person → a person calls back",
+  "identity": "asked for a person → a person calls back",
   "retry": true,
   "answered": [
-   "AUTOMATED"
+   "PERSON_LATER"
   ],
-  "unread": 1,
-  "note": "told it's an automated call, a person calls him back, nothing changed"
+  "note": "told it's an automated call and asked, he wants a person: a person calls him back, nothing changed",
+  "asked": [
+   "AUTOMATED"
+  ]
  },
  {
   "id": "robot-at-ask",
@@ -4249,13 +4251,20 @@
     "text": "ye recording hai kya? mujhe insaan se baat karni hai",
     "kind": "question",
     "topic": "other"
+   },
+   {
+    "text": "haan, insaan se hi baat karni hai",
+    "kind": "haan"
    }
   ],
   "expect": "held",
   "identity": "verified: year of birth matches",
   "retry": true,
-  "answered": [
+  "asked": [
    "AUTOMATED"
+  ],
+  "answered": [
+   "PERSON_LATER"
   ]
  },
  {
@@ -4464,5 +4473,146 @@
    "A_OTHER"
   ],
   "retry": true
+ },
+ {
+  "id": "robot-carry-on-name",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "are you a robot?",
+    "kind": "question",
+    "topic": "who"
+   },
+   {
+    "text": "haan boliye",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true,
+  "asked": [
+   "AUTOMATED"
+  ],
+  "note": "told it's an automated call, he says carry on: the name question again and the call goes on"
+ },
+ {
+  "id": "robot-carry-on-year",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "pehle batao, tum robot ho kya?"
+   },
+   {
+    "text": "theek hai, aage bolo",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true,
+  "asked": [
+   "AUTOMATED"
+  ]
+ },
+ {
+  "id": "robot-carry-on-ask",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "ye recording hai kya?",
+    "kind": "question",
+    "topic": "other"
+   },
+   {
+    "text": "aage boliye",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true,
+  "asked": [
+   "AUTOMATED"
+  ],
+  "note": "carry on at the plan question: the plan is asked again, two clear haans still charge"
+ },
+ {
+  "id": "robot-again-after-carry-on",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "ye recording hai kya?",
+    "kind": "question",
+    "topic": "other"
+   },
+   {
+    "text": "haan boliye",
+    "kind": "haan"
+   },
+   {
+    "text": "phir se recording? nahi, rehne do",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "retry": true,
+  "answered": [
+   "PERSON_LATER"
+  ],
+  "note": "a second robot question after carry on gets the person"
  }
 ]

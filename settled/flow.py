@@ -4,8 +4,8 @@ from voice import script
 from voice.script import (A_CHARGE, A_EXTRA, A_HOW, A_OTHER, A_PRICE, A_START, A_STOP, A_WHO, ASK, ASK_AGAIN, AUTOMATED,
                           CALL_LATER, CALLBACK, CANCEL, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER,
                           GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO, NAME_AGAIN, OFFER_AGAIN, OFFER_B, ON_THE_LINE,
-                          PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, REASSURE, SOFT, SUPPORT, TAP_B, WHO_WHY, YEAR,
-                          YEAR_AGAIN, YEAR_WAIT, YEAR_WRONG)
+                          PERSON_LATER, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, REASSURE, SOFT, SUPPORT, TAP_B,
+                          WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WAIT, YEAR_WRONG)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -44,7 +44,7 @@ class _Busy(Exception):
 
 
 class _Robot(_Busy):
-    """He asked if this is a machine, or for a person."""
+    """He asked for a person, after hearing it's an automated call."""
 
 
 def run(shop_id, listener, state=None, callback=False):
@@ -85,14 +85,14 @@ def _run(shop, listener, state, callback=False):
 
     log.add(shop.id, "calling", rule="callback: he tapped Call me now or called the number back" if callback else None)
     try:
-        return _call(shop, _busy_aware(listener), state)
+        return _call(shop, _busy_aware(listener, state), state)
     except _Robot as asked:
         step = "answered" if state.step in ("ask", "readback") else state.step
-        _log_reply(shop, state, step, asked.line, asked.answer, rule="asked if it's a robot or for a person → a person calls back")
+        _log_reply(shop, state, step, asked.line, asked.answer, rule="asked for a person → a person calls back")
         decision = _decided(shop, rules.person_later())
         paytm_mock.tell_call_later(shop)
         paytm_mock.book_retry(shop, "a person calls him back")
-        _say(shop, listener, AUTOMATED)
+        _say(shop, listener, PERSON_LATER)
         return decision
     except _Busy as busy:
         step = "answered" if state.step in ("ask", "readback") else state.step
@@ -104,14 +104,27 @@ def _run(shop, listener, state, callback=False):
         return decision
 
 
-def _busy_aware(listener):
-    """"Busy hoon, baad mein call karo" at any step ends the call, checked in plain code."""
+def _busy_aware(listener, state):
+    """"Busy hoon, baad mein call karo" at any step ends the call, checked in plain code.
+    "Are you a robot?" gets told it's an automated call and asked whether to carry on: a carry on
+    asks the same line again, a person, anything else or a second robot question ends the call."""
+    explained = []
+
     def listen(shop, line, wait=True):
         if not wait:
             return listener(shop, line, wait=False)
         answer = listener(shop, line)
         if rules.robot(answer.words):
-            raise _Robot(line, answer)
+            if explained:
+                raise _Robot(line, answer)
+            explained.append(line)
+            step = "answered" if state.step in ("ask", "readback") else state.step
+            _log_reply(shop, state, step, line, answer, rule="asked if it's a robot or for a person → said it's automated, asked to carry on")
+            reply = listener(shop, AUTOMATED)
+            if not rules.carry_on(reply):
+                raise _Robot(AUTOMATED, reply)
+            _log_reply(shop, state, step, AUTOMATED, reply, rule="carry on → asked the same again")
+            return listen(shop, line)
         if rules.busy(answer.words) and answer.topic != "support":
             raise _Busy(line, answer)
         return answer

@@ -15,6 +15,12 @@ HANDOVER = ("deta hoon", "deta hu", "deti hoon", "deti hu", "de raha hoon", "de 
 # says it's an automated call and a person calls him back. Never "machine" alone: the Soundbox is one.
 ROBOT = ("robot", "bot ", "recording", "insaan", "insan", "human", "real person", "asli aadmi", "aadmi se baat",
          "kisi aadmi", "रोबोट", "बॉट", "रिकॉर्डिंग", "इंसान", "इन्सान", "असली आदमी", "आदमी से बात", "किसी आदमी")
+# His reply to "shall I carry on, or would you like a person to call you?". Asking for a person, a robot
+# word again, or anything unclear gets the person; only a yes or a carry on goes on with the call.
+PERSON = ("person", "vyakti", "call karo", "call kar dena", "call kariye", "व्यक्ति", "कॉल करो", "कॉल कर देना",
+          "कॉल कीजिए", "कॉल करिए")
+CARRY_ON = ("aage", "bolo", "boliye", "bolie", "chalo", "theek hai", "thik hai", "carry on", "go on", "continue",
+            "आगे", "बोलो", "बोलिए", "बोलिये", "चलो", "ठीक है")
 # A bare yes to "am I speaking with him": confirmed in plain code, before the AI reads it,
 # which takes a lone "हाँ" for a garbled scrap.
 YES_WORDS = {"haan", "han", "haa", "ha", "ji", "jee", "yes", "yeah", "boliye", "bolie", "speaking", "हा", "जी", "बोलिए",
@@ -170,3 +176,10 @@ def robot(text):
 
 def person_later():
     return Decision("held", "asked if it's a robot or for a person → nothing changed, a person calls back")
+
+
+def carry_on(answer):
+    """True when his reply to the automated-call question says go on with the call."""
+    if robot(answer.words) or any(spoken(phrase) in spoken(answer.words) for phrase in PERSON):
+        return False
+    return answer.kind == "haan" or bare_yes(answer.words) or any(spoken(phrase) in spoken(answer.words) for phrase in CARRY_ON)
