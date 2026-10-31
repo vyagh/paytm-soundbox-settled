@@ -128,6 +128,48 @@ h1{font-size:1.5rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font
 .note:empty{display:none}
 .note.warn{color:var(--rec);font-weight:600}
 
+/* lower row: log and messages */
+.lower{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:calc(2*var(--u));min-height:0}
+.lower.solo{grid-template-columns:minmax(0,1fr)}
+
+/* play his recorded answer */
+.clip{--p:0;flex:none;display:inline-flex;align-items:center;gap:calc(.75*var(--u));font:inherit;font-size:.8125rem;font-weight:600;color:var(--accent);background:none;border:0;border-radius:999px;cursor:pointer;padding:0;vertical-align:middle}
+.clip .ring{display:grid;place-items:center;width:calc(3.5*var(--u));height:calc(3.5*var(--u));border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1turn),var(--accent-soft) 0);transition:transform .12s var(--ease)}
+.clip .ring::before{content:"";grid-area:1/1;width:calc(2.75*var(--u));height:calc(2.75*var(--u));border-radius:50%;background:var(--accent-soft)}
+.clip svg{grid-area:1/1;width:.7rem;height:.7rem;position:relative}
+.clip .stop{display:none}
+.clip.playing .play{display:none}
+.clip.playing .stop{display:block}
+.clip:hover .ring{transform:scale(1.06)}
+.clip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.clip.small .ring{width:calc(2.75*var(--u));height:calc(2.75*var(--u))}
+.clip.small .ring::before{width:calc(2.125*var(--u));height:calc(2.125*var(--u))}
+.clip.small svg{width:.55rem;height:.55rem}
+.facts .clip{align-self:flex-start;margin-top:calc(-.5*var(--u))}
+.heard{display:flex;align-items:center;justify-content:space-between;gap:calc(1.5*var(--u))}
+
+/* who gets what */
+.msgs{background:var(--surface);border-radius:calc(2.5*var(--u));display:flex;flex-direction:column;min-height:0}
+.msghead{display:flex;align-items:center;justify-content:space-between;gap:calc(1.5*var(--u));padding:calc(2*var(--u)) calc(2.5*var(--u)) var(--u) calc(3*var(--u));flex-wrap:wrap}
+.msghead h3{font-size:1rem;font-weight:700;color:var(--ink);letter-spacing:-.01em}
+.msghead p{font-size:.8125rem;color:var(--muted)}
+.seg{display:flex;background:var(--fill);border-radius:999px;padding:3px;gap:2px}
+.seg button{font:inherit;font-size:.75rem;font-weight:600;color:var(--muted);background:none;border:0;border-radius:999px;height:calc(3*var(--u));padding:0 calc(1.25*var(--u));cursor:pointer;transition:background-color .2s var(--ease),color .2s}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgb(20 20 30 / .1),0 1px 1px rgb(20 20 30 / .04)}
+.seg button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.msglist{list-style:none;overflow:auto;min-height:0;flex:1;padding:var(--u) calc(2.5*var(--u)) calc(2*var(--u));display:flex;flex-direction:column;gap:var(--u)}
+.msg{display:grid;grid-template-columns:calc(4*var(--u)) minmax(0,1fr);gap:calc(1.5*var(--u));background:var(--fill);border-radius:calc(2*var(--u));padding:calc(1.5*var(--u)) calc(2*var(--u)) calc(1.5*var(--u)) calc(1.5*var(--u))}
+.msg .av{display:grid;place-items:center;width:calc(4*var(--u));height:calc(4*var(--u));border-radius:50%;color:#fff;background:var(--accent)}
+.msg .av svg{width:1.05rem;height:1.05rem}
+.msg.to-manager .av{background:var(--held)}
+.msg.to-support .av{background:var(--not)}
+.msg-top{display:flex;align-items:baseline;gap:var(--u);font-size:.8125rem;color:var(--muted);min-width:0}
+.msg-top b{font-weight:650;color:var(--ink);font-size:.875rem;white-space:nowrap}
+.msg-top span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msg-top time{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--faint);white-space:nowrap}
+.msg p{font-size:.875rem;line-height:1.45;color:var(--ink2);margin-top:calc(.25*var(--u))}
+.msglist .empty{color:var(--faint);text-align:center;padding:calc(3*var(--u)) 0;font-size:.875rem;background:none}
+
 /* log */
 .logwrap{background:var(--surface);border-radius:calc(2.5*var(--u));display:flex;flex-direction:column;min-height:0}
 .loghead{display:flex;align-items:baseline;gap:calc(1.5*var(--u));padding:calc(2*var(--u)) calc(3*var(--u)) var(--u)}
@@ -167,7 +209,7 @@ h1{font-size:1.5rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font
   .eq i:nth-child(2){animation-delay:-.25s}
   .eq i:nth-child(3){animation-delay:-.5s}
   .enter{animation:enter .4s var(--ease)}
-  .ev.new{animation:enter .4s var(--ease)}
+  .ev.new,.msg.new{animation:enter .4s var(--ease)}
 }
 @media (prefers-reduced-motion:reduce){
   .card,.card.oncall,.btn,.btn.talk.on,.meter i{transition:none;transform:none}
@@ -180,7 +222,8 @@ h1{font-size:1.5rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font
   body{height:auto;grid-template-rows:auto}
   .shops{grid-template-columns:1fr}
   .how{display:none}
-  .log{max-height:60vh}
+  .lower{grid-template-columns:1fr}
+  .log,.msglist{max-height:60vh}
 }
 </style>
 </head>
@@ -203,10 +246,16 @@ h1{font-size:1.5rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font
 
 <main class="shops" id="shops"></main>
 
-<section class="logwrap" aria-label="Decision log">
-  <div class="loghead"><h3>Decision log</h3><p>Every step, with his words, how they were read and the rule that fired</p></div>
-  <ol class="log" id="log"></ol>
-</section>
+<div class="lower solo" id="lower">
+  <section class="logwrap" aria-label="Decision log">
+    <div class="loghead"><h3>Decision log</h3><p>Every step, with his words, how they were read and the rule that fired</p></div>
+    <ol class="log" id="log"></ol>
+  </section>
+  <section class="msgs" id="msgs" aria-label="Who gets what" hidden>
+    <div class="msghead"><div><h3>Who gets what</h3><p>Not sent, demo</p></div><div class="seg" id="msg-seg"></div></div>
+    <ol class="msglist" id="msg-list"></ol>
+  </section>
+</div>
 
 <script>
 let SHOPS = {};
@@ -241,6 +290,8 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&
 const time = at => (at || '').split('T').pop().slice(0, 8);
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 const arrows = s => esc(s).replace(/→/g, '<span class="arr">→</span>');
+const clipUrl = c => typeof c === 'string' && /^\/api\/clip\/\d+$/.test(c) ? c : null;
+const clipBtn = (c, small) => c ? `<button class="clip${small ? ' small' : ''}" type="button" data-clip="${c}" aria-label="Play his recorded answer" title="Play his recorded answer"><span class="ring"><svg class="play" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 1.2v7.6L8.8 5z" fill="currentColor"/></svg><svg class="stop" viewBox="0 0 10 10" aria-hidden="true"><rect x="2" y="2" width="6" height="6" rx="1" fill="currentColor"/></svg></span>${small ? '' : 'His voice'}</button>` : '';
 const html = (el, str) => { if (el._html !== str) { el._html = str; el.innerHTML = str; } };
 
 function statusOf(row, prev) {
@@ -277,6 +328,7 @@ function shopState(key) {
     if (r.said) {
       s.said = r.said;
       s.heard = r.heard || (r.read_as === 'no answer' ? '' : null);
+      s.clip = clipUrl(r.clip);
       s.turns.push(r);
     }
     if (r.step === 'records checked') s.records = r.reason;
@@ -350,6 +402,7 @@ function renderShops() {
     if (active && shop.call.said && shop.call.said !== s.said) {
       s.said = shop.call.said;
       s.heard = null;
+      s.clip = null;
     }
     const phase = active ? 'call' : s.settled ? 'done' : s.said || s.status !== 'waiting' ? 'call' : 'idle';
     el.dataset.phase = phase;
@@ -388,6 +441,7 @@ function renderShops() {
     renderControls(key, el, s);
     renderOutcome(el, s, phase);
   }
+  syncClips();
 }
 
 function renderOutcome(el, s, phase) {
@@ -404,7 +458,7 @@ function renderOutcome(el, s, phase) {
   html(box, `<div class="verdict v-${s.status}">${ICONS[s.status]}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
     <div class="facts">
       ${s.why ? `<p><span class="label">Rule that fired</span>${arrows(s.why)}</p>` : ''}
-      ${last ? `<p><span class="label">${esc(s.shop.owner || 'He')} said</span>${last.heard ? `<q>${esc(last.heard)}</q>` : 'nothing'} <span class="read">read as ${esc(last.read_as)}${last.reason ? `, ${esc(last.reason)}` : ''}</span></p>` : ''}
+      ${last ? `<p><span class="label">${esc(s.shop.owner || 'He')} said</span>${last.heard ? `<q>${esc(last.heard)}</q>` : 'nothing'} <span class="read">read as ${esc(last.read_as)}${last.reason ? `, ${esc(last.reason)}` : ''}</span></p>${clipBtn(clipUrl(last.clip))}` : ''}
       ${!s.called && s.records ? `<p><span class="label">Records</span>${esc(cap(s.records))}</p>` : ''}
       ${s.acts.length ? `<div><span class="label">Paytm actions</span><ul class="acts">${s.acts.map(a => `<li>${esc(cap(a))}<span class="mock">mock</span></li>`).join('')}</ul></div>` : ''}
     </div>`);
@@ -436,7 +490,7 @@ function renderControls(key, el, s) {
   words.hidden = !!me.rec;
   if (s) {
     html(words, call.hearing || me.sending ? '<span class="none">Hearing his reply…</span>'
-      : s.heard ? `<q>${esc(s.heard)}</q>`
+      : s.heard ? `<span class="heard"><q>${esc(s.heard)}</q>${clipBtn(s.clip)}</span>`
       : s.heard === '' ? '<span class="none">No reply</span>'
       : listening ? '<span class="none">Waiting for his reply…</span>'
       : '<span class="none">Nothing yet</span>');
@@ -609,7 +663,7 @@ function renderLog(freshFrom) {
     const act = r.action ? cap(r.action.replace(/\s*\(mock\)\s*/i, ' ').trim()) : '';
     const detail = [
       newSaid.has(r.id) ? `<span>Settled asked <q>${esc(r.said)}</q></span>` : '',
-      r.heard ? `<span>He said <q>${esc(r.heard)}</q></span>` : r.read_as === 'no answer' ? '<span>No reply</span>' : '',
+      r.heard ? `<span class="said">He said <q>${esc(r.heard)}</q>${clipBtn(clipUrl(r.clip), true)}</span>` : r.read_as === 'no answer' ? '<span>No reply</span>' : '',
       r.read_as ? `<span>Read as <b>${esc(r.read_as)}</b>${r.reason ? `, ${esc(r.reason)}` : ''}</span>` : r.reason ? `<span>${esc(cap(r.reason))}</span>` : '',
       r.rule ? `<span class="rule">Rule: ${arrows(r.rule)}</span>` : '',
       act ? `<span class="act">${esc(act)}${mock ? '<span class="mock">mock</span>' : ''}</span>` : ''
@@ -622,7 +676,130 @@ function renderLog(freshFrom) {
       </div>
     </li>`;
   }).join('');
+  syncClips();
 }
+
+let player = null;
+let playing = null;
+
+function playClip(url) {
+  const was = playing;
+  stopClip();
+  if (was === url) return;
+  player = new Audio(url);
+  playing = url;
+  player.ontimeupdate = syncClips;
+  player.onended = player.onerror = stopClip;
+  player.play().catch(stopClip);
+  syncClips();
+}
+
+function stopClip() {
+  if (player) {
+    player.ontimeupdate = player.onended = player.onerror = null;
+    player.pause();
+  }
+  player = null;
+  playing = null;
+  syncClips();
+}
+
+function syncClips() {
+  const d = player?.duration;
+  const p = player && Number.isFinite(d) && d > 0 ? Math.min(1, player.currentTime / d) : 0;
+  for (const b of document.querySelectorAll('.clip')) {
+    const on = b.dataset.clip === playing;
+    b.classList.toggle('playing', on);
+    b.style.setProperty('--p', on ? p.toFixed(3) : 0);
+    b.setAttribute('aria-pressed', on);
+  }
+}
+
+document.addEventListener('click', e => {
+  const b = e.target.closest('.clip');
+  if (b) playClip(b.dataset.clip);
+});
+
+const TO = {shopkeeper: 'Shopkeeper', manager: 'Manager', support: 'Support'};
+const CHANNEL = {SMS: 'SMS', WhatsApp: 'WhatsApp', ticket: 'Ticket'};
+const CHANNEL_ICONS = {
+  SMS: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h14a2.5 2.5 0 0 1 2.5 2.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5v-3.5H5A2.5 2.5 0 0 1 2.5 15V7A2.5 2.5 0 0 1 5 4.5z" fill="currentColor"/></svg>',
+  WhatsApp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="currentColor"/><circle cx="8" cy="12" r="1.3" fill="#fff"/><circle cx="12" cy="12" r="1.3" fill="#fff"/><circle cx="16" cy="12" r="1.3" fill="#fff"/></svg>',
+  ticket: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h15A1.5 1.5 0 0 1 21 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 16.5V14a2 2 0 0 0 0-4z" fill="currentColor"/><path d="M14.5 7v10" stroke="#fff" stroke-width="1.4" stroke-dasharray="1.6 1.6"/></svg>'
+};
+
+let msgs = [];
+let msgLast = 0;
+let msgLastAt = null;
+let msgOk = null;
+let msgSkip = 0;
+let msgPick = null;
+let msgLive = null;
+let msgSeen = 0;
+
+async function pollMessages() {
+  if (msgOk === false && msgSkip-- > 0) return;
+  try {
+    const get = async id => {
+      const res = await fetch(`/api/messages?after=${id}`, {cache: 'no-store'});
+      if (!res.ok) throw new Error(res.status);
+      return res.json();
+    };
+    let got = await get(Math.max(msgLast - 1, 0));
+    if (msgLast > 0) {
+      const anchor = got[0];
+      if (!anchor || anchor.id !== msgLast || anchor.at !== msgLastAt) {
+        msgs = [];
+        msgSeen = 0;
+        got = await get(0);
+      } else {
+        got = got.slice(1);
+      }
+    }
+    msgs = msgs.concat(got);
+    const last = msgs[msgs.length - 1];
+    msgLast = last ? last.id : 0;
+    msgLastAt = last ? last.at : null;
+    msgOk = true;
+  } catch (e) {
+    msgOk = false;
+    msgSkip = 10;
+  }
+  renderMessages();
+}
+
+function renderMessages() {
+  const box = document.getElementById('msgs');
+  box.hidden = !msgOk;
+  document.getElementById('lower').classList.toggle('solo', !msgOk);
+  if (!msgOk) return;
+  const keys = Object.keys(SHOPS);
+  const onCall = keys.find(k => SHOPS[k].call?.active) || null;
+  if (onCall && onCall !== msgLive) msgPick = null;
+  msgLive = onCall;
+  const pick = msgPick || onCall || msgs[msgs.length - 1]?.shop || 'all';
+  const seg = document.getElementById('msg-seg');
+  html(seg, ['all', ...keys].map(k => `<button type="button" data-shop="${esc(k)}" aria-pressed="${k === pick}">${k === 'all' ? 'All' : esc((SHOPS[k].name || k).split(' ')[0])}</button>`).join(''));
+  const shown = msgs.filter(m => pick === 'all' || m.shop === pick).slice(-60).reverse();
+  const fresh = msgSeen;
+  msgSeen = msgLast;
+  html(document.getElementById('msg-list'), shown.length ? shown.map(m => {
+    const shop = SHOPS[m.shop];
+    const to = m.to_whom === 'shopkeeper' && shop?.owner ? shop.owner : TO[m.to_whom] || m.to_whom;
+    return `<li class="msg to-${esc(m.to_whom)}${fresh && m.id > fresh ? ' new' : ''}">
+      <span class="av">${CHANNEL_ICONS[m.channel] || CHANNEL_ICONS.SMS}</span>
+      <div><div class="msg-top"><b>${esc(to)}</b><span>${esc(CHANNEL[m.channel] || m.channel)}${pick === 'all' ? ` · ${esc(shop?.name || m.shop)}` : ''}</span><time>${esc(time(m.at).slice(0, 5))}</time></div>
+      <p>${esc(m.text)}</p></div>
+    </li>`;
+  }).join('') : `<li class="empty">${pick === 'all' ? 'Texts show here as decisions happen' : `Nothing for ${esc(SHOPS[pick]?.name || pick)} yet`}</li>`);
+}
+
+document.getElementById('msg-seg').addEventListener('click', e => {
+  const b = e.target.closest('button[data-shop]');
+  if (!b) return;
+  msgPick = b.dataset.shop;
+  renderMessages();
+});
 
 async function fetchAfter(id) {
   const res = await fetch(`/api/log?after=${id}`, {cache: 'no-store'});
@@ -645,6 +822,11 @@ async function poll() {
         freshFrom = Infinity;
         got = await fetchAfter(0);
       } else {
+        const mine = rows[rows.length - 1];
+        if (anchor.clip && !mine.clip) {
+          mine.clip = anchor.clip;
+          reset = true;
+        }
         got = got.slice(1);
       }
     }
@@ -657,6 +839,7 @@ async function poll() {
       renderLog(freshFrom);
     }
     await refreshShops();
+    await pollMessages();
     live.className = 'live';
     live.textContent = 'Live';
   } catch (e) {
