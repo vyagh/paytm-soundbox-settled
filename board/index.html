@@ -65,6 +65,20 @@ td .reason{display:block;color:var(--muted);font-size:.85rem}
 .act{display:block}
 .mock{display:inline-block;margin-left:.35rem;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);border:2px solid var(--mock);border-radius:5px;padding:0 .3rem;vertical-align:.1em}
 .empty td{color:var(--wait);text-align:center;padding:1.5rem}
+.card .top{display:flex;align-items:baseline;justify-content:space-between;gap:.6rem}
+.lang{flex:none;font-size:.85rem;font-weight:700;color:var(--accent);border:2px solid color-mix(in srgb,var(--accent) 40%,transparent);border-radius:999px;padding:.05rem .6rem;white-space:nowrap}
+.lines .gloss{display:block;font-size:.85rem;color:var(--muted);text-transform:none;letter-spacing:0;font-weight:400;margin-top:.1rem}
+.controls{display:flex;flex-direction:column;gap:.5rem;margin-top:auto;padding-top:.3rem}
+.controls[hidden],.controls [hidden]{display:none}
+.btn{font:inherit;font-size:1.05rem;font-weight:700;border-radius:10px;border:2px solid var(--accent);padding:.5rem 1rem;cursor:pointer;background:var(--surface);color:var(--accent)}
+.btn:disabled{opacity:.5;cursor:default}
+.btn.start{align-self:flex-start}
+.btn.talk{background:var(--accent);color:#fff;font-size:1.2rem;padding:.8rem 1rem;touch-action:none;user-select:none;-webkit-user-select:none}
+.btn.talk.on{background:#a3263a;border-color:#a3263a}
+.typed{display:flex;gap:.4rem}
+.typed input{flex:1;min-width:0;font:inherit;font-size:.95rem;padding:.35rem .55rem;border:2px solid var(--line);border-radius:8px;background:#fff;color:var(--ink)}
+.typed button{font:inherit;font-size:.9rem;font-weight:600;border:2px solid var(--line);border-radius:8px;background:var(--tint);color:var(--ink2);padding:.3rem .7rem;cursor:pointer}
+.note{font-size:.9rem;color:var(--muted);min-height:1.2em}
 col.c-t{width:5.6rem} col.c-shop{width:8.6rem} col.c-what{width:20%} col.c-words{width:16%}
 col.c-read{width:12%} col.c-rule{width:13%} col.c-out{width:8.2rem}
 </style>
@@ -88,11 +102,7 @@ col.c-read{width:12%} col.c-rule{width:13%} col.c-out{width:8.2rem}
 </div>
 
 <script>
-const SHOPS = {
-  gupta: {name: 'Gupta Kirana', who: ''},
-  sharma: {name: 'Sharma Store', who: 'Ramesh'},
-  verma: {name: 'Verma Dairy', who: ''}
-};
+let SHOPS = {};
 const STATUS = {
   waiting: 'Waiting', checking: 'Checking records', calling: 'Calling', asking: 'Asking again',
   charged: 'Charged', held: 'Held', not: 'Not charged'
@@ -154,21 +164,161 @@ function shopState(key) {
   return s || {status: 'waiting', said: null, heard: null, why: null};
 }
 
+function card(key) {
+  let el = document.getElementById(`card-${key}`);
+  if (el) return el;
+  el = document.createElement('article');
+  el.id = `card-${key}`;
+  el.className = 'card c-waiting';
+  el.innerHTML = `<div class="top"><h2></h2><span class="lang"></span></div>
+    <div class="status s-waiting"></div>
+    <div class="lines"></div>
+    <div class="controls">
+      <button class="btn start" type="button">Start call</button>
+      <button class="btn talk" type="button" hidden>Hold to speak</button>
+      <form class="typed" hidden><input name="text" placeholder="type instead" autocomplete="off" aria-label="Type his reply instead"><button>Send</button></form>
+      <div class="note"></div>
+    </div>`;
+  el.querySelector('.start').onclick = () => startCall(key);
+  const talk = el.querySelector('.talk');
+  talk.addEventListener('pointerdown', e => { e.preventDefault(); talk.setPointerCapture(e.pointerId); holdStart(key); });
+  for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) talk.addEventListener(ev, () => holdEnd(key));
+  el.querySelector('.typed').onsubmit = e => {
+    e.preventDefault();
+    const input = e.target.elements.text;
+    if (input.value.trim()) sendReply(key, JSON.stringify({text: input.value.trim()}), 'application/json').then(ok => { if (ok) input.value = ''; });
+  };
+  document.getElementById('shops').appendChild(el);
+  return el;
+}
+
 function renderShops() {
-  const box = document.getElementById('shops');
-  box.innerHTML = Object.entries(SHOPS).map(([key, shop]) => {
+  for (const [key, shop] of Object.entries(SHOPS)) {
     const s = shopState(key);
-    const flash = shown[key] && shown[key] !== s.status ? ' flash' : '';
+    const el = card(key);
+    const flash = shown[key] && shown[key] !== s.status;
     shown[key] = s.status;
+    if (el.dataset.status !== s.status) {
+      el.dataset.status = s.status;
+      el.className = `card c-${s.status}${flash ? ' flash' : ''}`;
+    }
+    el.querySelector('h2').innerHTML = `${esc(shop.name)}${shop.owner ? ` <span class="who">${esc(shop.owner)}</span>` : ''}`;
+    el.querySelector('.lang').textContent = `${shop.language.name} · ${shop.language.own}`;
+    const st = el.querySelector('.status');
+    st.className = `status s-${s.status}`;
+    st.textContent = STATUS[s.status];
+    const native = s.said && shop.lines[s.said];
     const line = (label, text) => `<div><span>${label}</span>${text ? `<q>${esc(text)}</q>` : `<em class="none">${text === '' ? 'no reply' : 'nothing yet'}</em>`}</div>`;
-    return `<article class="card c-${s.status}${flash}">
-      <h2>${esc(shop.name)}${shop.who ? ` <span class="who">${esc(shop.who)}</span>` : ''}</h2>
-      <div class="status s-${s.status}">${STATUS[s.status]}</div>
-      <div class="lines">${s.said || !s.why
-        ? line('Settled', s.said) + line('He said', s.heard)
-        : `<div><span>Why</span>${esc(s.why)}</div>`}</div>
-    </article>`;
-  }).join('');
+    el.querySelector('.lines').innerHTML = s.said || !s.why
+      ? (native ? `<div><span>Settled</span><p><q>${esc(native)}</q><span class="gloss">${esc(s.said)}</span></p></div>` : line('Settled', s.said)) + line('He said', s.heard)
+      : `<div><span>Why</span>${esc(s.why)}</div>`;
+    renderControls(key, el);
+  }
+}
+
+const live = {};
+
+function renderControls(key, el) {
+  const call = SHOPS[key].call || {};
+  const me = live[key] || (live[key] = {});
+  const active = !!call.active;
+  const listening = active && call.waiting && me.played === call.seq && !me.speaking;
+  el.querySelector('.start').hidden = active;
+  el.querySelector('.start').textContent = call.seq ? 'Call again' : 'Start call';
+  const talk = el.querySelector('.talk');
+  talk.hidden = !listening || !me.stream;
+  talk.disabled = call.hearing || me.sending;
+  talk.classList.toggle('on', !!me.rec);
+  talk.textContent = me.rec ? 'Listening… let go to send' : call.hearing || me.sending ? 'Hearing…' : 'Hold to speak';
+  el.querySelector('.typed').hidden = !listening;
+  let note = me.note || '';
+  if (active && me.speaking) note = 'Settled is speaking…';
+  else if (active && !call.waiting) note = 'Working…';
+  if (call.problem) note = call.problem;
+  el.querySelector('.note').textContent = note;
+
+  if (active && call.waiting && me.played !== call.seq) {
+    me.played = call.seq;
+    me.note = '';
+    if (!call.voice) return;
+    me.speaking = true;
+    const audio = new Audio(`/api/call/${key}/audio/${call.seq}`);
+    const done = () => { me.speaking = false; renderShops(); };
+    audio.onended = done;
+    audio.onerror = done;
+    audio.play().catch(done);
+    renderControls(key, el);
+  }
+}
+
+async function startCall(key) {
+  const me = live[key] || (live[key] = {});
+  me.note = '';
+  if (!me.stream && navigator.mediaDevices?.getUserMedia) {
+    try {
+      me.stream = await navigator.mediaDevices.getUserMedia({audio: true});
+    } catch (e) {
+      me.note = 'No mic, type his reply instead';
+    }
+  } else if (!me.stream) {
+    me.note = 'No mic here, type his reply instead';
+  }
+  const res = await fetch(`/api/call/${key}/start`, {method: 'POST'});
+  if (!res.ok) me.note = (await res.json()).error || 'could not start';
+  await refreshShops();
+}
+
+function holdStart(key) {
+  const me = live[key];
+  if (!me?.stream || me.rec) return;
+  const chunks = [];
+  const rec = new MediaRecorder(me.stream);
+  rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = () => {
+    const seconds = (performance.now() - me.t0) / 1000;
+    me.rec = null;
+    if (seconds < 0.4) { me.note = 'Hold the button while you talk'; renderShops(); return; }
+    const blob = new Blob(chunks, {type: rec.mimeType || 'audio/webm'});
+    sendReply(key, blob, blob.type, seconds);
+  };
+  me.rec = rec;
+  me.t0 = performance.now();
+  rec.start();
+  renderShops();
+}
+
+function holdEnd(key) {
+  const me = live[key];
+  if (me?.rec && me.rec.state === 'recording') me.rec.stop();
+}
+
+async function sendReply(key, body, type, seconds) {
+  const me = live[key] || (live[key] = {});
+  const call = SHOPS[key].call;
+  me.sending = true;
+  me.note = '';
+  renderShops();
+  const headers = {'Content-Type': type};
+  if (seconds) headers['X-Seconds'] = seconds.toFixed(2);
+  let ok = false;
+  try {
+    const res = await fetch(`/api/call/${key}/reply?seq=${call.seq}`, {method: 'POST', headers, body});
+    const got = await res.json();
+    ok = res.ok;
+    me.note = ok ? `Heard: ${got.heard}` : `${got.error || 'failed'}. Try again or type it.`;
+  } catch (e) {
+    me.note = 'Network failed. Try again or type it.';
+  }
+  me.sending = false;
+  await refreshShops();
+  return ok;
+}
+
+async function refreshShops() {
+  const res = await fetch('/api/shops', {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  SHOPS = Object.fromEntries((await res.json()).map(s => [s.id, s]));
+  renderShops();
 }
 
 function actions(text) {
@@ -237,9 +387,9 @@ async function poll() {
       const last = rows[rows.length - 1];
       lastId = last ? last.id : 0;
       lastAt = last ? last.at : null;
-      renderShops();
       renderLog(freshFrom);
     }
+    await refreshShops();
     live.className = 'live';
     live.textContent = 'live';
   } catch (e) {
@@ -249,7 +399,6 @@ async function poll() {
   setTimeout(poll, 1000);
 }
 
-renderShops();
 renderLog(0);
 poll();
 </script>
