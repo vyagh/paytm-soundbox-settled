@@ -28,6 +28,7 @@ sys.path.insert(0, str(ROOT / "bench"))
 
 import voice_run  # noqa: E402
 from ai import reader  # noqa: E402
+from settled import records  # noqa: E402
 from voice import sarvam, script  # noqa: E402
 
 HERE = ROOT / "bench" / "audio" / "hindi-real"
@@ -37,7 +38,8 @@ RATE = 16000
 SNRS = (20, 10, 5)
 CONDITIONS = ("clean", "n20", "n10", "n5", "phone")
 SHOPS = ("gupta", "sharma")
-TYPED = {script.ASK: "हाँ जी, लिया था", script.READ_BACK: "हाँ, पक्का"}
+TYPED = {script.CONSENT: "हाँ जी, ठीक है", script.NAME_RECORDED: "हाँ जी, मैं ही बोल रहा हूँ",
+         script.ASK: "हाँ जी, लिया था", script.READ_BACK: "हाँ, पक्का"}
 
 
 def ffmpeg(*args):
@@ -123,7 +125,9 @@ def outcome(rows):
 
 def play(shop, case, cond):
     clip = HERE / f"{case['id']}.{cond}.wav"
-    tested = script.ASK if case["at"] == "ask" else script.READ_BACK
+    record = records.load(shop)
+    tested = script.english(script.ASK if case["at"] == "ask" else script.READ_BACK, record)
+    typed = {script.english(line, record): text for line, text in TYPED.items()}
     first = last_id()
     status, _ = voice_run.call(f"/api/call/{shop}/start", b"")
     if status != 200:
@@ -149,8 +153,9 @@ def play(shop, case, cond):
                 row.setdefault("again", []).append({"heard": heard, "read_as": read_as, "ms": ms})
             else:
                 row.update(heard=heard, read_as=read_as, ms=ms)
-        elif said in TYPED:
-            voice_run.call(f"/api/call/{shop}/reply?seq={seq}", json.dumps({"text": TYPED[said]}).encode("utf-8"),
+        elif said in typed or said == script.CODE:
+            text = prompt["app_code"] if said == script.CODE else typed[said]
+            voice_run.call(f"/api/call/{shop}/reply?seq={seq}", json.dumps({"text": text}).encode("utf-8"),
                            "application/json")
     while voice_run.shop_state(shop)["call"]["active"]:
         time.sleep(0.2)

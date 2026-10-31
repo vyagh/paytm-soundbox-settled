@@ -3,7 +3,9 @@
     python bench/voice_run.py <shop> <reply>...
 
 Each reply answers the next line Settled says: a .wav path is sent as his voice,
-text:<words> is typed, wait sends nothing and lets the call time out.
+text:<words> is typed ({code} in it becomes the code in his mock Paytm app), wait
+sends nothing and lets the call time out. A last tap:<choice> taps that choice in
+his WhatsApp once the call is over.
 """
 import json
 import os
@@ -41,10 +43,20 @@ def next_prompt(shop, after):
         time.sleep(0.3)
 
 
+def rows_after(after, what="log"):
+    """Every row after an id. /api/log and /api/messages give 500 rows a page."""
+    rows = []
+    while page := call(f"/api/{what}?after={after}")[1]:
+        rows += page
+        after = page[-1]["id"]
+    return rows
+
+
 def main(shop, replies):
     if hasattr(sys.stdout, "reconfigure"):
         sys.stdout.reconfigure(encoding="utf-8")
-    start = max([r["id"] for r in call("/api/log")[1]] or [0])
+    tap = replies.pop()[4:] if replies and replies[-1].startswith("tap:") else None
+    start = max([r["id"] for r in rows_after(0)] or [0])
     print("start", call(f"/api/call/{shop}/start", b"")[0])
     seq = 0
     for reply in replies:
@@ -53,12 +65,14 @@ def main(shop, replies):
             break
         seq = prompt["seq"]
         status, audio = call(f"/api/call/{shop}/audio/{seq}")
-        print(f"line {seq}: {prompt['said']}  (voice {status}, {len(audio) if status == 200 else 0} bytes)")
+        print(f"line {seq} [{prompt['step']}, recording {prompt['recording']}]: {prompt['said']}  "
+              f"(voice {status}, {len(audio) if status == 200 else 0} bytes)")
         if reply == "wait":
             print("  waiting it out")
             continue
         if reply.startswith("text:"):
-            got = call(f"/api/call/{shop}/reply?seq={seq}", json.dumps({"text": reply[5:]}).encode("utf-8"), "application/json")
+            text = reply[5:].replace("{code}", prompt["app_code"] or "")
+            got = call(f"/api/call/{shop}/reply?seq={seq}", json.dumps({"text": text}).encode("utf-8"), "application/json")
         else:
             clip = Path(reply).read_bytes()
             with wave.open(reply) as w:
@@ -68,7 +82,11 @@ def main(shop, replies):
 
     while shop_state(shop)["call"]["active"]:
         time.sleep(0.3)
-    for row in call(f"/api/log?after={start}")[1]:
+    if tap:
+        asked = [m for m in rows_after(0, "messages") if m["shop"] == shop and m["choices"]]
+        status, got = call(f"/api/consent/{asked[-1]['id']}/{tap}", b"") if asked else (None, "no choices sent")
+        print("tap", tap, status, got)
+    for row in rows_after(start):
         if row["shop"] == shop:
             print(" ", " | ".join(str(row[k]) for k in ("step", "heard", "read_as", "reason", "rule", "outcome", "action") if row[k]))
 
