@@ -116,7 +116,7 @@ python server.py
 
 and open http://127.0.0.1:8080. The board shows three shops: Gupta Kirana and Sharma Store with full records, and Verma Dairy, whose box was never delivered. Start a call, pick a language, and hold to speak, or type a reply if there's no mic.
 
-It's been run on Linux. On Windows use `python` or `py`, and the same steps should work. The server listens on 127.0.0.1 only. `BOARD_PORT` changes the port and `SETTLED_DB` changes where the log lives.
+It runs on Linux (Python 3.14) and on Windows 11 (Python 3.12), where the live demo takes real voice calls. On Windows use `python` or `py`. The server listens on 127.0.0.1 only. `BOARD_PORT` changes the port and `SETTLED_DB` changes where the log lives.
 
 To try the rules with no key and no audio:
 
