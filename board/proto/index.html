@@ -484,7 +484,8 @@ function runOf(key) {
       s.ended = true;
       if (!s.why) s.why = s.idTried && !s.identity?.ok ? 'not verified → nothing changes' : 'call ended before a decision → nothing taken';
     }
-    s.unverified = s.settled && s.called && s.idTried && !s.identity?.ok && !s.tap;
+    if (s.called && !s.tap && /restart|got cut|cut off|hung up|hang/i.test(s.why || '')) s.ended = true;
+    s.unverified = s.settled && s.called && s.idTried && !s.identity?.ok && !s.tap && !s.ended;
   }
   return s || {status: 'waiting', settled: false, turns: [], acts: [], msgs: []};
 }
@@ -617,8 +618,8 @@ function renderMoney(s) {
 
   let ai, aiKind = '';
   if (noCall) ai = '<p class="idle">Not asked, no call made</p>';
+  else if (s.ended && !read) { ai = '<p>Call cut before his answer</p>'; aiKind = 'shut'; }
   else if (failed) { ai = `<p>Not verified</p>`; aiKind = 'shut'; }
-  else if (s.ended && !read) { ai = '<p>Call ended before his answer</p>'; aiKind = 'shut'; }
   else if (!verified) { ai = `<p class="idle">${s.startAt || call.active ? 'Not verified yet' : 'Waits for his answer'}</p>`; aiKind = s.startAt || call.active ? 'shut' : ''; }
   else if (!read) ai = '<p class="idle">Listening for his answer</p>';
   else { ai = `<p><span class="kind ${esc(read)}">${esc(read)}</span>${read === 'haan' && s.asked.length > 1 ? 'twice' : ''}</p>`; aiKind = 'open'; }
@@ -634,7 +635,7 @@ function renderMoney(s) {
   const subs = {
     paytm: dest === 'paytm' ? `${amount} a month, ${by}` : 'Only haan twice, or his tap',
     held: dest === 'held' ? (s.msgs.some(m => m.channel === 'WhatsApp' && m.choices) ? 'Nothing taken, waits for his tap' : 'Nothing taken, a person calls') : 'Nothing taken, a person decides',
-    back: dest === 'back' ? (s.status === 'cancelled' ? 'Cancelled by his tap, pickup booked' : noCall ? 'Box never delivered' : s.unverified ? 'Not verified, nothing changed' : s.ended ? 'Call ended, nothing changed' : 'Stays with him') : 'Stays with him'
+    back: dest === 'back' ? (s.status === 'cancelled' ? 'Cancelled by his tap, pickup booked' : noCall ? 'Box never delivered' : s.unverified ? 'Not verified, nothing changed' : s.ended ? 'Call cut, Paytm calls again' : 'Stays with him') : 'Stays with him'
   };
   const sig = [focus, dest, amount, ai, aiKind, code, codeKind, subs.paytm, subs.held, subs.back].join('|');
   if (box._sig !== sig) {
