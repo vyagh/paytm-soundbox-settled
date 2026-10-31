@@ -111,6 +111,10 @@ def open_ticket(shop, why, case="unclear"):
         rent = f"Rent from {_starts(shop)}" if shop.signup else "Rent"
         _ticket(shop, f"Delivery team: the Soundbox for {_who(shop)} {state}. "
                       f"{rent} is not charged and the shop was not called. Please check the delivery.")
+    elif case == "return":
+        rent = f"Rent from {_starts(shop)}" if shop.signup else "Rent"
+        _ticket(shop, f"Returns team: the Soundbox for {_who(shop)} was returned. "
+                      f"{rent} is not charged and the shop was not called. Please stop the rent.")
     elif case == "records":
         gaps = " and ".join(records.missing(shop))
         _ticket(shop, f"{_who(shop)} has no {gaps} record. Rent is on hold and the shop was not called. Please check the records.")

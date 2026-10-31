@@ -17,7 +17,8 @@ lines that should be said, "asked" the lines that should get a reply, and "manag
 "retry" says a retry call should be booked, as after a cut line or silence, and
 "call_me" whether an SMS with a Call me now button went out, and "first_choice" the choice on top of his WhatsApp. "callback" on "again"
 makes the second call one he started. "new_round" starts a demo round through
-POST /api/round/new between the first call and the rest.
+POST /api/round/new between the first call and the rest. "record" replaces parts of
+the shop's record in data/shops.json for that case, such as a returned box.
 """
 import argparse
 import json
@@ -35,6 +36,18 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 CASES = Path(__file__).resolve().parent / "cases.json"
+SHOPS = ROOT / "data" / "shops.json"
+
+
+def shops_for(case, tmp):
+    """The shop records this case runs against: data/shops.json, with the case's "record" laid over its shop."""
+    if not case.get("record"):
+        return SHOPS
+    data = json.loads(SHOPS.read_text(encoding="utf-8"))
+    data["shops"][case["shop"]].update(case["record"])
+    path = Path(tmp) / f"{case['id']}.shops.json"
+    path.write_text(json.dumps(data, ensure_ascii=False), encoding="utf-8")
+    return path
 
 
 def typed_reader(case):
@@ -172,7 +185,7 @@ def main(argv):
     parser.add_argument("--cap", type=float, default=1.0, help="stop the ai reader at this many rupees spent")
     args = parser.parse_args(argv)
 
-    from settled import log, paytm_mock
+    from settled import log, paytm_mock, records
     from voice import script
 
     cases = json.loads(CASES.read_text(encoding="utf-8"))
@@ -193,6 +206,7 @@ def main(argv):
                 print(f"stopped: ₹{ai.spent():.4f} spent, cap ₹{args.cap}")
                 break
             os.environ["SETTLED_DB"] = str(Path(tmp) / f"{n}.db")
+            records.SHOPS = shops_for(case, tmp)
             decision, heard, state, unread, spoken = play(case, make_reader(args.reader, case))
             rows = log.rows(case["shop"])
             identity, b, u, neg, ch = score(decision, heard, rows, case["shop"])

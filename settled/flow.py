@@ -79,6 +79,8 @@ def _run(shop, listener, state, callback=False):
         if decision.outcome == "held":
             paytm_mock.hold_rent(shop)
             paytm_mock.open_ticket(shop, decision.rule, "records")
+        elif shop.returned and shop.returned.get("returned"):
+            paytm_mock.open_ticket(shop, decision.rule, "return")
         else:
             paytm_mock.open_ticket(shop, decision.rule, "delivery")
         return decision

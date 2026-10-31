@@ -30,6 +30,8 @@ from .records import missing
 def before_call(shop):
     if shop.delivery is None or not shop.delivery.get("delivered"):
         return Decision("not charged", "box never delivered → not charged, no call")
+    if shop.returned and shop.returned.get("returned"):
+        return Decision("not charged", "box returned → not charged, no call")
     gaps = missing(shop)
     if gaps:
         return Decision("held", f"{', '.join(gaps)} record missing → held, a person checks")

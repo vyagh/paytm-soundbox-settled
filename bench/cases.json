@@ -1629,6 +1629,49 @@
   "note": "box never delivered: no call, nothing charged"
  },
  {
+  "id": "gupta-returned",
+  "shop": "gupta",
+  "record": {
+   "return": {
+    "returned": true,
+    "on": "2026-10-28"
+   }
+  },
+  "turns": [],
+  "expect": "not charged",
+  "note": "box returned: no call, nothing charged"
+ },
+ {
+  "id": "gupta-returned-says-yes",
+  "shop": "gupta",
+  "record": {
+   "return": {
+    "returned": true,
+    "on": "2026-10-28"
+   }
+  },
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "not charged",
+  "unread": 4,
+  "note": "box returned: he'd say yes to everything, but he's never called"
+ },
+ {
   "id": "wrong-person",
   "shop": "sharma",
   "turns": [
