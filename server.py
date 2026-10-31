@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from settled import records
+from settled import log, records
 from voice import calls, script
 
 ROOT = Path(__file__).resolve().parent
@@ -18,6 +18,7 @@ MAX_REPLY = 5_000_000
 LANGUAGES = [{"code": code, "name": l["name"], "own": l["own"]} for code, l in script.LANGUAGES.items()]
 
 COLUMNS = ("id", "at", "shop", "step", "said", "heard", "read_as", "reason", "rule", "outcome", "action")
+MESSAGE_COLUMNS = ("id", "at", "shop", "to_whom", "channel", "text")
 
 
 def shops():
@@ -40,7 +41,7 @@ def shops():
     return out
 
 
-def rows_after(after):
+def rows_after(after, table="log", columns=COLUMNS):
     if not DB.exists():
         return []
     try:
@@ -49,14 +50,29 @@ def rows_after(after):
         return []
     try:
         cur = con.execute(
-            f"SELECT {', '.join(COLUMNS)} FROM log WHERE id > ? ORDER BY id LIMIT 500",
+            f"SELECT {', '.join(columns)} FROM {table} WHERE id > ? ORDER BY id LIMIT 500",
             (after,),
         )
-        return [dict(zip(COLUMNS, r)) for r in cur]
+        return [dict(zip(columns, r)) for r in cur]
     except sqlite3.OperationalError:
         return []
     finally:
         con.close()
+
+
+def with_clips(rows):
+    folder = log.clips()
+    saved = {f.stem for f in folder.iterdir() if f.suffix != ".part"} if folder.is_dir() else set()
+    for row in rows:
+        row["clip"] = f"/api/clip/{row['id']}" if str(row["id"]) in saved else None
+    return rows
+
+
+def after_id(url):
+    try:
+        return int(parse_qs(url.query).get("after", ["0"])[0])
+    except ValueError:
+        return 0
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -68,11 +84,16 @@ class Handler(BaseHTTPRequestHandler):
                 and font.suffix == ".woff2" and font.is_file():
             self.send(200, "font/woff2", font.read_bytes())
         elif url.path == "/api/log":
-            try:
-                after = int(parse_qs(url.query).get("after", ["0"])[0])
-            except ValueError:
-                after = 0
-            self.json(200, rows_after(after))
+            self.json(200, with_clips(rows_after(after_id(url))))
+        elif url.path == "/api/messages":
+            self.json(200, rows_after(after_id(url), "messages", MESSAGE_COLUMNS))
+        elif url.path.startswith("/api/clip/"):
+            row_id = url.path.removeprefix("/api/clip/")
+            found = log.clip(row_id) if row_id.isdigit() and row_id.isascii() else None
+            if found:
+                self.send(200, found[1], found[0].read_bytes())
+            else:
+                self.send(404, "text/plain; charset=utf-8", b"no clip")
         elif url.path == "/api/shops":
             self.json(200, shops())
         elif len(parts := url.path.split("/")) == 6 and parts[1:3] == ["api", "call"] and parts[4] == "audio":

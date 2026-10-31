@@ -3,3 +3,4 @@ __pycache__/
 .venv/
 bench/cost.log
 voice/cache/
+clips/

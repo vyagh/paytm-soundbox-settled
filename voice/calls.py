@@ -100,6 +100,8 @@ class Call:
             if not (text or "").strip():
                 raise ValueError("heard nothing")
             answer = reader.read(text, said)
+            if audio is not None:
+                answer.audio, answer.ctype = audio, ctype
             self.replies.put((seq, answer))
             return {"heard": text, "read_as": answer.kind}
         finally:

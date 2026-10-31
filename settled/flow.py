@@ -15,7 +15,9 @@ def run(shop_id, listener):
         _decided(shop, decision)
         if decision.outcome == "held":
             paytm_mock.hold_rent(shop)
-            paytm_mock.open_ticket(shop, decision.rule)
+            paytm_mock.open_ticket(shop, decision.rule, "records")
+        else:
+            paytm_mock.open_ticket(shop, decision.rule, "delivery")
         return decision
 
     log.add(shop.id, "calling")
@@ -31,14 +33,14 @@ def run(shop_id, listener):
     elif answers[-1].kind == "na":
         decision = _after_na(shop, answers, listener)
     else:
-        paytm_mock.hold_rent(shop)
+        paytm_mock.hold_rent(shop, "unclear")
         paytm_mock.send_plan_details(shop)
         paytm_mock.open_ticket(shop, decision.rule)
     return decision
 
 
 def _after_na(shop, answers, listener):
-    paytm_mock.hold_rent(shop)
+    paytm_mock.hold_rent(shop, "na")
     paytm_mock.tell_manager(shop, answers[-1].reason)
     reply = _ask(shop, NA_FOLLOW_UP, listener)
     answers.append(reply)
@@ -46,19 +48,23 @@ def _after_na(shop, answers, listener):
     if reply.plan:
         decision = _decided(shop, decide(shop, answers))
         if decision.outcome == "charged":
-            paytm_mock.charge_rent(shop, decision.plan)
+            paytm_mock.charge_rent(shop, decision.plan, picked=True)
         return decision
 
+    decision = decide(shop, answers[:-1])
+    paytm_mock.open_ticket(shop, decision.rule, "na")
     if reply.kind == "na":
         paytm_mock.book_pickup(shop)
     else:
         paytm_mock.send_plan_details(shop)
-    return decide(shop, answers[:-1])
+    return decision
 
 
 def _ask(shop, said, listener):
     answer = listener(shop, said)
-    log.add(shop.id, "answered", said=said, heard=answer.words, read_as=answer.kind, reason=answer.reason)
+    row = log.add(shop.id, "answered", said=said, heard=answer.words, read_as=answer.kind, reason=answer.reason)
+    if answer.audio:
+        log.save_clip(row, answer.audio, answer.ctype)
     return answer
 
 

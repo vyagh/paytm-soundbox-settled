@@ -33,6 +33,8 @@ class Answer:
     words: str = ""
     reason: str | None = None
     plan: str | None = None
+    audio: bytes | None = field(default=None, repr=False, compare=False)
+    ctype: str = field(default="", repr=False, compare=False)
 
     def __post_init__(self):
         if self.kind not in KINDS:
