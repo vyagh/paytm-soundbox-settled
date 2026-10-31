@@ -5,6 +5,12 @@ from .year import refused, spoken
 BUSY = ("busy", "bizi", "baad mein", "baad me ", "bad mein", "baad main", "call later", "later call", "call back",
         "callback", "phir se call", "phir call", "fir call", "dobara call", "free nahi", "time nahi",
         "बिज़ी", "बिजी", "व्यस्त", "बाद में", "बाद मे ", "फ्री नहीं", "टाइम नहीं", "फिर से कॉल", "दोबारा कॉल")
+# He hands the phone to the owner. Matched in plain code at the name question: Settled says it's on
+# the line and asks for the owner once more.
+HANDOVER = ("deta hoon", "deta hu", "deti hoon", "deti hu", "de raha hoon", "de rahi hoon", "bulata hoon", "bulata hu",
+            "bulati hoon", "bula raha", "bula rahi", "rukiye", "rukie", "ruko", "ek minute", "ek minat", "one minute",
+            "hold on", "line pe rahiye", "देता हूँ", "देता हु", "देती हूँ", "दे रहा हूँ", "दे रही हूँ", "बुलाता हूँ",
+            "बुलाती हूँ", "बुला रहा", "बुला रही", "रुकिए", "रुकिये", "रुको", "एक मिनट", "होल्ड", "लाइन पर रहिए")
 # A bare yes to "am I speaking with him": confirmed in plain code, before the AI reads it,
 # which takes a lone "हाँ" for a garbled scrap.
 YES_WORDS = {"haan", "han", "haa", "ha", "ji", "jee", "yes", "yeah", "boliye", "bolie", "speaking", "हा", "जी", "बोलिए",
@@ -32,6 +38,8 @@ def name(answer, first=True):
         return None
     if answer.kind == "haan" and answer.speaker == "shopkeeper":
         return None
+    if first and handover(answer.words):
+        return "ask again"
     if answer.kind == "na" or answer.speaker == "someone else":
         return "failed: someone else"
     if first and answer.kind != "no answer":
@@ -46,6 +54,11 @@ def bare_yes(text):
     for phrase in YES_PHRASES:
         said = said.replace(spoken(phrase), " ")
     return set(said.split()) <= YES_WORDS
+
+
+def handover(text):
+    """True when he says he's handing the phone to someone, or asks to hold."""
+    return any(spoken(phrase) in spoken(text) for phrase in HANDOVER)
 
 
 def unverified(rule):

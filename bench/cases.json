@@ -3973,5 +3973,98 @@
    "NAME_AFTER_WHO"
   ],
   "honest": true
+ },
+ {
+  "id": "hands-over-1",
+  "shop": "sharma",
+  "note": "his son picks up and hands the phone to him",
+  "turns": [
+   {
+    "text": "हैलो, मैं बेटा बोल रहा हूँ, रुकिए पापा को देता हूँ",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "haan ji, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "ON_THE_LINE"
+  ]
+ },
+ {
+  "id": "hands-over-2",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "ek minute papa ko deta hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "ON_THE_LINE"
+  ]
+ },
+ {
+  "id": "hands-over-once",
+  "shop": "sharma",
+  "note": "the son comes back instead, and the owner is asked for only once more",
+  "turns": [
+   {
+    "text": "ruko, papa ko bulata hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "papa nahi mil rahe, ruko main dekhta hoon",
+    "kind": "unsure",
+    "speaker": "someone else"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: someone else",
+  "retry": true,
+  "answered": [
+   "ON_THE_LINE"
+  ],
+  "unread": 1
  }
 ]
