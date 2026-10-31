@@ -29,6 +29,8 @@ SYSTEM = PROMPT.read_text(encoding="utf-8")
 
 
 def _key():
+    if os.environ.get("SARVAM_API_KEY"):
+        return os.environ["SARVAM_API_KEY"]
     for line in KEYS.read_text(encoding="utf-8").splitlines():
         name, _, value = line.strip().removeprefix("export ").partition("=")
         if name.strip() == "SARVAM_API_KEY":
