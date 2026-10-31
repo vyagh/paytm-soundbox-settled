@@ -1009,5 +1009,231 @@
    }
   ],
   "expect": "held"
+ },
+ {
+  "id": "en-yes-yes",
+  "shop": "gupta",
+  "note": "",
+  "language": "en-IN",
+  "turns": [
+   {
+    "text": "Yes, I took it",
+    "kind": "haan",
+    "en": "yes, I took it"
+   },
+   {
+    "text": "Yes yes, sure, go ahead",
+    "kind": "haan",
+    "en": "yes yes, sure, go ahead"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "en-no-reason",
+  "shop": "sharma",
+  "note": "",
+  "language": "en-IN",
+  "turns": [
+   {
+    "text": "No bhaiya, he told me it's only ₹1",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no brother, he told me it's only ₹1"
+   },
+   {
+    "text": "No, take the box back",
+    "kind": "na",
+    "en": "no, take the box back"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "en-but",
+  "shop": "gupta",
+  "note": "",
+  "language": "en-IN",
+  "turns": [
+   {
+    "text": "Okay yes, but he told me it was free",
+    "kind": "unsure",
+    "en": "okay yes, but he told me it was free"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "ml-yes-yes",
+  "shop": "sharma",
+  "note": "",
+  "language": "ml-IN",
+  "turns": [
+   {
+    "text": "അതെ, വാങ്ങിയതാണ്",
+    "kind": "haan",
+    "en": "yes, I took it"
+   },
+   {
+    "text": "അതെ അതെ, ഉറപ്പാ",
+    "kind": "haan",
+    "en": "yes yes, sure"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "ml-no-reason",
+  "shop": "gupta",
+  "note": "",
+  "language": "ml-IN",
+  "turns": [
+   {
+    "text": "അല്ല, അവൻ ഒരു രൂപയേ ആകൂ എന്ന് പറഞ്ഞു",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he said it would only be one rupee"
+   },
+   {
+    "text": "വേണ്ട, പെട്ടി കൊണ്ടുപോയ്ക്കോ",
+    "kind": "na",
+    "en": "don't want it, take the box away"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "ml-someone-else",
+  "shop": "sharma",
+  "note": "",
+  "language": "ml-IN",
+  "turns": [
+   {
+    "text": "ഞാൻ ഇവിടെ ജോലിക്കാരനാണ്, മുതലാളി പുറത്താണ്",
+    "kind": "unsure",
+    "en": "I'm only the worker here, the owner is out"
+   },
+   {
+    "text": "ആ, എടുത്തോ",
+    "kind": "unsure",
+    "en": "yes, go ahead and take it"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "or-yes-yes",
+  "shop": "gupta",
+  "note": "",
+  "language": "or-IN",
+  "turns": [
+   {
+    "text": "ହଁ, ନେଇଥିଲି",
+    "kind": "haan",
+    "en": "yes, I had taken it"
+   },
+   {
+    "text": "ହଁ ହଁ, ପକ୍କା",
+    "kind": "haan",
+    "en": "yes yes, sure"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "or-no-reason",
+  "shop": "sharma",
+  "note": "",
+  "language": "or-IN",
+  "turns": [
+   {
+    "text": "ନା, ସେ ₹1 କହିଥିଲା",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he had said ₹1"
+   },
+   {
+    "text": "ନା, ବାକ୍ସ ନେଇଯାଅ",
+    "kind": "na",
+    "en": "no, take the box away"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "or-but",
+  "shop": "gupta",
+  "note": "",
+  "language": "or-IN",
+  "turns": [
+   {
+    "text": "ହଁ, କିନ୍ତୁ ସେ ମାଗଣା କହିଥିଲା",
+    "kind": "unsure",
+    "en": "yes, but he had said it was free"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "pa-yes-yes",
+  "shop": "sharma",
+  "note": "",
+  "language": "pa-IN",
+  "turns": [
+   {
+    "text": "ਹਾਂ ਜੀ, ਲਿਆ ਸੀ",
+    "kind": "haan",
+    "en": "yes, I took it"
+   },
+   {
+    "text": "ਹਾਂ ਹਾਂ, ਪੱਕਾ",
+    "kind": "haan",
+    "en": "yes yes, sure"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "pa-no-reason",
+  "shop": "gupta",
+  "note": "",
+  "language": "pa-IN",
+  "turns": [
+   {
+    "text": "ਨਹੀਂ, ਉਹਨੇ ₹1 ਕਿਹਾ ਸੀ",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he had said ₹1"
+   },
+   {
+    "text": "ਨਹੀਂ, ਡੱਬਾ ਲੈ ਜਾਓ",
+    "kind": "na",
+    "en": "no, take the box away"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "pa-someone-else",
+  "shop": "sharma",
+  "note": "",
+  "language": "pa-IN",
+  "turns": [
+   {
+    "text": "ਮੈਂ ਤਾਂ ਨੌਕਰ ਹਾਂ, ਮਾਲਕ ਬਾਹਰ ਗਏ ਨੇ",
+    "kind": "unsure",
+    "en": "I'm only the worker, the owner is out"
+   },
+   {
+    "text": "ਹਾਂ ਹਾਂ, ਕੱਟ ਲਓ",
+    "kind": "unsure",
+    "en": "yes yes, go ahead and deduct"
+   }
+  ],
+  "expect": "held"
  }
 ]
