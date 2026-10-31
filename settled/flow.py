@@ -1,7 +1,7 @@
 import time
 
 from voice import script
-from voice.script import (ASK, CHARGED, CLOSING, CODE, CODE_AGAIN, CODE_DECLINED, CODE_WAIT, CONSENT, FOLLOW_UP,
+from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, CODE, CODE_AGAIN, CODE_DECLINED, CODE_WAIT, CONSENT, FOLLOW_UP,
                           GOODBYE_OTHER, GOODBYE_UNVERIFIED, NAME_AGAIN, NAME_RECORDED, NAME_UNRECORDED, READ_BACK)
 
 from . import codes, log, paytm_mock, records, rules
@@ -15,6 +15,12 @@ CODE_WAIT_SECONDS = 45
 
 class HungUp(Exception):
     """He hung up, or the line dropped, while Settled waited for his reply."""
+
+
+class _Busy(Exception):
+    def __init__(self, line, answer):
+        super().__init__(line)
+        self.line, self.answer = line, answer
 
 
 def run(shop_id, listener, state=None):
@@ -53,6 +59,31 @@ def _run(shop, listener, state):
         return decision
 
     log.add(shop.id, "calling")
+    try:
+        return _call(shop, _busy_aware(listener), state)
+    except _Busy as busy:
+        step = "answered" if state.step in ("ask", "readback") else state.step
+        _log_reply(shop, state, step, busy.line, busy.answer, rule="busy → call back later")
+        decision = _decided(shop, rules.call_later())
+        paytm_mock.tell_call_later(shop)
+        paytm_mock.book_retry(shop)
+        _say(shop, listener, CALL_LATER)
+        return decision
+
+
+def _busy_aware(listener):
+    """"Busy hoon, baad mein call karo" at any step ends the call, checked in plain code."""
+    def listen(shop, line, wait=True):
+        if not wait:
+            return listener(shop, line, wait=False)
+        answer = listener(shop, line)
+        if rules.busy(answer.words):
+            raise _Busy(line, answer)
+        return answer
+    return listen
+
+
+def _call(shop, listener, state):
     state.step = "consent"
     reply = listener(shop, CONSENT)
     state.recording = reply.kind == "haan"

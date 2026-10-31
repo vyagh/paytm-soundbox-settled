@@ -90,6 +90,12 @@ def tell_cut(shop):
     _sms(shop, f"Our call about your Soundbox at {shop.name} got cut. Nothing was taken. We will call you again.{also}")
 
 
+def tell_call_later(shop):
+    link = live_link(shop.id)
+    also = f" You can also choose yourself here: {log.get_message(link)['link']}" if link else ""
+    _sms(shop, f"As you asked, Paytm will call you back about your Soundbox at {shop.name}. Nothing has changed.{also}")
+
+
 def book_retry(shop):
     return _act(shop, "book retry call", rule="call him again later today")
 

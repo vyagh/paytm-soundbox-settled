@@ -885,7 +885,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true
+  "recording": true,
+  "retry": true
  },
  {
   "id": "salesman-twice",
@@ -3304,5 +3305,95 @@
    "status": 200
   },
   "note": "the line drops on a second call: his WhatsApp choices from the first still work"
+ },
+ {
+  "id": "busy-at-code",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "abhi busy hoon, baad mein call karo"
+   }
+  ],
+  "expect": "held",
+  "identity": "busy → call back later",
+  "recording": true,
+  "retry": true,
+  "code_asks": 1,
+  "note": "busy at the code step: a callback, not 'I'm waiting'"
+ },
+ {
+  "id": "busy-at-consent",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "abhi busy hoon, baad mein call karna",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "recording": false,
+  "retry": true
+ },
+ {
+  "id": "busy-at-ask",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "बाद में कॉल करना, अभी ग्राहक हैं",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "retry": true
+ },
+ {
+  "id": "code-english-pairs",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "thirty four fifty six"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
  }
 ]

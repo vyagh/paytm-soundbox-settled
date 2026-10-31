@@ -48,6 +48,14 @@ PAIRS = {
     "98": "atthanve अट्ठानवे", "99": "ninyanve निन्यानवे",
 }
 
+# English pairs: "thirty four fifty six" is 3456.
+ENGLISH = {
+    "10": "ten", "11": "eleven", "12": "twelve", "13": "thirteen", "14": "fourteen", "15": "fifteen", "16": "sixteen",
+    "17": "seventeen", "18": "eighteen", "19": "nineteen", "20": "twenty", "30": "thirty", "40": "forty fourty",
+    "50": "fifty", "60": "sixty", "70": "seventy", "80": "eighty", "90": "ninety",
+}
+TENS = {"twenty", "thirty", "forty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"}
+
 # Waits, not tries: he's opening the app or looking for the code. Matched as the start of a word.
 WAIT = ("minut", "minat", "mint", "sec", "sekand", "ruk", "wait", "hold", "dekh", "khol", "aay", "aaya", "aya", "aagaya",
         "abhi", "मिन", "सेक", "रुक", "देख", "खोल", "आय", "आई", "आए", "अभी", "वेट")
@@ -69,10 +77,14 @@ def _plain(text):
     return (text or "").lower().replace("\u0902", "").replace("\u0901", "").replace("\u093c", "")
 
 
+def spoken(text):
+    """His words, lowercased and spaced one way, with a space at the end, for matching phrases."""
+    return " ".join(_tokens(_plain(text))) + " "
+
+
 def refused(text):
     """True when he declines to give the code or asks who's calling first."""
-    words = " ".join(_tokens(_plain(text)))
-    return any(_plain(phrase) in words for phrase in REFUSE)
+    return any(spoken(phrase) in spoken(text) for phrase in REFUSE)
 
 
 def _key(token):
@@ -83,7 +95,7 @@ def _key(token):
     return "".join(c for i, c in enumerate(token) if i == 0 or c != token[i - 1])
 
 
-DIGIT = {_key(word): d for d, words in (WORDS | PAIRS).items() for word in words.split()}
+DIGIT = {_key(word): d for d, words in (WORDS | PAIRS | ENGLISH).items() for word in words.split()}
 
 SPLIT = re.compile(r"[\s,.;:!?\-–—/|।॥()\"'“”‘’]+")
 
@@ -104,15 +116,18 @@ def _token_digits(token):
 
 
 def _runs(text):
-    runs, run = [], ""
+    runs, run, tens = [], "", False
     for token in _tokens(text):
         digits = _token_digits(token)
         if digits is None:
             if run:
                 runs.append(run)
             run = ""
+        elif tens and len(digits) == 1 and digits != "0":
+            run = run[:-1] + digits
         else:
             run += digits
+        tens = digits is not None and token in TENS
     if run:
         runs.append(run)
     # the code said twice in a row comes in as one run of 8
