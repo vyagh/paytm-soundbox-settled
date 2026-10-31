@@ -448,7 +448,7 @@ function renderOutcome(el, s, phase) {
   const box = el.querySelector('.outcome');
   box.hidden = phase !== 'done';
   if (phase !== 'done') { box.classList.remove('enter'); return; }
-  const amount = s.charge?.match(/₹\d+/)?.[0];
+  const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0];
   const head = {
     charged: [`Charged${amount ? ` ${amount}` : ''}`, s.charge || 'Rent taken'],
     held: ['Held', 'Rent not taken'],
