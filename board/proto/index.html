@@ -625,7 +625,7 @@ function renderMoney(s) {
       <div class="mstart"><span class="dock" data-dock="start"></span><b>His rent</b><span>${esc(shop.owner ? shop.owner.split(' ')[0] : 'Shop')}, from 1 Nov</span></div>
       <div class="gate${dest !== 'start' ? ' go' : ''}" style="--c:${c}"><div class="locks">
         <div class="lock ${aiKind}"><span class="ic">${aiKind === 'open' ? LOCK_OPEN : LOCK_SHUT}</span><small>AI read his answer</small>${ai}</div>
-        <div class="lock ${codeKind}"><span class="ic">${codeKind === 'open' ? LOCK_OPEN : LOCK_SHUT}</span><small>${tapped ? 'His own tap in WhatsApp' : 'Plain code decided'}</small>${code}</div>
+        <div class="lock ${codeKind}"><span class="ic">${codeKind === 'open' ? LOCK_OPEN : LOCK_SHUT}</span><small>${tapped ? 'His tap decided' : 'Plain code decided'}</small>${code}</div>
       </div><em>The AI only reads. <b>Plain code or his own tap moves the money.</b></em></div>
       <svg class="fork" viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true">
         ${['paytm', 'held', 'back'].map((d, i) => `<path class="${d === dest ? 'on' : ''}" style="--c:${DEST_C[d]}" d="M0 50 C 22 50, 18 ${[12, 50, 88][i]}, 40 ${[12, 50, 88][i]}"/>`).join('')}
