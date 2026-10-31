@@ -638,6 +638,7 @@
   ],
   "expect": "held",
   "identity": "verified: year of birth matches",
+  "retry": true,
   "ends": "SOFT",
   "answered": [
    "A_OTHER"
@@ -856,6 +857,7 @@
   ],
   "expect": "charged",
   "identity": "verified: year of birth matches",
+  "retry": true,
   "answered": [
    "A_OTHER"
   ]
@@ -4397,5 +4399,70 @@
   "ends": "CANCEL",
   "unread": 1,
   "note": "a haan with a cancel ask is never read back or charged"
+ },
+ {
+  "id": "broken-box-question",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "जी बिल्कुल, वही वाला प्लान है। वैसे अगर डिब्बा टूट गया तो उसकी फीस लगेगी क्या?",
+    "kind": "question",
+    "topic": "other"
+   },
+   {
+    "text": "ठीक है, हाँ लिया था",
+    "kind": "haan"
+   },
+   {
+    "text": "haan",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "honest": true,
+  "answered": [
+   "A_OTHER"
+  ],
+  "asked": [
+   "ASK_AGAIN"
+  ],
+  "retry": true,
+  "note": "a question the fixed answers can't cover: said plainly, a person calls him to explain, the plan goes on"
+ },
+ {
+  "id": "cash-question",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "kya main kiraya cash mein de sakta hoon?",
+    "kind": "question",
+    "topic": "other"
+   },
+   {
+    "text": "nahi, abhi rehne do",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "answered": [
+   "A_OTHER"
+  ],
+  "retry": true
  }
 ]

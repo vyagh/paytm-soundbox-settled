@@ -202,7 +202,7 @@ def _plan(shop, state, listener):
     Asks the plan from his record, answers his questions, and reads the price back
     after a haan. rules.decide picks the money and when to stop."""
     signed = shop.plan(shop.signup["plan"])
-    plan, line, answers, offered = signed, ASK, [], False
+    plan, line, answers, offered, booked = signed, ASK, [], False, False
     state.step = "ask"
     while True:
         answer = _ask(shop, state, line, listener)
@@ -220,6 +220,9 @@ def _plan(shop, state, listener):
                 paytm_mock.open_ticket(shop, decision.rule, "support")
                 _say(shop, listener, SUPPORT)
             elif answer.topic in ANSWERS and not (answer.topic in ("price", "extra") and plan != signed):
+                if answer.topic == "other" and not booked:
+                    paytm_mock.book_retry(shop, "a person calls him back to answer his question")
+                    booked = True
                 _say(shop, listener, ANSWERS[answer.topic])
             line = AGAIN.get(line, line)
         elif answer.kind == "haan":
