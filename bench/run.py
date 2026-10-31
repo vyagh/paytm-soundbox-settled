@@ -16,7 +16,8 @@ turns the call never got to. A turn {"hangup": true} is him hanging up there, an
 lines that should be said, "asked" the lines that should get a reply, and "manager" whether his manager got a WhatsApp.
 "retry" says a retry call should be booked, as after a cut line or silence, and
 "call_me" whether an SMS with a Call me now button went out, and "first_choice" the choice on top of his WhatsApp. "callback" on "again"
-makes the second call one he started. "new_round" starts a demo round through
+makes the second call one he started. "not_right" says whether the SMS after a charge has the Not right? Call me
+button, and when it does, taps it twice: the first tap should book a person and leave the charge, the second answer 409. "new_round" starts a demo round through
 POST /api/round/new between the first call and the rest. "record" replaces parts of
 the shop's record in data/shops.json for that case, such as a returned box.
 """
@@ -233,6 +234,27 @@ def main(argv):
                     pickups = sum(1 for r in after if r["action"] == "book pickup (mock)")
                     if pickups != (case["tap"] == "cancel"):
                         wrong.append(f"{pickups} pickups after a {case['tap']} tap")
+
+            if "not_right" in case:
+                with sqlite3.connect(log.path()) as db:
+                    found = db.execute("SELECT id FROM messages WHERE shop = ? AND channel = 'SMS' AND choices LIKE '%not_right%' "
+                                       "ORDER BY id DESC", (case["shop"],)).fetchone()
+                if bool(found) != case["not_right"]:
+                    wrong.append("not right button sent" if found else "no not right button")
+                elif found:
+                    before = len(log.rows(case["shop"]))
+                    status, _ = poster(url, found[0])("not_right")
+                    again, _ = poster(url, found[0])("not_right")
+                    taps += 1
+                    after = log.rows(case["shop"])[before:]
+                    if status != 200:
+                        wrong.append(f"not right tap answered {status}")
+                    if again != 409:
+                        wrong.append(f"second not right tap answered {again}")
+                    if any(r["action"] in log.SETTLES for r in after) or not log.settled(case["shop"]):
+                        wrong.append("charge changed after not right")
+                    if [r["action"] for r in after if r["action"]] != ["open ticket (mock)", "book retry call (mock)"]:
+                        wrong.append(f"after not right: {[r['action'] for r in after if r['action']]}")
 
             first = log.last_choices(case["shop"])
             if "first_choice" in case and (not first or json.loads(first["choices"])[0]["id"] != case["first_choice"]):

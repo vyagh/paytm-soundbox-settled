@@ -256,12 +256,12 @@ main{display:grid;grid-template-columns:minmax(0,1fr) 24rem 17.5rem;gap:1.1rem;m
 .choice[aria-pressed="true"]{background:#1f8a4c;color:#fff}
 .tapnote{display:flex;align-items:center;justify-content:center;gap:.4rem;font-size:.8125rem;line-height:1.35;color:var(--ink2);text-align:center;padding:0 .2rem}
 .tapnote.warn{color:var(--rec)}
-.callme{display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;margin-top:.5rem;border:0;background:#1f8a4c;color:#fff;font-size:.875rem;font-weight:600;height:2.5rem;border-radius:.8rem;cursor:pointer;
+.callme,.notright{display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;margin-top:.5rem;border:0;background:#1f8a4c;color:#fff;font-size:.875rem;font-weight:600;height:2.5rem;border-radius:.8rem;cursor:pointer;
   transition:background-color .15s,transform .12s var(--ease)}
-.callme svg{width:.9rem;height:.9rem}
-.callme:hover:not(:disabled){background:#1a7a43}
-.callme:active:not(:disabled){transform:scale(.98)}
-.callme:disabled{cursor:default;background:var(--fill2);color:var(--faint)}
+.callme svg,.notright svg{width:.9rem;height:.9rem}
+.callme:hover:not(:disabled),.notright:hover:not(:disabled){background:#1a7a43}
+.callme:active:not(:disabled),.notright:active:not(:disabled){transform:scale(.98)}
+.callme:disabled,.notright:disabled{cursor:default;background:var(--fill2);color:var(--faint)}
 
 @media (prefers-reduced-motion:no-preference){
   .pill.breathe::before{animation:breathe 1.6s ease-in-out infinite}
@@ -431,6 +431,7 @@ function runOf(key) {
     if (r.said) s.turns.push(r);
     if (r.step === 'answered' && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
     if (r.step === 'tap' && r.rule) { s.why = r.rule; s.pinned = true; s.tap = {said: (r.heard || '').replace(/^tapped:\s*/, ''), outcome: r.outcome}; }
+    if (r.step === 'not right') s.notRight = true;
     if (r.step === 'records checked') s.records = r.reason;
     if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
     if (r.step === 'calling') { s.called = true; s.callAt = r.at; }
@@ -546,6 +547,7 @@ const taps = {};
 let hangupMissing = false;
 let callbackMissing = false;
 const callMe = m => m.action === 'call_me' || /call_me/.test(m.choices || '') || /\bTap Call me now\b/i.test(m.text);
+const notRight = m => m.channel === 'SMS' && Array.isArray(m.choices) && m.choices.some(c => c.id === 'not_right');
 
 /* he cuts the call: the server ends it in plain code, nothing is taken */
 async function hangUp() {
@@ -613,6 +615,13 @@ function renderPhone(s) {
       const busy = !!me(focus).calling || !!call.active || !!s.callback;
       extra = `<button class="callme" type="button" data-callme="${esc(focus)}"${busy ? ' disabled' : ''}>${ICONS.phone}Call me now</button></div>`;
     }
+    if (notRight(m)) {
+      const tap = taps[m.id] || {};
+      const picked = tap.choice || m.tapped;
+      const note = tap.note || (picked ? 'His tap is recorded' : '');
+      extra = `<button class="notright" type="button" data-msg="${esc(m.id)}" data-choice="not_right"${picked || tap.busy ? ' disabled' : ''}>${ICONS.phone}Not right? Call me</button>
+        ${note ? `<p class="tapnote${tap.warn ? ' warn' : ''}">${esc(note)}</p>` : ''}</div>`;
+    }
     if (m === asking) {
       const choices = choicesOf(m);
       const tap = taps[m.id] || {};
@@ -649,7 +658,7 @@ $('phone').addEventListener('click', async e => {
   }
   const back = e.target.closest('.callme');
   if (back) return back.disabled || callBack(back.dataset.callme);
-  const b = e.target.closest('.choice');
+  const b = e.target.closest('.choice, .notright');
   if (!b || b.disabled) return;
   const id = b.dataset.msg;
   const tap = taps[id] = {busy: true, note: 'Sending his tap…'};
@@ -861,7 +870,7 @@ function renderResult(s) {
   const choices = s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices));
   const head = {
     wait: [`${rent}<small>a month</small>`, call.active ? 'Nothing taken during the call' : 'Nothing taken yet'],
-    charged: [[`Charged ${amount || ''}`.trim(), (s.charge || '').match(/Plan \w+/)?.[0]].filter(Boolean).join(', '), s.tap ? 'By his tap, from 1 Nov' : 'By plain code, from 1 Nov'],
+    charged: [[`Charged ${amount || ''}`.trim(), (s.charge || '').match(/Plan \w+/)?.[0]].filter(Boolean).join(', '), s.notRight ? "He says it's not right, a person calls" : s.tap ? 'By his tap, from 1 Nov' : 'By plain code, from 1 Nov'],
     held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes` : waits ? `₹0 taken. ${waits}` : choices ? '₹0 taken. Only his tap changes the plan' : '₹0 taken, a person follows up'],
     not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made'],
     cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp'],

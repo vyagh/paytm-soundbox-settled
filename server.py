@@ -22,7 +22,7 @@ LANGUAGES = [{"code": code, "name": l["name"], "own": l["own"]} for code, l in s
 
 COLUMNS = ("id", "at", "shop", "step", "said", "heard", "read_as", "reason", "rule", "outcome", "action")
 MESSAGE_COLUMNS = ("id", "at", "shop", "to_whom", "channel", "text", "link", "choices")
-CHOICES = ("keep_plan", "cheaper_plan", "cancel")
+CHOICES = ("keep_plan", "cheaper_plan", "cancel", "not_right")
 IDLE = {"active": False, "seq": 0, "said": None, "voice": False, "waiting": False, "hearing": False,
         "problem": None, "step": None}
 

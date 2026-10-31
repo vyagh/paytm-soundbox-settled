@@ -40,8 +40,8 @@ def _clock(at):
     return f"{t.hour % 12 or 12}:{t:%M} {'am' if t.hour < 12 else 'pm'}"
 
 
-def _sms(shop, text):
-    log.message(shop.id, "shopkeeper", "SMS", f"Paytm: {text}")
+def _sms(shop, text, choices=None):
+    log.message(shop.id, "shopkeeper", "SMS", f"Paytm: {text}", choices)
 
 
 def _ticket(shop, text):
@@ -67,7 +67,7 @@ def charge_rent(shop, plan, tapped=False):
     log.add_settle(shop.id, "follow-up", action="charge rent (mock)", outcome="charged",
                    rule=f"₹{plan.price} a month, {plan.name}")
     _sms(shop, f"Your Soundbox rent for {shop.name} is ₹{plan.price}/month ({plan.name}) from {_starts(shop)}. "
-               f"{why}")
+               f"{why} Didn't agree to this?", NOT_RIGHT)
     return DONE
 
 
@@ -79,6 +79,8 @@ def hold_rent(shop, tell=None):
 
 # The button on his SMS that rings Paytm back: POST /api/call/<shop>/callback.
 CALL_ME = [{"id": "call_me", "label": "Call me now"}]
+# The button on his SMS after a charge: POST /api/consent/<id>/not_right. It books a person, the charge stands.
+NOT_RIGHT = [{"id": "not_right", "label": "Not right? Call me"}]
 
 
 def tell_call_me(shop):
@@ -127,6 +129,9 @@ def open_ticket(shop, why, case="unclear"):
     elif case == "support":
         _ticket(shop, f"On our call about the Soundbox rent, {_who(shop)} raised a problem that is not about the rent. "
                       f"His words: {_his_words(answer)}. Please call him about it.")
+    elif case == "not right":
+        _ticket(shop, f"{_who(shop)} tapped Not right on the SMS after his Soundbox rent was charged ({why}). "
+                      f"He says he didn't agree. The charge is not undone. Please call him today and decide what happens to it.")
     elif case == "no answer":
         _ticket(shop, f"{_who(shop)} did not answer our call about the Soundbox rent. Nothing is charged. Please call him.")
     else:
@@ -203,14 +208,29 @@ def tap(message_id, choice):
             raise ValueError(f"not a choice on this message: {choice!r}")
         if message_id in log.taps():
             raise log.Tapped("he already chose on this message")
+        shop = records.load(msg["shop"])
+        if choice == "not_right":
+            log.tap(message_id, choice)
+            return not_right(shop, msg)
         if not live(msg):
             raise Expired("this link has expired")
-        shop = records.load(msg["shop"])
         log.tap(message_id, choice)
         try:
             return _tapped(shop, choice, f"tapped: {offered[choice]}")
         except log.AlreadySettled:
             raise Expired("this link has expired") from None
+
+
+def not_right(shop, msg):
+    """His tap on Not right? Call me, on the SMS after a charge. Nothing is undone here: a person calls him and decides."""
+    charge = [r for r in log.rows(shop.id) if r["action"] == "charge rent (mock)" and r["at"] <= msg["at"]][-1]
+    log.add(shop.id, "not right", heard="tapped: Not right? Call me",
+            rule="his tap on the charge SMS → he says he didn't agree, a person calls him today, the charge stands until they decide")
+    open_ticket(shop, charge["rule"], "not right")
+    book_retry(shop, "a person calls him today about the charge")
+    _sms(shop, f"Noted that you didn't agree to the {charge['rule'].split(' a month')[0]} rent for your Soundbox at {shop.name}. "
+               f"A Paytm person will call you about it today.")
+    return {"outcome": "not right", "charge": charge["rule"]}
 
 
 def _tapped(shop, choice, said):

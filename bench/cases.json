@@ -4657,5 +4657,102 @@
    "PERSON_LATER"
   ],
   "note": "a second robot question after carry on gets the person"
+ },
+ {
+  "id": "not-right-after-charge",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "not_right": true,
+  "retry": true,
+  "note": "charged after two haans, then he taps Not right? Call me on the SMS: a ticket and a person's call are booked, the charge stands"
+ },
+ {
+  "id": "not-right-after-tap",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na",
+    "reason": "125 bahut zyada hai"
+   }
+  ],
+  "tap": "cheaper_plan",
+  "expect": "charged:plan-b",
+  "identity": "verified: year of birth matches",
+  "not_right": true,
+  "retry": true,
+  "note": "he taps Plan B in WhatsApp, then Not right? Call me on the charge SMS"
+ },
+ {
+  "id": "not-right-second-tap",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "haan bhai, liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan, pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "not_right": true,
+  "retry": true,
+  "note": "a second tap on Not right? Call me is refused, one ticket and one call booked"
+ },
+ {
+  "id": "not-right-absent-when-held",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "nahi",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified: year of birth matches",
+  "not_right": false,
+  "note": "nothing was charged, so no SMS has Not right? Call me"
  }
 ]
