@@ -12,7 +12,7 @@ kind, on every step but the year:
 kind, on the year step (he was asked his year of birth and his reply had no year in it): wait (needs a moment), refuse (won't say), scared (fears fraud or that money will be taken), who (asks who is calling or why), busy, angry (no question in it), question (another question), other.
 speaker: shopkeeper unless his words say he is someone else (son, wife, worker, salesman, the owner is away): someone else. Asking who is calling does not make him someone else. unclear if too garbled. On the name step, haan only if he says he is that person.
 reason: his own words for why (refusal, doubt, a promise), else null.
-topic, only for a question: cheaper, price, start, charge, who, other. Else null.
+topic, only for a question: cheaper (a cheaper or other plan), price, start, charge (what this rent is for), who, extra (a hidden charge, anything on top), how (how the rent is taken), stop (how to stop it later), other. Else null.
 promise, only for na or unsure: what he says the salesman promised instead: "one rupee", "free", "lower price". Else null.
 upset: true when he is angry, says he was cheated or misled, or is in distress.
 
