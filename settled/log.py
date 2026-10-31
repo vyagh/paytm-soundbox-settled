@@ -1,3 +1,4 @@
+import json
 import os
 import sqlite3
 from contextlib import closing
@@ -28,12 +29,23 @@ CREATE TABLE IF NOT EXISTS messages (
   shop TEXT NOT NULL,
   to_whom TEXT NOT NULL CHECK (to_whom IN ('shopkeeper', 'manager', 'support')),
   channel TEXT NOT NULL CHECK (channel IN ('SMS', 'WhatsApp', 'ticket')),
-  text TEXT NOT NULL
+  text TEXT NOT NULL,
+  link TEXT,
+  choices TEXT
 );
 CREATE TRIGGER IF NOT EXISTS messages_no_update BEFORE UPDATE ON messages
 BEGIN SELECT RAISE(ABORT, 'messages are only added, never changed'); END;
 CREATE TRIGGER IF NOT EXISTS messages_no_delete BEFORE DELETE ON messages
 BEGIN SELECT RAISE(ABORT, 'messages are only added, never deleted'); END;
+CREATE TABLE IF NOT EXISTS taps (
+  message INTEGER PRIMARY KEY REFERENCES messages (id),
+  at TEXT NOT NULL,
+  choice TEXT NOT NULL
+);
+CREATE TRIGGER IF NOT EXISTS taps_no_update BEFORE UPDATE ON taps
+BEGIN SELECT RAISE(ABORT, 'taps are only added, never changed'); END;
+CREATE TRIGGER IF NOT EXISTS taps_no_delete BEFORE DELETE ON taps
+BEGIN SELECT RAISE(ABORT, 'taps are only added, never deleted'); END;
 """
 
 FIELDS = ("said", "heard", "read_as", "reason", "rule", "outcome", "action")
@@ -51,10 +63,18 @@ def clips():
     return path().resolve().parent / "clips"
 
 
+class Tapped(Exception):
+    pass
+
+
 def _connect():
     db = sqlite3.connect(path(), timeout=5)
     db.row_factory = sqlite3.Row
     db.executescript(SCHEMA)
+    have = {r[1] for r in db.execute("PRAGMA table_info(messages)")}
+    for column in ("link", "choices"):
+        if column not in have:
+            db.execute(f"ALTER TABLE messages ADD COLUMN {column} TEXT")
     return db
 
 
@@ -131,17 +151,20 @@ def clip(row_id):
     return None
 
 
-def message(shop, to_whom, channel, text):
-    """Add a message. {ticket} in text becomes this message's ticket id, SET-<4 digits>."""
+def message(shop, to_whom, channel, text, choices=None):
+    """Add a message. {ticket} in text becomes this message's ticket id, SET-<4 digits>.
+    With choices, the message gets a mock consent link, and {link} in text becomes it."""
     at = datetime.now().isoformat(timespec="seconds")
     db = _connect()
     try:
         db.isolation_level = None
         db.execute("BEGIN IMMEDIATE")
         msg_id = db.execute("SELECT COALESCE(MAX(id), 0) + 1 FROM messages").fetchone()[0]
+        link = consent_link(msg_id) if choices else None
         db.execute(
-            "INSERT INTO messages (id, at, shop, to_whom, channel, text) VALUES (?, ?, ?, ?, ?, ?)",
-            (msg_id, at, shop, to_whom, channel, text.replace("{ticket}", ticket_id(msg_id))),
+            "INSERT INTO messages (id, at, shop, to_whom, channel, text, link, choices) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            (msg_id, at, shop, to_whom, channel, text.replace("{ticket}", ticket_id(msg_id)).replace("{link}", link or ""),
+             link, json.dumps(choices, ensure_ascii=False) if choices else None),
         )
         db.execute("COMMIT")
         return msg_id
@@ -155,3 +178,28 @@ def message(shop, to_whom, channel, text):
 
 def ticket_id(msg_id):
     return f"SET-{msg_id:04d}"
+
+
+def consent_link(msg_id):
+    return f"https://paytm.example/settled/{ticket_id(msg_id).lower()}"
+
+
+def get_message(msg_id):
+    with closing(_connect()) as db:
+        row = db.execute("SELECT * FROM messages WHERE id = ?", (int(msg_id),)).fetchone()
+        return dict(row) if row else None
+
+
+def tap(msg_id, choice):
+    """Record his tap on a message's choice. Each message takes one tap."""
+    at = datetime.now().isoformat(timespec="seconds")
+    try:
+        with closing(_connect()) as db, db:
+            db.execute("INSERT INTO taps (message, at, choice) VALUES (?, ?, ?)", (int(msg_id), at, choice))
+    except sqlite3.IntegrityError:
+        raise Tapped("he already chose on this message") from None
+
+
+def taps():
+    with closing(_connect()) as db:
+        return {r["message"]: r["choice"] for r in db.execute("SELECT message, choice FROM taps")}

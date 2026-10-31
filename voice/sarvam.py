@@ -2,7 +2,6 @@ import base64
 import hashlib
 import io
 import json
-import os
 import time
 import urllib.request
 import uuid
@@ -21,9 +20,6 @@ TIMEOUT = 20
 # rupees before 18% GST (docs.sarvam.ai/api/getting-started/pricing, 2026-10-31)
 TTS_PER_CHAR = 3 / 1000
 STT_PER_SECOND = 0.49 / 60
-
-# a spend ceiling on bench/cost.log for test runs, off unless set
-CAP = float(os.environ.get("SETTLED_CAP") or "inf")
 
 
 def speak(text, language_code, voice):
@@ -75,7 +71,7 @@ def _field(boundary, name, value):
 
 
 def _post(url, body, ctype):
-    if reader.spent() >= CAP:
+    if reader.spent() >= reader.CAP:
         raise RuntimeError("spend cap reached")
     req = urllib.request.Request(url, data=body, headers={"Content-Type": ctype, "api-subscription-key": reader._key()})
     start = time.monotonic()

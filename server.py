@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 
-from settled import log, records
+from settled import log, paytm_mock, records
 from voice import calls, script
 
 ROOT = Path(__file__).resolve().parent
@@ -14,14 +14,16 @@ FONTS = ROOT / "board" / "fonts"
 PROTO = ROOT / "board" / "proto"
 PROTO_TYPES = {".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8",
                ".css": "text/css; charset=utf-8", ".svg": "image/svg+xml"}
-DB = Path(os.environ.get("SETTLED_DB") or ROOT / "settled.db").resolve()
 PORT = int(os.environ.get("BOARD_PORT") or 8080)
 MAX_REPLY = 5_000_000
 
 LANGUAGES = [{"code": code, "name": l["name"], "own": l["own"]} for code, l in script.LANGUAGES.items()]
 
 COLUMNS = ("id", "at", "shop", "step", "said", "heard", "read_as", "reason", "rule", "outcome", "action")
-MESSAGE_COLUMNS = ("id", "at", "shop", "to_whom", "channel", "text")
+MESSAGE_COLUMNS = ("id", "at", "shop", "to_whom", "channel", "text", "link", "choices")
+CHOICES = ("keep_plan", "cheaper_plan", "cancel")
+IDLE = {"active": False, "seq": 0, "said": None, "voice": False, "waiting": False, "hearing": False,
+        "problem": None, "step": None, "app_code": None, "recording": False}
 
 
 def shops():
@@ -38,17 +40,20 @@ def shops():
             "language": {"code": code, "name": language["name"], "own": language["own"]},
             "default": shop.language,
             "languages": LANGUAGES,
-            "lines": {said: language[said] for said in (script.ASK, script.READ_BACK, script.NA_FOLLOW_UP)},
+            "lines": {script.english(line, shop): script.say(code, line, shop) for line in script.LINES},
+            "checked": code not in script.UNCHECKED,
+            "record": records.record(shop_id),
             "call": call.state() if call else None,
         })
     return out
 
 
 def rows_after(after, table="log", columns=COLUMNS):
-    if not DB.exists():
+    db = log.path().resolve()
+    if not db.exists():
         return []
     try:
-        con = sqlite3.connect(DB.as_uri() + "?mode=ro", uri=True, timeout=2)
+        con = sqlite3.connect(db.as_uri() + "?mode=ro", uri=True, timeout=2)
     except sqlite3.Error:
         return []
     try:
@@ -56,7 +61,16 @@ def rows_after(after, table="log", columns=COLUMNS):
             f"SELECT {', '.join(columns)} FROM {table} WHERE id > ? ORDER BY id LIMIT 500",
             (after,),
         )
-        return [dict(zip(columns, r)) for r in cur]
+        rows = [dict(zip(columns, r)) for r in cur]
+        if table == "messages":
+            try:
+                tapped = dict(con.execute("SELECT message, choice FROM taps"))
+            except sqlite3.OperationalError:
+                tapped = {}
+            for row in rows:
+                row["choices"] = json.loads(row["choices"]) if row["choices"] else None
+                row["tapped"] = tapped.get(row["id"])
+        return rows
     except sqlite3.OperationalError:
         return []
     finally:
@@ -118,6 +132,10 @@ class Handler(BaseHTTPRequestHandler):
             self.send(200, "text/plain; charset=utf-8", version().encode())
         elif url.path == "/api/shops":
             self.json(200, shops())
+        elif len(parts := url.path.split("/")) == 5 and parts[1:3] == ["api", "call"] and parts[4] == "state" \
+                and parts[3] in records.shop_ids():
+            call = calls.get(parts[3])
+            self.json(200, call.state() if call else IDLE)
         elif len(parts := url.path.split("/")) == 6 and parts[1:3] == ["api", "call"] and parts[4] == "audio":
             call = calls.get(parts[3])
             if call and call.audio and str(call.seq) == parts[5]:
@@ -130,6 +148,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         url = urlparse(self.path)
         parts = url.path.split("/")
+        if len(parts) == 5 and parts[1:3] == ["api", "consent"]:
+            return self.consent(parts[3], parts[4])
         if len(parts) != 5 or parts[1:3] != ["api", "call"] or parts[3] not in records.shop_ids():
             return self.send(404, "text/plain; charset=utf-8", b"not found")
         shop_id, what = parts[3], parts[4]
@@ -149,6 +169,19 @@ class Handler(BaseHTTPRequestHandler):
         except Exception as e:
             return self.json(502, {"error": f"{type(e).__name__}: {e}"})
         self.send(404, "text/plain; charset=utf-8", b"not found")
+
+    def consent(self, msg_id, choice):
+        """His tap on a choice in the WhatsApp message: the only way to cancel, change a plan or book a pickup."""
+        if not (msg_id.isdigit() and msg_id.isascii()) or choice not in CHOICES:
+            return self.json(404, {"error": "no such message or choice"})
+        try:
+            return self.json(200, paytm_mock.tap(int(msg_id), choice))
+        except KeyError:
+            return self.json(404, {"error": "no message with choices"})
+        except ValueError as e:
+            return self.json(422, {"error": str(e)})
+        except log.Tapped as e:
+            return self.json(409, {"error": str(e)})
 
     def reply(self, shop_id, url):
         call = calls.get(shop_id)
@@ -184,7 +217,7 @@ class Handler(BaseHTTPRequestHandler):
 
 def main():
     server = ThreadingHTTPServer(("127.0.0.1", PORT), Handler)
-    print(f"board on http://127.0.0.1:{PORT}  reading {DB}")
+    print(f"board on http://127.0.0.1:{PORT}  reading {log.path().resolve()}")
     try:
         server.serve_forever()
     except KeyboardInterrupt:

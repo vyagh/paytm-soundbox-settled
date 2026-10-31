@@ -2,7 +2,8 @@
 
 The listener speaks the line, then waits on the call's queue. A reply from the
 page (audio or typed) is heard and read here, and its Answer goes in the queue.
-Nothing in time means "no answer".
+Nothing in time means "no answer". A reply that reads as no answer gets the line
+said once more. The code line is never shown to the AI: flow checks it in code.
 """
 import os
 import queue
@@ -10,8 +11,8 @@ import threading
 import time
 
 from ai import reader
-from settled import flow, records
-from settled.models import Answer
+from settled import codes, flow, log, records
+from settled.models import Answer, CallState
 
 from . import sarvam, script
 
@@ -30,7 +31,9 @@ class Call:
         self.replies = queue.Queue()
         self.seq = 0
         self.said = None
+        self.line = None
         self.code = None
+        self.progress = CallState()
         self.audio = None
         self.waiting = False
         self.hearing = False
@@ -41,7 +44,7 @@ class Call:
 
     def _run(self):
         try:
-            flow.run(self.shop_id, self._listen)
+            flow.run(self.shop_id, self._listen, self.progress)
         except Exception as e:
             self.problem = f"call stopped: {type(e).__name__}"
         finally:
@@ -49,9 +52,10 @@ class Call:
                 self.waiting = False
                 self.done = True
 
-    def _listen(self, shop, said):
+    def _listen(self, shop, said, wait=True):
         language = script.LANGUAGES[self.language]
-        line = language[said]
+        line = script.say(self.language, said, shop)
+        english = script.english(said, shop)
         try:
             audio = sarvam.speak(line, language["code"], language["voice"])
             length = sarvam.wav_seconds(audio)
@@ -62,16 +66,29 @@ class Call:
 
         with self.lock:
             self.seq += 1
-            self.said, self.code = said, language["code"]
+            self.said, self.line, self.code = english, said, language["code"]
             self.audio, self.problem = audio, problem
-            self.waiting = True
+            self.waiting = wait
             seq = self.seq
+        if not wait:
+            time.sleep(length + 1)
+            return None
         until = time.monotonic() + length + LISTEN
 
+        again = 1
         while True:
             try:
                 got, answer = self.replies.get(timeout=max(0.2, until - time.monotonic()))
-                if got == seq:
+                if got == seq and answer.kind == "no answer" and again:
+                    again -= 1
+                    log.add(shop.id, "answered", said=english, heard=answer.words, read_as="no answer",
+                            reason="nothing clear, said the line again")
+                    with self.lock:
+                        self.seq += 1
+                        seq = self.seq
+                        self.waiting = True
+                    until = time.monotonic() + length + LISTEN
+                elif got == seq:
                     break
             except queue.Empty:
                 with self.lock:
@@ -93,17 +110,23 @@ class Call:
             if self.hearing:
                 raise Busy("still hearing the last reply")
             self.hearing = True
-            said, code = self.said, self.code
+            said, line, code = self.said, self.line, self.code
         try:
             if audio is not None:
                 text = sarvam.hear(audio, ctype, code, seconds)
-            if not (text or "").strip():
+            elif not (text or "").strip():
                 raise ValueError("heard nothing")
-            answer = reader.read(text, said)
+            if not text.strip():
+                answer = Answer("no answer", "")
+            elif line == script.CODE:
+                answer = Answer("unsure", text)
+            else:
+                answer = reader.read(text, said)
             if audio is not None:
                 answer.audio, answer.ctype = audio, ctype
             self.replies.put((seq, answer))
-            return {"heard": text, "read_as": answer.kind}
+            read_as = (codes.read(text) or "no code") if line == script.CODE and text.strip() else answer.kind
+            return {"heard": text, "read_as": read_as}
         finally:
             with self.lock:
                 self.hearing = False
@@ -119,6 +142,9 @@ class Call:
                 "waiting": self.waiting,
                 "hearing": self.hearing,
                 "problem": self.problem,
+                "step": self.progress.step,
+                "app_code": self.progress.code,
+                "recording": self.progress.recording,
             }
 
 

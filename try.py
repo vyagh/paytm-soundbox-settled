@@ -3,14 +3,16 @@
     python try.py <shop> [answers...]
     python try.py reset
 
-Answers: haan, na, unsure, question, silent, plan:<id>.
-A quoted text right after na or unsure is his reason.
+Answers: haan, na, unsure, question, silent, for the plan question and the
+read-back. A quoted text right after na or unsure is his reason. He allows the
+recording, says he is the owner and reads the right code first.
 """
 import shutil
 import sys
 
 from settled import flow, log, records
-from settled.models import Answer
+from settled.models import Answer, CallState
+from voice import script
 
 HEARD = {
     "haan": ["Haan, liya tha.", "Haan, pakka."],
@@ -28,11 +30,8 @@ def parse(args):
     while i < len(args):
         token = args[i]
         i += 1
-        if token.startswith("plan:"):
-            answers.append(Answer("haan", "Theek hai, yeh wala le lunga.", plan=token[5:]))
-            continue
         if token not in TOKENS:
-            sys.exit(f"unknown answer {token!r}, use haan, na, unsure, question, silent or plan:<id>")
+            sys.exit(f"unknown answer {token!r}, use haan, na, unsure, question or silent")
         if token == "silent":
             answers.append(Answer("no answer"))
             continue
@@ -40,7 +39,7 @@ def parse(args):
         words = lines[min(seen.get(token, 0), len(lines) - 1)]
         seen[token] = seen.get(token, 0) + 1
         reason = None
-        if token in ("na", "unsure") and i < len(args) and args[i] not in TOKENS and not args[i].startswith("plan:"):
+        if token in ("na", "unsure") and i < len(args) and args[i] not in TOKENS:
             reason = args[i]
             i += 1
         answers.append(Answer(token, words, reason=reason))
@@ -79,9 +78,17 @@ def main(args):
     if shop_id not in records.shop_ids():
         sys.exit(f"no shop {shop_id!r}, known shops: {', '.join(records.shop_ids())}")
 
-    queue = iter(answers)
+    state = CallState()
+    queue = iter([Answer("haan", "Haan, theek hai."), Answer("haan", "Haan ji, main hi bol raha hoon."), None, *answers])
+
+    def listener(shop, said, wait=True):
+        if not wait:
+            return None
+        answer = next(queue, Answer("no answer"))
+        return Answer("unsure", state.code) if said == script.CODE else answer
+
     start = log.last_id()
-    decision = flow.run(shop_id, lambda shop, said: next(queue, Answer("no answer")))
+    decision = flow.run(shop_id, listener, state)
     for row in log.rows(after=start):
         show(row)
 

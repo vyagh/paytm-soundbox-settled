@@ -6,7 +6,6 @@ from datetime import datetime
 from pathlib import Path
 
 from settled.models import KINDS, Answer
-from voice.script import NA_FOLLOW_UP
 
 ROOT = Path(__file__).resolve().parent.parent
 PROMPT = Path(__file__).resolve().parent / "prompt_hi.md"
@@ -23,16 +22,10 @@ PRICE_IN = 15 / 1_000_000
 PRICE_OUT = 60 / 1_000_000
 GST = 1.18
 
+# a spend ceiling on bench/cost.log for test runs, off unless set
+CAP = float(os.environ.get("SETTLED_CAP") or "inf")
 
-def _plans():
-    data = json.loads((ROOT / "data" / "shops.json").read_text(encoding="utf-8"))
-    return data["plans"]
-
-
-PLAN_IDS = {p["id"] for p in _plans()}
-SYSTEM = PROMPT.read_text(encoding="utf-8").replace(
-    "{plans}", ", ".join(f'{p["id"]} = {p["name"]}, ₹{p["price"]} a month' for p in _plans())
-)
+SYSTEM = PROMPT.read_text(encoding="utf-8")
 
 
 def _key():
@@ -60,6 +53,8 @@ def read(text, said):
 
 
 def _ask(text, said):
+    if spent() >= CAP:
+        raise RuntimeError("spend cap reached")
     body = {
         "model": MODEL,
         "messages": [
@@ -111,14 +106,9 @@ def _parse(content, text, said):
     reason = got.get("reason")
     if reason is not None and not isinstance(reason, str):
         raise ValueError("reason not a string")
-    plan = got.get("plan")
-    if plan is not None and plan not in PLAN_IDS:
-        raise ValueError("unknown plan")
     if speaker != "shopkeeper":
-        return Answer("unsure", text, reason=reason or f"{speaker} answered")
-    if kind != "haan" or said != NA_FOLLOW_UP:
-        plan = None
-    return Answer(kind, text, reason=reason or None, plan=plan)
+        return Answer("unsure", text, reason=reason or f"{speaker} answered", speaker=speaker)
+    return Answer(kind, text, reason=reason or None)
 
 
 def _log(entry):
