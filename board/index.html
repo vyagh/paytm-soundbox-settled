@@ -266,6 +266,8 @@ function renderControls(key, el) {
 async function startCall(key) {
   const me = live[key] || (live[key] = {});
   me.note = '';
+  me.played = 0;
+  me.speaking = false;
   if (!me.stream && navigator.mediaDevices?.getUserMedia) {
     try {
       me.stream = await navigator.mediaDevices.getUserMedia({audio: true});
