@@ -132,13 +132,14 @@ class Call:
             if not text.strip():
                 answer = Answer("no answer", "")
             elif line in script.YEAR_LINES:
-                answer = Answer("unsure", text)
+                # the year is checked in plain code; only a reply with no year in it goes to the AI, for what he meant
+                got, rule = year.check(text, records.load(self.shop_id).born)
+                answer = Answer("unsure", text, intent=reader.intent(text, said) if rule == "failed: no year" else None)
             else:
                 answer = reader.read(text, said)
             self.replies.put((seq, answer))
-            if line in script.YEAR_LINES:
-                got, rule = year.check(text, records.load(self.shop_id).born)
-                read_as = "wait" if rule == "wait" else got or "no year"
+            if line in script.YEAR_LINES and answer.kind != "no answer":
+                read_as = answer.intent or (rule if rule in ("wait", "who") else got or "no year")
             else:
                 read_as = answer.kind
             return {"heard": text, "read_as": read_as}

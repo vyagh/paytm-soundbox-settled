@@ -8,6 +8,7 @@ his WhatsApp through POST /api/consent, on a board started in this process. A ca
 with "again" calls the shop a second time in the same log, with its own turns and
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
 call's WhatsApp, which should answer 409 unless it gives another "status".
+A turn at the year question may carry the "intent" the AI would read in it.
 "year_asks" checks how many times the year was asked, and "unread" how many of his
 turns the call never got to. A turn {"hangup": true} is him hanging up there, and
 "retry" says a retry call should be booked, as after a cut line or silence. "new_round" starts a demo round through
@@ -71,7 +72,7 @@ def play(case, read):
         if not text.strip():
             answer = Answer("no answer", "")
         elif said in script.YEAR_LINES:
-            answer = Answer("unsure", text)
+            answer = Answer("unsure", text, intent=turn.get("intent"))
         else:
             answer = read(text, script.english(said, shop))
         heard.append((said, answer))

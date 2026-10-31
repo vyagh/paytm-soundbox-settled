@@ -61,13 +61,15 @@ ACK = {"haan", "han", "ha", "ji", "jee", "ok", "okay", "acha", "achha", "accha",
        "हाँ", "हां", "हा", "जी", "ओके", "अच्छा", "ठीक", "है", "हम्म"}
 
 
-# He won't say, or wants to know who's asking first. A fair answer to a call asking
-# who he is: respected at once, never asked again.
+# He won't say. A fair answer to a call asking who he is: respected at once, never asked again.
 REFUSE = ("nahi bataunga", "nahi bataoonga", "nahin bataunga", "nhi bataunga", "nahi bataungi", "nahi batata",
-          "kyun bataun", "kyu bataun", "kyon bataun", "kyun batau", "kyu batau", "nahi dunga", "nahi doonga",
-          "nahi dungi", "aap kaun ho", "ap kaun ho", "pehle batao", "pahle batao", "won't tell", "will not tell",
-          "not telling", "why should i", "nahi bolunga", "kyun bolun", "नहीं बोलूंगा", "क्यों बोलूं", "नहीं बताऊंगा", "नहीं बताउंगा", "नहीं बताऊंगी", "क्यों बताऊं", "क्यूं बताऊं",
-          "क्यों बताऊ", "नहीं दूंगा", "नहीं दूंगी", "आप कौन हो", "आप कौन हैं", "पहले बताओ", "पहले बताइए")
+          "won't tell", "will not tell", "not telling", "nahi bolunga", "नहीं बोलूंगा", "नहीं बताऊंगा", "नहीं बताउंगा",
+          "नहीं बताऊंगी")
+# He wants to know who's asking, or why, before he says. Settled says who it is and asks again.
+WHO = ("kyun bataun", "kyu bataun", "kyon bataun", "kyun batau", "kyu batau", "kyun bolun", "aap kaun ho", "ap kaun ho",
+       "aap kaun", "kaun bol raha", "pehle batao", "pahle batao", "why should i", "who are you", "who is this",
+       "kyun chahiye", "kyu chahiye", "kis liye", "kisliye", "क्यों बोलूं", "क्यों बताऊं", "क्यूं बताऊं", "क्यों बताऊ",
+       "आप कौन", "कौन बोल रहा", "पहले बताओ", "पहले बताइए", "क्यों चाहिए", "किस लिए", "किसलिए")
 
 
 def _plain(text):
@@ -80,8 +82,13 @@ def spoken(text):
 
 
 def refused(text):
-    """True when he declines to say or asks who's calling first."""
+    """True when he declines to say."""
     return any(spoken(phrase) in spoken(text) for phrase in REFUSE)
+
+
+def asks_who(text):
+    """True when he asks who's calling, or why, before he says."""
+    return any(spoken(phrase) in spoken(text) for phrase in WHO)
 
 
 def _key(token):
@@ -184,12 +191,15 @@ def waiting(text):
 def check(text, born):
     """(what was read, the rule) for his reply to the year question. The rule is
     "verified: year of birth matches", "wait" when he needs a moment, "failed: refused"
-    when he won't say, or "failed: wrong year" / "failed: no year"."""
+    when he won't say, "who" when he asks who's calling first, or "failed: wrong year" /
+    "failed: no year"."""
     got = read(text)
     if born and got == str(born):
         return got, VERIFIED
     if refused(text):
         return got, "failed: refused"
+    if got is None and asks_who(text):
+        return None, "who"
     if waiting(text):
         return None, "wait"
     if got is None and not _years(text):

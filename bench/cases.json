@@ -2494,11 +2494,23 @@
    },
    {
     "text": "aap kaun ho pehle batao"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
    }
   ],
-  "expect": "held",
-  "identity": "failed: refused",
-  "year_asks": 1
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2,
+  "note": "he asks who's calling: Settled says it's Paytm about the Soundbox rent, then asks again"
  },
  {
   "id": "name-who-first",
@@ -2507,10 +2519,26 @@
    {
     "text": "aap kaun ho pehle batao",
     "kind": "question"
+   },
+   {
+    "text": "haan main hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
    }
   ],
-  "expect": "held",
-  "identity": "failed: refused"
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "note": "who's calling at the name question: said who, asked once more"
  },
  {
   "id": "year-ask-cap",
@@ -2833,5 +2861,302 @@
   "identity": "failed: wrong year",
   "year_asks": 3,
   "note": "Mahesh's year on Ramesh's call: wrong each time"
+ },
+ {
+  "id": "scared-lootega",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "क्यों मैं नहीं बता रहा?",
+    "intent": "who"
+   },
+   {
+    "text": "तू मेरे पैसे लूटेगा?",
+    "intent": "scared"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 3,
+  "note": "Madhav's live test: why, then fear of a scam; Settled says who and that no money, OTP or PIN is asked"
+ },
+ {
+  "id": "scared-fraud",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "ye fraud call hai kya? OTP nahi dunga",
+    "intent": "scared"
+   },
+   {
+    "text": "unnees sau chaurasi"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2
+ },
+ {
+  "id": "scared-then-refuses",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "तू मेरे पैसे लूटेगा?",
+    "intent": "scared"
+   },
+   {
+    "text": "phir bhi nahi bataunga"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: refused",
+  "year_asks": 2
+ },
+ {
+  "id": "scared-three-times",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "paise kaatoge kya?",
+    "intent": "scared"
+   },
+   {
+    "text": "scam lag raha hai",
+    "intent": "scared"
+   },
+   {
+    "text": "मुझे डर लग रहा है",
+    "intent": "scared"
+   },
+   {
+    "text": "1984"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: no year",
+  "year_asks": 3,
+  "unread": 1,
+  "note": "3 asks in all, reassured or not"
+ },
+ {
+  "id": "who-kis-liye",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "saal kis liye chahiye?"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2
+ },
+ {
+  "id": "who-hindi-ai",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "तुम हो कौन, पहले ये बताओ",
+    "intent": "who"
+   },
+   {
+    "text": "चौरासी"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2
+ },
+ {
+  "id": "refuse-ai",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "मैं नहीं बता रहा, फोन रखो",
+    "intent": "refuse"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: refused",
+  "year_asks": 1
+ },
+ {
+  "id": "angry-ai",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "dimaag kharab mat karo yaar",
+    "intent": "angry"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: angry",
+  "year_asks": 1
+ },
+ {
+  "id": "busy-ai",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "grahak khade hain dukaan pe",
+    "intent": "busy"
+   }
+  ],
+  "expect": "held",
+  "identity": "busy → call back later",
+  "retry": true,
+  "year_asks": 1
+ },
+ {
+  "id": "wait-ai",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "yaad karna padega",
+    "intent": "wait"
+   },
+   {
+    "text": "1984"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2
+ },
+ {
+  "id": "question-at-year",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "soundbox ka kiraya kitna hai?",
+    "intent": "question"
+   },
+   {
+    "text": "1978"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "identity": "verified: year of birth matches",
+  "year_asks": 2
+ },
+ {
+  "id": "other-then-wrong",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "haan haan bolo na",
+    "intent": "other"
+   },
+   {
+    "text": "1990"
+   },
+   {
+    "text": "1991"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: wrong year",
+  "year_asks": 3
  }
 ]

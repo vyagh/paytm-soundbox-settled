@@ -2,7 +2,8 @@ import time
 
 from voice import script
 from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED,
-                          GREETING, NAME_AGAIN, READ_BACK, YEAR, YEAR_AGAIN, YEAR_WAIT)
+                          GREETING, NAME_AGAIN, READ_BACK, REASSURE, WHO_WHY, YEAR, YEAR_AGAIN,
+                          YEAR_WAIT)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -11,6 +12,11 @@ from .models import CallState
 # a pause or silence get "take your time" instead of "I didn't get that", within about 45 s.
 YEAR_ASKS = 3
 YEAR_WAIT_SECONDS = 45
+# What he meant, as the AI read it, to the identity rule plain code acts on.
+INTENT_RULES = {"wait": "wait", "refuse": "failed: refused", "angry": "failed: angry", "scared": "scared",
+                "who": "who", "question": "who"}
+EXPLAIN = {"scared": REASSURE, "who": WHO_WHY}
+EXPLAINED = {"scared": "reassured, ", "who": "said who's calling, "}
 
 
 class HungUp(Exception):
@@ -89,7 +95,11 @@ def _call(shop, listener, state):
     reply = listener(shop, line)
     failed = rules.name(reply)
     if failed == "ask again":
-        _log_reply(shop, state, "identity", line, reply, rule="not clear → asked once more")
+        asked_who = reply.kind == "question" or year.asks_who(reply.words)
+        _log_reply(shop, state, "identity", line, reply,
+                   rule="asked who's calling → said who, asked once more" if asked_who else "not clear → asked once more")
+        if asked_who:
+            _say(shop, listener, WHO_WHY)
         line = NAME_AGAIN
         reply = listener(shop, line)
         failed = rules.name(reply, first=False)
@@ -103,7 +113,7 @@ def _call(shop, listener, state):
     if silent:
         return _silent(shop)
     if rule != year.VERIFIED:
-        return _unverified(shop, listener, rule, DECLINED if rule == "failed: refused" else None)
+        return _unverified(shop, listener, rule, DECLINED if rule in ("failed: refused", "failed: angry") else None)
 
     state.step = "ask"
     answers = [_ask(shop, state, ASK, listener)]
@@ -144,27 +154,41 @@ def _call(shop, listener, state):
 
 def _year(shop, state, listener):
     """(year.VERIFIED once his reply names the year of birth on record, else the identity
-    rule that ends the call; True when every ask got silence)."""
+    rule that ends the call; True when every ask got silence).
+
+    A reply with no year in it carries what the AI read he meant. Plain code picks the
+    answer: a who or why gets who's calling, a scared reply gets told no money, OTP or
+    PIN is asked, and both get the year asked again within the same 3 asks."""
     line, last, heard = YEAR, "failed: no year", False
     until = time.monotonic() + YEAR_WAIT_SECONDS
     for asked in range(1, YEAR_ASKS + 1):
         reply = listener(shop, line)
         got, rule = year.check(reply.words, shop.born)
+        if rule == "failed: no year" and reply.intent:
+            if reply.intent == "busy":
+                raise _Busy(line, reply)
+            rule = INTENT_RULES.get(reply.intent, rule)
         heard = heard or bool(reply.words.strip())
         waited = rule == "wait"
-        if not waited:
+        if rule in (year.VERIFIED, "failed: wrong year", "failed: refused", "failed: angry"):
             last = rule
-        done = rule in (year.VERIFIED, "failed: refused") or asked == YEAR_ASKS or (waited and time.monotonic() >= until)
+        done = rule in (year.VERIFIED, "failed: refused", "failed: angry") or asked == YEAR_ASKS \
+            or (waited and time.monotonic() >= until)
         if done:
             note = last
         elif waited:
             note = "waiting for the year"
         else:
-            note = f"{rule.removeprefix('failed: ')} → asked again, {asked} of {YEAR_ASKS} asks"
-        _log_reply(shop, state, "identity", line, reply, rule=note, read_as="wait" if waited else got or "no year")
+            note = f"{rule.removeprefix('failed: ')} → {EXPLAINED.get(rule, '')}asked again, {asked} of {YEAR_ASKS} asks"
+        read_as = reply.intent or (rule if rule in ("wait", "who") else got or "no year")
+        _log_reply(shop, state, "identity", line, reply, rule=note, read_as=read_as)
         if done:
             return last, not heard
-        line = YEAR_WAIT if waited else YEAR_AGAIN
+        if rule in EXPLAIN:
+            _say(shop, listener, EXPLAIN[rule])
+            line = YEAR
+        else:
+            line = YEAR_WAIT if waited else YEAR_AGAIN
     return last, not heard
 
 

@@ -40,6 +40,8 @@ class Answer:
     words: str = ""
     reason: str | None = None
     speaker: str = "shopkeeper"
+    # what he meant when his reply to the year question had no year in it, see ai.reader.INTENTS
+    intent: str | None = None
 
     def __post_init__(self):
         if self.kind not in KINDS:

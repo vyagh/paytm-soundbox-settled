@@ -26,6 +26,9 @@ GST = 1.18
 CAP = float(os.environ.get("SETTLED_CAP") or "inf")
 
 SYSTEM = PROMPT.read_text(encoding="utf-8")
+# What he meant when his reply to the year question had no year in it. Code picks the line.
+INTENTS = ("wait", "refuse", "scared", "who", "busy", "angry", "question", "other")
+INTENT_SYSTEM = (Path(__file__).resolve().parent / "prompt_intent_hi.md").read_text(encoding="utf-8")
 
 
 def _key():
@@ -54,17 +57,30 @@ def read(text, said):
         return Answer("unsure", text)
 
 
-def _ask(text, said):
+def intent(text, said):
+    """One of INTENTS for a reply with no year in it; "other" when the model can't say."""
+    try:
+        content = _ask(text, said, INTENT_SYSTEM, max_tokens=60).strip()
+        if content.startswith("```"):
+            content = content.strip("`").removeprefix("json").strip()
+        got = json.loads(content).get("intent")
+        return got if got in INTENTS else "other"
+    except Exception as e:
+        _log({"error": type(e).__name__, "status": getattr(e, "code", None), "rupees": 0})
+        return "other"
+
+
+def _ask(text, said, system=SYSTEM, max_tokens=200):
     if spent() >= CAP:
         raise RuntimeError("spend cap reached")
     body = {
         "model": MODEL,
         "messages": [
-            {"role": "system", "content": SYSTEM},
+            {"role": "system", "content": system},
             {"role": "user", "content": f"Agent: {said}\nHe: {text}"},
         ],
         "temperature": 0,
-        "max_tokens": 200,
+        "max_tokens": max_tokens,
         "response_format": {"type": "json_object"},
     }
     if MODEL == "sarvam-105b":
