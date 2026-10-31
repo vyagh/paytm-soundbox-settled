@@ -1,3 +1,7 @@
+import re
+import unicodedata
+
+from . import year
 from .year import refused, spoken
 
 # He's busy and asks for a call later. Matched in plain code at every step, and it ends
@@ -110,3 +114,100 @@ def busy(text):
 
 def call_later():
     return Decision("held", "busy, asked for a call later → nothing changed, Paytm calls back")
+
+
+# What the AI may pick as Settled's next step, by the kind of reply it read. Code checks
+# its pick against these, and the money still comes only from decide().
+def allowed(step, can_offer=False):
+    if step == "name":
+        return {"haan": ["ask_year"], "question": ["ask_name"], "unsure": ["ask_name"], "na": ["end"]}
+    if step == "year":
+        return {"wait": ["wait"], "refuse": ["end"], "angry": ["end"], "busy": ["end"],
+                "scared": ["ask_year"], "who": ["ask_year"], "question": ["ask_year"], "other": ["ask_year"]}
+    offer = ["offer_plan_b"] if can_offer else []
+    return {"haan": ["confirm" if step.startswith("readback") else "read_back"], "question": ["answer", *offer],
+            "na": ["end", *offer], "unsure": ["end", *offer]}
+
+
+# A line the AI wrote is said only when it passes every check here; otherwise Settled says its fixed line.
+SAY_MAX = 220
+CURRENCY = ("रुपय", "रुपए", "रूपय", "रूपए", "रु", "rupay", "rupee", "rupe", "rs", "inr")
+# asking for any of these is what a scam call does
+SECRETS = ("otp", "ओटीपी", "pin", "पिन", "कोड", "code", "पासवर्ड", "password", "cvv", "सीवीवी", "upi", "यूपीआई",
+           "अकाउंट नंबर", "account number", "खाता नंबर", "कार्ड नंबर", "card number")
+# money moves and plan changes the call never makes: only his tap does
+NEVER = ("रिफंड", "refund", "रीफंड", "लौटा", "कैशबैक", "cashback", "डिस्काउंट", "discount", "छूट", "कैंसल", "cancel",
+         "रद्द", "बंद कर", "पिकअप", "pickup", "ले जाएंगे", "ले जाएँगे", "ले जाएगें", "ले जायेंगे", "उठा ले", "बदल दिया",
+         "बदल देंगे", "बदल दूं", "बदल दूँ", "चालू कर दिया", "शुरू कर दिया", "माफ़ कर देंगे", "माफ कर देंगे")
+# allowed only when he said them first
+HIS_WORDS = ("मुफ़्त", "मुफ्त", "फ्री", "फ़्री", "free", "muft")
+NEGATION = {"नहीं", "नही", "मत", "न", "never", "not", "no", "कभी"}
+MANAGER = ("मैनेजर", "manager", "मेनेजर")
+
+
+def say_ok(say, shop, heard, kind, step):
+    """None when the AI's line can be said, else why not. heard is his reply this turn."""
+    if not isinstance(say, str):
+        return "not text"
+    text = say.strip()
+    low = text.lower()
+    his = (heard or "").lower()
+    if len(text) > SAY_MAX:
+        return "too long"
+    if not any("ऀ" <= c <= "ॿ" for c in text):
+        return "not in Hindi"
+    for sentence in re.split(r"[।.!?\n]+", low):
+        negated = bool(NEGATION & set(year._tokens(sentence)))
+        if any(_has(sentence, w) for w in SECRETS) and not negated:
+            return "asks for a secret"
+        if ("कट" in sentence or "काट" in sentence) and not negated:
+            return "says money will be taken"
+    if any(w in low for w in NEVER) or ("वापस" in low and not re.search(r"वापस\s*(कॉल|फ़ोन|फोन|call)", low)):
+        return "promises a refund, cancel, pickup or plan change"
+    if any(w in low for w in HIS_WORDS) and not any(w in his for w in HIS_WORDS):
+        return "promises something free"
+    if any(w in low for w in MANAGER) and not (kind == "na" or step == "offer_plan_b"):
+        return "says his manager is told when code won't tell him"
+    prices = {str(p.price) for p in shop.plans}
+    his_numbers = set(_numbers(his))
+    days = {str(int(d[-2:])) for d in _dates(shop)} | {d[:4] for d in _dates(shop)}
+    amounts, digits = _amounts(text)
+    if any(a not in prices | his_numbers for a in amounts):
+        return "an amount not in his record"
+    if any(d not in prices | his_numbers | days for d in digits):
+        return "a number not in his record"
+    return None
+
+
+def _has(sentence, word):
+    if word.isascii():
+        return re.search(rf"(?<![a-z]){re.escape(word)}(?![a-z])", sentence) is not None
+    return word in sentence
+
+
+def _dates(shop):
+    s = shop.signup or {}
+    return [d for d in (s.get("on"), s.get("starts"), (shop.delivery or {}).get("on")) if d]
+
+
+def _numbers(text):
+    return [str(int(run)) for run in year._runs(text) if run.isdigit()]
+
+
+def _amounts(text):
+    """(amounts said as money, every numeral) in the AI's line, as digit strings."""
+    tokens = [t for t in year.SPLIT.split(text.lower().replace("₹", " ₹ ")) if t]
+    amounts, run = [], []
+    for i, token in enumerate(tokens):
+        if token == "₹":
+            nxt = tokens[i + 1] if i + 1 < len(tokens) else ""
+            amounts.extend(_numbers(nxt) or ["?"])
+            continue
+        if year._token_digits(token) is not None or year._key(token) in year.HUNDRED:
+            run.append(token)
+            continue
+        if run and token.startswith(CURRENCY):
+            amounts.extend(_numbers(" ".join(run)) or ["?"])
+        run = []
+    digits = [str(int("".join(str(unicodedata.digit(c)) for c in m))) for m in re.findall(r"\d+", text)]
+    return amounts, digits

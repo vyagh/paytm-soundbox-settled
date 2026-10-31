@@ -48,6 +48,9 @@ class Answer:
     promise: str | None = None
     # angry, complaining or in real distress, as the AI read it
     upset: bool = False
+    # what the AI would have Settled say back, and the next step it picked; flow checks both
+    say: str | None = None
+    next: str | None = None
 
     def __post_init__(self):
         if self.kind not in KINDS:
@@ -70,3 +73,5 @@ class CallState:
     """What the board shows about a call in progress. call is the id of the call's "due" row."""
     step: str | None = None
     call: int | None = None
+    # the step Settled waits on and the next steps code allows for each kind of reply, for the AI
+    turn: dict | None = None
