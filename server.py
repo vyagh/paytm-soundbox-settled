@@ -94,6 +94,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         url = urlparse(self.path)
         if url.path in ("/", "/index.html"):
+            self.send(200, "text/html; charset=utf-8", (PROTO / "index.html").read_bytes())
+        elif url.path in ("/classic", "/classic/"):
             self.send(200, "text/html; charset=utf-8", PAGE.read_bytes())
         elif url.path.startswith("/fonts/") and (font := FONTS / url.path.removeprefix("/fonts/")).parent == FONTS \
                 and font.suffix == ".woff2" and font.is_file():
