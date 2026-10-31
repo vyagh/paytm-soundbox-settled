@@ -26,6 +26,9 @@ GST = 1.18
 CAP = float(os.environ.get("SETTLED_CAP") or "inf")
 
 SYSTEM = PROMPT.read_text(encoding="utf-8")
+# What a question at the plan or the read-back is about. Code picks the answer line.
+TOPICS = ("cheaper", "price", "start", "charge", "who", "other")
+PROMISES = ("one rupee", "free", "lower price")
 # What he meant when his reply to the year question had no year in it. Code picks the line.
 INTENTS = ("wait", "refuse", "scared", "who", "busy", "angry", "question", "other")
 INTENT_SYSTEM = (Path(__file__).resolve().parent / "prompt_intent_hi.md").read_text(encoding="utf-8")
@@ -112,7 +115,7 @@ def _parse(content, text, said):
     if content.startswith("```"):
         content = content.strip("`").removeprefix("json").strip()
     got = json.loads(content)
-    if not isinstance(got, dict) or set(got) - {"kind", "speaker", "reason", "plan"}:
+    if not isinstance(got, dict) or set(got) - {"kind", "speaker", "reason", "plan", "topic", "promise", "upset"}:
         raise ValueError("unexpected reply shape")
 
     kind = got.get("kind")
@@ -126,7 +129,9 @@ def _parse(content, text, said):
         raise ValueError("reason not a string")
     if speaker != "shopkeeper":
         return Answer("unsure", text, reason=reason or f"{speaker} answered", speaker=speaker)
-    return Answer(kind, text, reason=reason or None)
+    topic = (got.get("topic") if got.get("topic") in TOPICS else "other") if kind == "question" else None
+    promise = got.get("promise") if kind in ("na", "unsure") and got.get("promise") in PROMISES else None
+    return Answer(kind, text, reason=reason or None, topic=topic, promise=promise, upset=got.get("upset") is True)
 
 
 def _log(entry):

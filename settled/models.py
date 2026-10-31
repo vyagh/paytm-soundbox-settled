@@ -42,6 +42,12 @@ class Answer:
     speaker: str = "shopkeeper"
     # what he meant when his reply to the year question had no year in it, see ai.reader.INTENTS
     intent: str | None = None
+    # what a question at the plan or read-back is about, see ai.reader.TOPICS
+    topic: str | None = None
+    # a salesman's promise his na or doubt rests on: "one rupee", "free" or "lower price"
+    promise: str | None = None
+    # angry, complaining or in real distress, as the AI read it
+    upset: bool = False
 
     def __post_init__(self):
         if self.kind not in KINDS:
