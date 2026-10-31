@@ -137,7 +137,7 @@ def send_choices(shop, call):
     log.message(shop.id, "shopkeeper", "WhatsApp",
                 f"Paytm: Namaste {shop.owner} ji. Nothing has been taken for your Soundbox ({_serial(shop)}). "
                 f"Your sign-up form {s['form']}, done by {s['salesman']['name']} on {_day(s['on'])}, says {signed.name}, "
-                f"₹{signed.price}/month from {_starts(shop)}. A Paytm person will call you with the right offer. "
+                f"₹{signed.price}/month from {_starts(shop)}. A Paytm representative will call you within two days with the right plan. "
                 f"Or choose yourself here: {{link}}",
                 choices(shop), call=call)
     return _act(shop, "send choices on WhatsApp")
