@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 
 KINDS = ("haan", "na", "unsure", "question", "no answer")
 OUTCOMES = ("call", "ask again", "charged", "held", "not charged", "cancelled")
-STEPS = ("consent", "identity", "ask", "readback", "followup", "done")
+STEPS = ("identity", "ask", "readback", "followup", "done")
 
 
 @dataclass(frozen=True)
@@ -39,8 +39,6 @@ class Answer:
     words: str = ""
     reason: str | None = None
     speaker: str = "shopkeeper"
-    audio: bytes | None = field(default=None, repr=False, compare=False)
-    ctype: str = field(default="", repr=False, compare=False)
 
     def __post_init__(self):
         if self.kind not in KINDS:
@@ -61,9 +59,8 @@ class Decision:
 @dataclass
 class CallState:
     """What the board shows about a call in progress. code is the one in his mock
-    Paytm app, set when it is sent; recording only turns true on his clear haan.
+    Paytm app, set when it is sent.
     call is the id of the call's "due" row."""
     step: str | None = None
     code: str | None = None
-    recording: bool = False
     call: int | None = None

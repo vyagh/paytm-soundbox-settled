@@ -135,8 +135,6 @@ class Call:
                 answer = Answer("unsure", text)
             else:
                 answer = reader.read(text, said)
-            if audio is not None:
-                answer.audio, answer.ctype = audio, ctype
             self.replies.put((seq, answer))
             if line in script.CODE_LINES:
                 got, rule = codes.check(text, self.progress.code)
@@ -169,7 +167,6 @@ class Call:
                 "problem": self.problem,
                 "step": self.progress.step,
                 "app_code": self.progress.code,
-                "recording": self.progress.recording,
             }
 
 

@@ -51,17 +51,11 @@ BEGIN SELECT RAISE(ABORT, 'taps are only added, never deleted'); END;
 
 FIELDS = ("said", "heard", "read_as", "reason", "rule", "outcome", "action")
 
-CLIP_TYPES = {"wav": "audio/wav", "webm": "audio/webm", "ogg": "audio/ogg", "mp3": "audio/mpeg", "m4a": "audio/mp4"}
-CLIP_EXTS = {**{t: ext for ext, t in CLIP_TYPES.items()}, "audio/x-wav": "wav", "audio/wave": "wav"}
 
 
 def path():
     env = os.environ.get("SETTLED_DB")
     return Path(env) if env else Path(__file__).resolve().parent.parent / "settled.db"
-
-
-def clips():
-    return path().resolve().parent / "clips"
 
 
 class Tapped(Exception):
@@ -217,39 +211,6 @@ def last_answer(shop, read_as=None):
     with closing(_connect()) as db:
         row = db.execute(sql + " ORDER BY id DESC LIMIT 1", args).fetchone()
         return dict(row) if row else None
-
-
-def clip_name(row_id, at):
-    """A clip's file stem: the row id and its time, so a reset log never picks up an old clip."""
-    return f"{int(row_id)}-{''.join(c for c in at if c.isdigit())}"
-
-
-def _row_at(row_id):
-    with closing(_connect()) as db:
-        row = db.execute("SELECT at FROM log WHERE id = ?", (int(row_id),)).fetchone()
-        return row[0] if row else None
-
-
-def save_clip(row_id, audio, ctype):
-    ext = CLIP_EXTS.get(ctype.split(";")[0].strip().lower(), "audio")
-    folder = clips()
-    folder.mkdir(exist_ok=True)
-    name = clip_name(row_id, _row_at(row_id))
-    tmp = folder / f"{name}.{ext}.part"
-    tmp.write_bytes(audio)
-    os.replace(tmp, folder / f"{name}.{ext}")
-
-
-def clip(row_id):
-    """The saved clip for an answered row, as (path, content type), or None."""
-    at = _row_at(row_id)
-    if not at:
-        return None
-    for found in clips().glob(f"{clip_name(row_id, at)}.*"):
-        ext = found.suffix[1:]
-        if ext != "part":
-            return found, CLIP_TYPES.get(ext, "application/octet-stream")
-    return None
 
 
 def message(shop, to_whom, channel, text, choices=None, call=None):

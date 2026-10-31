@@ -18,8 +18,7 @@ Version 2 changed the call after feedback from the hackathon mentors.
 
 ```mermaid
 flowchart LR
-    A["Records checked<br/>sign-up, delivery, return"] --> B["Recording ok?"]
-    B --> C["Am I speaking with the owner?"]
+    A["Records checked<br/>sign-up, delivery, return"] --> C["Namaste, am I speaking with the owner?"]
     C --> D["4-digit code from his Paytm app<br/>checked in plain code"]
     D --> E["Plan question<br/>from his record"]
     E --> F["Price read back"]
@@ -36,7 +35,7 @@ flowchart LR
 
 Before any call, Settled reads the shop's records. A box that was never delivered isn't charged and the shop isn't called. A missing record puts the rent on hold for a person to check.
 
-If the records are in order, it calls and asks first if the call can be recorded. Saying no is fine: the call goes on and no voice clip is saved. Then it asks if it's speaking with the owner by name, and asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe", "chauntees chhappan", "thirty four fifty six", "३४५६" or the code said twice, and the AI never sees it. Only the exact 4 digits pass. "Ek minute", "ruko, app khol raha hoon" or a pause get "no problem, I'm waiting" instead of "that's not it", and the code is asked at most 3 times in all. If he won't give it ("nahi bataunga", "aap kaun ho pehle batao"), that's a fair answer to a call asking for a code: Settled says that's fine, nothing changes, and a person calls his registered number. An unclear answer to the name question gets it asked once more. If someone else picks up, or the code still doesn't match, Settled says goodbye politely and nothing about his plan changes.
+If the records are in order, it calls, greets him by name and asks if it's speaking with him, all in one line. Nothing is recorded: his voice goes to speech-to-text and is thrown away, and the log keeps the words. Then it asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe", "chauntees chhappan", "thirty four fifty six", "३४५६" or the code said twice, and the AI never sees it. Only the exact 4 digits pass. "Ek minute", "ruko, app khol raha hoon" or a pause get "no problem, I'm waiting" instead of "that's not it", and the code is asked at most 3 times in all. If he won't give it ("nahi bataunga", "aap kaun ho pehle batao"), that's a fair answer to a call asking for a code: Settled says that's fine, nothing changes, and a person calls his registered number. An unclear answer to the name question gets it asked once more. If someone else picks up, or the code still doesn't match, Settled says goodbye politely and nothing about his plan changes.
 
 Only then comes the plan question, built from his record in [`data/shops.json`](data/shops.json): "The Paytm Soundbox put in your shop on 24 October has a rent of ₹125 a month from 1 November. Did you take this plan?" Shopkeepers rarely know the salesman's name, so it stays in the records and the manager's alert, not the question. A clear haan gets the price read back ("So ₹125 every month from 1 November. Shall I confirm it?"), and only a second haan charges.
 
@@ -52,8 +51,6 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 |---|---|
 | Box never delivered | Not charged, no call |
 | Sign-up, delivery or return record missing | Held, a person checks |
-| No to recording | The call goes on, no voice saved |
-| No answer to the first line | Held, a person calls |
 | Someone else answers, or he doesn't say he's the owner when asked twice | Ends politely, held, plan unchanged |
 | Wrong code or no code after 3 asks, or he won't give it | Ends politely, held, plan unchanged |
 | He's busy and asks for a call later, at any step | Ends politely, nothing changed, an SMS says Paytm calls back, a retry call is booked |
@@ -93,7 +90,7 @@ The Hindi lines are hand-written. The other ten are machine-written and need a n
 
 ## Tested on 97 simulated shopkeepers
 
-[`bench/cases.json`](bench/cases.json) holds 97 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, a lone "hmm", the salesman or a relative answering, no to recording, wrong and missing codes, codes said in Hindi words or Devanagari digits, his taps on the WhatsApp choices, and cases in all 11 languages. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
+[`bench/cases.json`](bench/cases.json) holds 122 typed calls, each with the lines a shopkeeper says, a label for each line, and the outcome it should end in. They cover honest yeses, flat nos, nos with a reason, a yes with a "but", questions, silence, a lone "hmm", the salesman or a relative answering, wrong, missing and refused codes, codes said in Hindi words, pairs or Devanagari digits, busy replies, hang-ups, second calls and demo rounds, his taps on the WhatsApp choices, and cases in all 11 languages. [`bench/run.py`](bench/run.py) plays each call through the real flow and scores the outcome in code.
 
 With the Sarvam model sorting every reply:
 

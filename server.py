@@ -23,7 +23,7 @@ COLUMNS = ("id", "at", "shop", "step", "said", "heard", "read_as", "reason", "ru
 MESSAGE_COLUMNS = ("id", "at", "shop", "to_whom", "channel", "text", "link", "choices")
 CHOICES = ("keep_plan", "cheaper_plan", "cancel")
 IDLE = {"active": False, "seq": 0, "said": None, "voice": False, "waiting": False, "hearing": False,
-        "problem": None, "step": None, "app_code": None, "recording": False}
+        "problem": None, "step": None, "app_code": None}
 
 
 def shops():
@@ -83,14 +83,6 @@ def rows_after(after, table="log", columns=COLUMNS):
         con.close()
 
 
-def with_clips(rows):
-    folder = log.clips()
-    saved = {f.stem for f in folder.iterdir() if f.suffix != ".part"} if folder.is_dir() else set()
-    for row in rows:
-        row["clip"] = f"/api/clip/{row['id']}" if log.clip_name(row["id"], row["at"]) in saved else None
-    return rows
-
-
 def version():
     files = [f for f in (ROOT / "board").rglob("*") if f.is_file()]
     files += [f for f in ROOT.rglob("*.py") if {".venv", "__pycache__", ".git"}.isdisjoint(f.relative_to(ROOT).parts)]
@@ -126,16 +118,9 @@ class Handler(BaseHTTPRequestHandler):
                 and page.suffix in PROTO_TYPES and page.is_file():
             self.send(200, PROTO_TYPES[page.suffix], page.read_bytes())
         elif url.path == "/api/log":
-            self.json(200, with_clips(rows_after(after_id(url))))
+            self.json(200, rows_after(after_id(url)))
         elif url.path == "/api/messages":
             self.json(200, rows_after(after_id(url), "messages", MESSAGE_COLUMNS))
-        elif url.path.startswith("/api/clip/"):
-            row_id = url.path.removeprefix("/api/clip/")
-            found = log.clip(row_id) if row_id.isdigit() and row_id.isascii() else None
-            if found:
-                self.send(200, found[1], found[0].read_bytes())
-            else:
-                self.send(404, "text/plain; charset=utf-8", b"no clip")
         elif url.path == "/api/version":
             self.send(200, "text/plain; charset=utf-8", version().encode())
         elif url.path == "/api/shops":

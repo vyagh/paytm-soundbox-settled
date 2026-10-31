@@ -1,8 +1,8 @@
 import time
 
 from voice import script
-from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, CODE, CODE_AGAIN, CODE_DECLINED, CODE_WAIT, CONSENT, FOLLOW_UP,
-                          GOODBYE_OTHER, GOODBYE_UNVERIFIED, NAME_AGAIN, NAME_RECORDED, NAME_UNRECORDED, READ_BACK)
+from voice.script import (ASK, CALL_LATER, CHARGED, CLOSING, CODE, CODE_AGAIN, CODE_DECLINED, CODE_WAIT, FOLLOW_UP,
+                          GOODBYE_OTHER, GOODBYE_UNVERIFIED, GREETING, NAME_AGAIN, READ_BACK)
 
 from . import codes, log, paytm_mock, records, rules
 from .models import CallState
@@ -84,15 +84,8 @@ def _busy_aware(listener):
 
 
 def _call(shop, listener, state):
-    state.step = "consent"
-    reply = listener(shop, CONSENT)
-    state.recording = reply.kind == "haan"
-    _log_reply(shop, state, "consent", CONSENT, reply, rule=rules.consent(reply))
-    if reply.kind == "no answer":
-        return _silent(shop)
-
     state.step = "identity"
-    line = NAME_RECORDED if state.recording else NAME_UNRECORDED
+    line = GREETING
     reply = listener(shop, line)
     failed = rules.name(reply)
     if failed == "ask again":
@@ -211,10 +204,8 @@ def _ask(shop, state, line, listener):
 
 
 def _log_reply(shop, state, step, line, answer, rule=None, read_as=None):
-    row = log.add(shop.id, step, said=script.english(line, shop), heard=answer.words,
-                  read_as=read_as or answer.kind, reason=answer.reason, rule=rule)
-    if answer.audio and state.recording:
-        log.save_clip(row, answer.audio, answer.ctype)
+    log.add(shop.id, step, said=script.english(line, shop), heard=answer.words,
+            read_as=read_as or answer.kind, reason=answer.reason, rule=rule)
 
 
 def _say(shop, listener, line):

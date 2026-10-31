@@ -2,7 +2,7 @@
 
     python bench/run.py --reader typed
 
-Each case lists his replies in order, from the recording ask on. The code line
+Each case lists his replies in order, from the name question on. The code line
 gets the bench's fixed app code, 3456. A case with "tap" then taps that choice in
 his WhatsApp through POST /api/consent, on a board started in this process. A case
 with "again" calls the shop a second time in the same log, with its own turns and
@@ -241,8 +241,6 @@ def main(argv):
                 wrong.append("outcome")
             if "identity" in case and identity != case["identity"]:
                 wrong.append(f"identity {identity}")
-            if "recording" in case and state.recording != case["recording"]:
-                wrong.append(f"recording {state.recording}")
             if len(unread) != case.get("unread", 0):
                 wrong.append(f"{len(unread)} turns never read")
             retried = any(r["action"] == "book retry call (mock)" for r in log.rows(case["shop"]))

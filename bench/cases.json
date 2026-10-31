@@ -4,10 +4,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -25,17 +21,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-yes-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -54,17 +45,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-yes-3",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -83,17 +69,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-yes-4",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -112,17 +93,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-yes-5",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -141,17 +117,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-yes-6",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -170,17 +141,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-yes-7",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -199,17 +165,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -223,17 +184,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-silent-after",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -247,17 +203,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-reason-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -272,17 +223,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-reason-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -297,17 +243,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-reason-3",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -322,17 +263,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-then-b-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -346,17 +282,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-then-b-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -370,17 +301,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-then-b-3",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -395,17 +321,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-then-a",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -419,17 +340,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-then-a-125",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -443,17 +359,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-then-haan-no-plan",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -467,17 +378,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "no-then-question",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -491,17 +397,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "but-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -516,17 +417,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "but-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -540,17 +436,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "but-3",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -564,17 +455,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "but-4",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -588,17 +474,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "other-price-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -612,17 +493,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "other-price-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -636,17 +512,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "confused-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -660,17 +531,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "confused-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -684,17 +550,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "questions-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -708,17 +569,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "questions-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -732,17 +588,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "questions-3",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -756,17 +607,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "silence-1",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -781,7 +627,6 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true
  },
  {
@@ -789,10 +634,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -806,7 +647,6 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true
  },
  {
@@ -814,27 +654,18 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "main to naukar hoon, malik bahar gaye hain",
     "kind": "unsure",
     "speaker": "someone else"
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "someone-else-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "papa nahi hain, main unka beta bol raha hoon",
     "kind": "unsure",
@@ -842,17 +673,12 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "someone-else-3",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan main Anil bol raha hoon, haan bol do",
     "kind": "unsure",
@@ -860,17 +686,12 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "someone-else-4",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -885,7 +706,6 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true
  },
  {
@@ -894,27 +714,18 @@
   "note": "the salesman picks up and says haan at both asks",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan, Anil bol raha hoon, salesman, haan",
     "kind": "unsure",
     "speaker": "someone else"
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "doubt-at-readback-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -932,17 +743,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "doubt-at-readback-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -960,17 +766,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-then-no",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -988,17 +789,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-then-question",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1016,17 +812,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "yes-then-silence",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1045,17 +836,12 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true
  },
  {
   "id": "mixed-1",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1069,17 +855,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "mixed-2",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1093,17 +874,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "mixed-3",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1117,18 +893,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "ta-yes-yes",
   "shop": "gupta",
   "language": "ta-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1149,18 +920,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "ta-no-reason",
   "shop": "sharma",
   "language": "ta-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1176,18 +942,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "ta-but",
   "shop": "gupta",
   "language": "ta-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1202,18 +963,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "te-yes-yes",
   "shop": "sharma",
   "language": "te-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1234,18 +990,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "te-no-reason",
   "shop": "gupta",
   "language": "te-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1261,18 +1012,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "te-someone-else",
   "shop": "sharma",
   "language": "te-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "నేను పనివాడిని, యజమాని బయటకు వెళ్ళారు",
     "kind": "unsure",
@@ -1281,18 +1027,13 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "bn-yes-yes",
   "shop": "gupta",
   "language": "bn-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1313,18 +1054,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "bn-no-reason",
   "shop": "sharma",
   "language": "bn-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1340,18 +1076,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "bn-but",
   "shop": "gupta",
   "language": "bn-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1366,18 +1097,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "mr-yes-yes",
   "shop": "sharma",
   "language": "mr-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1398,18 +1124,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "mr-no-reason",
   "shop": "gupta",
   "language": "mr-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1425,18 +1146,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "mr-but",
   "shop": "sharma",
   "language": "mr-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1451,18 +1167,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "kn-yes-yes",
   "shop": "gupta",
   "language": "kn-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1483,18 +1194,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "kn-no-reason",
   "shop": "sharma",
   "language": "kn-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1510,18 +1216,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "kn-but",
   "shop": "gupta",
   "language": "kn-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1536,18 +1237,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "gu-yes-yes",
   "shop": "sharma",
   "language": "gu-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1568,18 +1264,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "gu-no-reason",
   "shop": "gupta",
   "language": "gu-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1595,18 +1286,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "gu-someone-else",
   "shop": "sharma",
   "language": "gu-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "હું તો નોકર છું, શેઠ બહાર ગયા છે",
     "kind": "unsure",
@@ -1615,18 +1301,13 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "en-yes-yes",
   "shop": "gupta",
   "language": "en-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1647,18 +1328,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "en-no-reason",
   "shop": "sharma",
   "language": "en-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1674,18 +1350,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "en-but",
   "shop": "gupta",
   "language": "en-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1700,18 +1371,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "ml-yes-yes",
   "shop": "sharma",
   "language": "ml-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1732,18 +1398,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "ml-no-reason",
   "shop": "gupta",
   "language": "ml-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1759,18 +1420,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "ml-someone-else",
   "shop": "sharma",
   "language": "ml-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "ഞാൻ ഇവിടെ ജോലിക്കാരനാണ്, മുതലാളി പുറത്താണ്",
     "kind": "unsure",
@@ -1779,18 +1435,13 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "or-yes-yes",
   "shop": "gupta",
   "language": "or-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1811,18 +1462,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "or-no-reason",
   "shop": "sharma",
   "language": "or-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1838,18 +1484,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "or-but",
   "shop": "gupta",
   "language": "or-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1864,18 +1505,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "pa-yes-yes",
   "shop": "sharma",
   "language": "pa-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1896,18 +1532,13 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "pa-no-reason",
   "shop": "gupta",
   "language": "pa-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -1923,18 +1554,13 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "pa-someone-else",
   "shop": "sharma",
   "language": "pa-IN",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "ਮੈਂ ਤਾਂ ਨੌਕਰ ਹਾਂ, ਮਾਲਕ ਬਾਹਰ ਗਏ ਨੇ",
     "kind": "unsure",
@@ -1943,8 +1569,7 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "verma-not-delivered",
@@ -1958,27 +1583,18 @@
   "shop": "sharma",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "nahi, galat number hai",
     "kind": "na",
     "reason": "galat number hai"
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "family-son",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "papa dukaan pe nahi hain, main beta bol raha hoon",
     "kind": "unsure",
@@ -1987,17 +1603,12 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: someone else",
-  "recording": true
+  "identity": "failed: someone else"
  },
  {
   "id": "family-wife-haan",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan bolo, main unki wife hoon",
     "kind": "unsure",
@@ -2007,7 +1618,6 @@
   ],
   "expect": "held",
   "identity": "failed: someone else",
-  "recording": true,
   "note": "a haan from someone else never passes the owner question"
  },
  {
@@ -2015,27 +1625,18 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "kaun bol raha hai?",
     "kind": "question"
    }
   ],
   "expect": "held",
   "identity": "failed: not confirmed",
-  "recording": true,
   "retry": true
  },
  {
   "id": "wrong-code",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2045,17 +1646,12 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: wrong code",
-  "recording": true
+  "identity": "failed: wrong code"
  },
  {
   "id": "wrong-code-haan-after",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2066,17 +1662,12 @@
   ],
   "expect": "held",
   "identity": "failed: wrong code",
-  "recording": true,
   "note": "someone with his phone but not his app says he is the owner"
  },
  {
   "id": "code-refused",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2087,7 +1678,6 @@
   ],
   "expect": "held",
   "identity": "failed: declined",
-  "recording": true,
   "code_asks": 1,
   "note": "he won't give the code: respected at once, nothing changes"
  },
@@ -2095,10 +1685,6 @@
   "id": "code-silent",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2109,17 +1695,12 @@
   ],
   "expect": "held",
   "identity": "failed: no code",
-  "recording": true,
   "retry": true
  },
  {
   "id": "code-hindi-words",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2138,17 +1719,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "code-devanagari",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2167,17 +1743,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "code-in-a-sentence",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2196,85 +1767,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
- },
- {
-  "id": "consent-no",
-  "shop": "sharma",
-  "turns": [
-   {
-    "text": "nahi, record mat karo",
-    "kind": "na",
-    "reason": "record mat karo"
-   },
-   {
-    "text": "haan ji, main hi bol raha hoon",
-    "kind": "haan"
-   },
-   {
-    "text": "3456"
-   },
-   {
-    "text": "haan liya tha",
-    "kind": "haan"
-   },
-   {
-    "text": "haan pakka",
-    "kind": "haan"
-   }
-  ],
-  "expect": "charged",
-  "honest": true,
-  "identity": "verified",
-  "recording": false,
-  "note": "the call goes on without recording, and a clear yes still counts"
- },
- {
-  "id": "consent-question",
-  "shop": "gupta",
-  "turns": [
-   {
-    "text": "record kyun kar rahe ho?",
-    "kind": "question"
-   },
-   {
-    "text": "haan ji, main hi bol raha hoon",
-    "kind": "haan"
-   },
-   {
-    "text": "3456"
-   },
-   {
-    "text": "na bhaiya, nahi chahiye",
-    "kind": "na"
-   }
-  ],
-  "expect": "held",
-  "identity": "verified",
-  "recording": false
- },
- {
-  "id": "consent-silent",
-  "shop": "sharma",
-  "turns": [
-   {
-    "text": "",
-    "kind": "no answer"
-   }
-  ],
-  "expect": "held",
-  "recording": false,
-  "retry": true
+  "identity": "verified"
  },
  {
   "id": "angry-na",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2289,17 +1787,12 @@
    }
   ],
   "expect": "held",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "box-wapas-at-ask",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2315,17 +1808,12 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "note": "no pickup is booked from what the AI read"
  },
  {
   "id": "box-wapas-at-readback",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2345,17 +1833,12 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "note": "no pickup is booked from what the AI read"
  },
  {
   "id": "hmm-at-ask",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2370,17 +1853,12 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true
  },
  {
   "id": "tap-cancel",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2397,17 +1875,12 @@
   "tap": "cancel",
   "expect": "cancelled",
   "identity": "verified",
-  "recording": true,
   "note": "he taps cancel in WhatsApp: the plan is cancelled and the pickup booked by his tap"
  },
  {
   "id": "tap-cheaper",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2423,17 +1896,12 @@
   ],
   "tap": "cheaper_plan",
   "expect": "charged:plan-b",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "tap-keep",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2449,17 +1917,12 @@
   ],
   "tap": "keep_plan",
   "expect": "charged:plan-a",
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "tap-then-call-again",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2475,13 +1938,8 @@
   "tap": "keep_plan",
   "expect": "charged:plan-a",
   "identity": "verified",
-  "recording": true,
   "again": {
    "turns": [
-    {
-     "text": "haan ji, theek hai",
-     "kind": "haan"
-    },
     {
      "text": "haan ji, main hi bol raha hoon",
      "kind": "haan"
@@ -2507,10 +1965,6 @@
   "shop": "sharma",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -2524,13 +1978,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "again": {
    "turns": [
-    {
-     "text": "haan ji, theek hai",
-     "kind": "haan"
-    },
     {
      "text": "haan ji, main hi bol raha hoon",
      "kind": "haan"
@@ -2557,10 +2006,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -2574,13 +2019,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "again": {
    "turns": [
-    {
-     "text": "haan ji, theek hai",
-     "kind": "haan"
-    },
     {
      "text": "haan ji, main hi bol raha hoon",
      "kind": "haan"
@@ -2606,10 +2046,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -2634,17 +2070,12 @@
   "expect": "charged",
   "honest": true,
   "identity": "verified",
-  "recording": true,
   "note": "waits are not tries: he's opening the app"
  },
  {
   "id": "code-pause",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2670,17 +2101,12 @@
   "expect": "charged",
   "honest": true,
   "identity": "verified",
-  "recording": true,
   "note": "a pause, then a bare 'it came', then the code"
  },
  {
   "id": "code-pairs",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2699,17 +2125,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "code-pairs-devanagari",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2728,17 +2149,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "code-twice",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2757,17 +2173,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "code-spellings",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2786,17 +2197,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "code-wrong-then-right",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2818,17 +2224,12 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  },
  {
   "id": "code-three-wrong",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2845,7 +2246,6 @@
   ],
   "expect": "held",
   "identity": "failed: wrong code",
-  "recording": true,
   "note": "three wrong codes, then a polite goodbye",
   "code_asks": 3
  },
@@ -2853,10 +2253,6 @@
   "id": "code-near-miss",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2873,17 +2269,12 @@
   ],
   "expect": "held",
   "identity": "failed: wrong code",
-  "recording": true,
   "note": "only the exact 4 digits pass"
  },
  {
   "id": "name-garbled-then-haan",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "हाँ लियाका।",
     "kind": "unsure",
@@ -2908,17 +2299,12 @@
   "expect": "charged",
   "honest": true,
   "identity": "verified",
-  "recording": true,
   "note": "a garbled haan gets the name question once more"
  },
  {
   "id": "name-unclear-twice",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "हाँ लियाका।",
     "kind": "unsure",
@@ -2930,17 +2316,12 @@
    }
   ],
   "expect": "held",
-  "identity": "failed: not confirmed",
-  "recording": true
+  "identity": "failed: not confirmed"
  },
  {
   "id": "round-two-charges",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -2960,14 +2341,9 @@
   "expect": "charged",
   "honest": true,
   "identity": "verified",
-  "recording": true,
   "new_round": true,
   "again": {
    "turns": [
-    {
-     "text": "haan ji, theek hai",
-     "kind": "haan"
-    },
     {
      "text": "haan ji, main hi bol raha hoon",
      "kind": "haan"
@@ -2993,10 +2369,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -3010,7 +2382,6 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "new_round": true,
   "old_tap": "keep_plan",
   "note": "a round-1 WhatsApp tapped in round 2 has expired"
@@ -3020,10 +2391,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -3037,13 +2404,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "again": {
    "turns": [
-    {
-     "text": "haan ji, theek hai",
-     "kind": "haan"
-    },
     {
      "text": "main unka beta hoon",
      "kind": "unsure",
@@ -3063,10 +2425,6 @@
   "shop": "sharma",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -3080,13 +2438,8 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "again": {
    "turns": [
-    {
-     "text": "haan ji, theek hai",
-     "kind": "haan"
-    },
     {
      "text": "haan ji, main hi bol raha hoon",
      "kind": "haan"
@@ -3114,10 +2467,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -3130,7 +2479,6 @@
   ],
   "expect": "held",
   "identity": "failed: declined",
-  "recording": true,
   "code_asks": 1,
   "unread": 1,
   "note": "the reply from Shubham's live test: one ask, then the calm closing, never a loop"
@@ -3139,10 +2487,6 @@
   "id": "code-who-first",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -3153,7 +2497,6 @@
   ],
   "expect": "held",
   "identity": "failed: declined",
-  "recording": true,
   "code_asks": 1
  },
  {
@@ -3161,26 +2504,17 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "aap kaun ho pehle batao",
     "kind": "question"
    }
   ],
   "expect": "held",
-  "identity": "failed: declined",
-  "recording": true
+  "identity": "failed: declined"
  },
  {
   "id": "code-ask-cap",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -3200,7 +2534,6 @@
   ],
   "expect": "held",
   "identity": "failed: no code",
-  "recording": true,
   "code_asks": 3,
   "unread": 1,
   "note": "three asks in all, waits included, never a fourth"
@@ -3209,10 +2542,6 @@
   "id": "code-ask-cap-silence",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -3232,7 +2561,6 @@
   ],
   "expect": "held",
   "identity": "failed: no code",
-  "recording": true,
   "code_asks": 3,
   "unread": 1,
   "retry": true
@@ -3241,10 +2569,6 @@
   "id": "hangup-at-ask",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -3259,7 +2583,6 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true,
   "note": "he hangs up at the plan question: nothing changes, an SMS says the call cut, a retry is booked"
  },
@@ -3267,10 +2590,6 @@
   "id": "hangup-keeps-choices",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -3285,14 +2604,9 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true,
   "again": {
    "turns": [
-    {
-     "text": "haan ji, theek hai",
-     "kind": "haan"
-    },
     {
      "hangup": true,
      "text": ""
@@ -3311,10 +2625,6 @@
   "shop": "gupta",
   "turns": [
    {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
-   {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
    },
@@ -3324,32 +2634,14 @@
   ],
   "expect": "held",
   "identity": "busy → call back later",
-  "recording": true,
   "retry": true,
   "code_asks": 1,
   "note": "busy at the code step: a callback, not 'I'm waiting'"
  },
  {
-  "id": "busy-at-consent",
-  "shop": "sharma",
-  "turns": [
-   {
-    "text": "abhi busy hoon, baad mein call karna",
-    "kind": "unsure"
-   }
-  ],
-  "expect": "held",
-  "recording": false,
-  "retry": true
- },
- {
   "id": "busy-at-ask",
   "shop": "gupta",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -3364,17 +2656,12 @@
   ],
   "expect": "held",
   "identity": "verified",
-  "recording": true,
   "retry": true
  },
  {
   "id": "code-english-pairs",
   "shop": "sharma",
   "turns": [
-   {
-    "text": "haan ji, theek hai",
-    "kind": "haan"
-   },
    {
     "text": "haan ji, main hi bol raha hoon",
     "kind": "haan"
@@ -3393,7 +2680,6 @@
   ],
   "expect": "charged",
   "honest": true,
-  "identity": "verified",
-  "recording": true
+  "identity": "verified"
  }
 ]

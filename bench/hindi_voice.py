@@ -38,7 +38,7 @@ RATE = 16000
 SNRS = (20, 10, 5)
 CONDITIONS = ("clean", "n20", "n10", "n5", "phone")
 SHOPS = ("gupta", "sharma")
-TYPED = {script.CONSENT: "हाँ जी, ठीक है", script.NAME_RECORDED: "हाँ जी, मैं ही बोल रहा हूँ",
+TYPED = {script.GREETING: "हाँ जी, मैं ही बोल रहा हूँ",
          script.ASK: "हाँ जी, लिया था", script.READ_BACK: "हाँ, पक्का"}
 
 

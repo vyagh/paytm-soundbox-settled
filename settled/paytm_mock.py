@@ -129,8 +129,6 @@ def tell_manager(shop, reason):
     s = shop.signup
     text = (f"{_who(shop)} said no to the ₹{s['price']}/month Soundbox rent that {_salesman(shop)} signed up "
             f"on {_day(s['on'])} (form {s['form']}). What he said: {_his_words(answer)}. Nothing is taken.")
-    if answer and log.clip(answer["id"]):
-        text += " Recording attached."
     log.message(shop.id, "manager", "WhatsApp", f"For {s['salesman']['name']}'s manager: {text}")
     return _act(shop, "tell manager", reason=reason)
 

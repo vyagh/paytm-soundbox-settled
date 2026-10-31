@@ -18,11 +18,6 @@ def before_call(shop):
     return Decision("call", "records in order → call")
 
 
-def consent(answer):
-    """Recording only on his clear haan. The call goes on either way."""
-    return "recording allowed" if answer.kind == "haan" else "no recording"
-
-
 def name(answer, first=True):
     """None when he says he is the owner, "ask again" for an unclear first reply, else
     the identity rule that ends the call. Only a clear someone else ends it at once."""

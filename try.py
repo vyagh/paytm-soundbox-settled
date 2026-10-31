@@ -5,9 +5,8 @@
 
 Answers: haan, na, unsure, question, silent, for the plan question and the
 read-back. A quoted text right after na or unsure is his reason. He allows the
-recording, says he is the owner and reads the right code first.
+says he is the owner and reads the right code first.
 """
-import shutil
 import sys
 
 from settled import flow, log, records
@@ -69,9 +68,6 @@ def main(args):
     if args[0] == "reset":
         log.path().unlink(missing_ok=True)
         print(f"deleted {log.path()}")
-        if log.clips().is_dir():
-            shutil.rmtree(log.clips())
-            print(f"deleted {log.clips()}")
         return
 
     shop_id, answers = args[0], parse(args[1:])
@@ -79,7 +75,7 @@ def main(args):
         sys.exit(f"no shop {shop_id!r}, known shops: {', '.join(records.shop_ids())}")
 
     state = CallState()
-    queue = iter([Answer("haan", "Haan, theek hai."), Answer("haan", "Haan ji, main hi bol raha hoon."), None, *answers])
+    queue = iter([Answer("haan", "Haan ji, main hi bol raha hoon."), None, *answers])
 
     def listener(shop, said, wait=True):
         if not wait:

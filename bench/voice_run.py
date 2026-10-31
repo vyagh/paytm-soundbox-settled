@@ -65,7 +65,7 @@ def main(shop, replies):
             break
         seq = prompt["seq"]
         status, audio = call(f"/api/call/{shop}/audio/{seq}")
-        print(f"line {seq} [{prompt['step']}, recording {prompt['recording']}]: {prompt['said']}  "
+        print(f"line {seq} [{prompt['step']}]: {prompt['said']}  "
               f"(voice {status}, {len(audio) if status == 200 else 0} bytes)")
         if reply == "wait":
             print("  waiting it out")
