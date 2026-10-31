@@ -4,3 +4,5 @@ __pycache__/
 bench/cost.log
 voice/cache/
 clips/
+bench/audio/hindi-real/*.wav
+bench/audio/hindi-real/runs/
