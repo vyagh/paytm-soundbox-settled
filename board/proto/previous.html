@@ -1,0 +1,1230 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Settled</title>
+<style>
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin.woff2) format("woff2");
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@font-face{font-family:"Board Sans";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/inter-latin-ext.woff2) format("woff2");
+  unicode-range:U+0100-02AF,U+0304,U+0308,U+0329,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Board Devanagari";font-style:normal;font-display:swap;font-weight:100 900;src:url(/fonts/noto-sans-devanagari.woff2) format("woff2");
+  unicode-range:U+0900-097F,U+1CD0-1CF9,U+200C-200D,U+20A8,U+20B9,U+20F0,U+25CC,U+A830-A839,U+A8E0-A8FF}
+:root{
+  --bg:#f4f4f6; --surface:#fff; --fill:#f2f2f5; --fill2:#e7e7ec; --hair:rgb(20 20 40 / .08);
+  --ink:#1d1d1f; --ink2:#3b3b41; --muted:#6c6c73; --faint:#9c9ca3;
+  --accent:#1f5fc9; --accent-soft:#ebf2fd; --accent-ink:#164a9e;
+  --charged:#1e7d3c; --charged-soft:#e5f3e9;
+  --held:#b25300; --held-soft:#fcf0e2;
+  --not:#5c5d66; --not-soft:#eeeef1;
+  --rec:#d42a3c; --rec-soft:#fde7ea; --mock:#8c5600;
+  --sans:"Board Sans","Board Devanagari",system-ui,-apple-system,"Segoe UI","Nirmala UI","Noto Sans",sans-serif;
+  --ease:cubic-bezier(.2,.8,.2,1);
+  --r:1.25rem;
+  --card:0 1px 2px rgb(20 20 40 / .04),0 8px 24px -16px rgb(20 20 40 / .18);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{font-size:clamp(13px,min(1.1vw,1.95vh),22px)}
+body{background:var(--bg);color:var(--ink2);font-family:var(--sans);line-height:1.45;font-feature-settings:"cv11";-webkit-font-smoothing:antialiased;
+  height:100vh;overflow:hidden;display:grid;grid-template-rows:auto minmax(0,1fr);padding:1rem 1.5rem 1.5rem;gap:1rem}
+q{quotes:"\201C" "\201D"}
+[hidden]{display:none!important}
+button,select,input{font:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.label{display:block;font-size:.75rem;font-weight:600;letter-spacing:.01em;color:var(--muted)}
+
+/* header */
+.bar{display:flex;align-items:center;gap:1.25rem;min-height:2.75rem}
+.brand{display:flex;align-items:center;gap:.75rem}
+.mark{width:2.25rem;height:2.25rem;flex:none}
+h1{font-size:1.35rem;line-height:1.1;color:var(--ink);letter-spacing:-.025em;font-weight:700}
+.brand p{font-size:.8125rem;color:var(--muted)}
+.how{list-style:none;display:flex;gap:1.5rem;margin-left:auto;counter-reset:how}
+.how li{counter-increment:how;display:flex;align-items:center;gap:.5rem;font-size:.8125rem;font-weight:500;color:var(--ink2)}
+.how li::before{content:counter(how);display:grid;place-items:center;width:1.3rem;height:1.3rem;border-radius:50%;background:var(--fill2);color:var(--ink2);font-size:.68rem;font-weight:700}
+.live{display:flex;align-items:center;gap:.5rem;font-size:.8125rem;font-weight:600;color:var(--charged)}
+.live::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:currentColor;box-shadow:0 0 0 .2rem color-mix(in srgb,currentColor 16%,transparent)}
+.live.off{color:var(--rec)}
+
+/* three columns */
+main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min-height:0}
+.panel{background:var(--surface);border-radius:var(--r);box-shadow:var(--card);min-height:0}
+
+/* shop list */
+.rail{display:flex;flex-direction:column;gap:.75rem;min-height:0}
+.rail h2{font-size:.75rem;font-weight:600;color:var(--muted);padding:.25rem .75rem 0}
+.shops{list-style:none;display:flex;flex-direction:column;gap:.375rem}
+.shop{width:100%;text-align:left;border:0;background:transparent;border-radius:1rem;padding:.75rem .9rem;cursor:pointer;display:grid;gap:.2rem;
+  transition:background-color .2s var(--ease),box-shadow .25s var(--ease)}
+.shop:hover{background:rgb(255 255 255 / .6)}
+.shop[aria-current="true"]{background:var(--surface);box-shadow:var(--card)}
+.shop b{font-size:1rem;font-weight:650;color:var(--ink);letter-spacing:-.01em;display:flex;align-items:center;justify-content:space-between;gap:.5rem}
+.shop .st{display:flex;align-items:center;gap:.45rem;font-size:.8125rem;font-weight:550;color:var(--muted)}
+.shop .st::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:var(--fill2);flex:none}
+.st.k-charged{color:var(--charged)} .st.k-charged::before{background:var(--charged)}
+.st.k-held{color:var(--held)} .st.k-held::before{background:var(--held)}
+.st.k-not,.st.k-cancelled{color:var(--not)} .st.k-not::before,.st.k-cancelled::before{background:var(--not)}
+.st.k-on{color:var(--accent)} .st.k-on::before{background:var(--accent)}
+.st.k-rec{color:var(--rec)} .st.k-rec::before{background:var(--rec)}
+.phonepanel{display:flex;flex-direction:column;min-height:0;flex:1}
+.screen{position:relative;flex:1;min-height:0;margin:0 1rem 1rem;border-radius:1.4rem;padding:.75rem .7rem .8rem;display:flex;flex-direction:column;gap:.5rem;
+  background:#ece5dd;border:.35rem solid #1d1d1f;padding:.75rem;overflow:auto;scrollbar-width:none}
+.screen::-webkit-scrollbar{display:none}
+.screen .empty{margin:auto;color:var(--muted);font-size:.875rem;text-align:center}
+.notif.top{position:sticky;top:0;z-index:1;box-shadow:0 6px 18px -8px rgb(20 20 40 / .35)}
+.notif{background:rgb(255 255 255 / .9);border-radius:.9rem;padding:.55rem .65rem .65rem;box-shadow:0 1px 2px rgb(20 20 40 / .08)}
+.app{display:flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:600;color:var(--muted)}
+.app i{width:1.05rem;height:1.05rem;border-radius:.3rem;background:var(--accent);flex:none;display:grid;place-items:center}
+.app i svg{width:.65rem;height:.65rem}
+.app.wa i{background:#1f8a4c}
+.app time{margin-left:auto;font-weight:500;color:var(--faint)}
+.notif p{font-size:.78rem;line-height:1.35;color:var(--ink);margin-top:.3rem}
+.code{display:block;font-size:1.55rem;font-weight:700;letter-spacing:.14em;color:var(--ink);font-variant-numeric:tabular-nums;margin-top:.15rem}
+.wamsg{background:#fff;border-radius:.2rem .9rem .9rem .9rem;padding:.55rem .7rem .6rem;box-shadow:0 1px 1px rgb(20 20 40 / .1);max-width:94%}
+.wamsg .from{display:flex;align-items:center;gap:.4rem;font-size:.68rem;font-weight:650;color:var(--muted);margin-bottom:.2rem}
+.wamsg .from time{margin-left:auto;font-weight:500;color:var(--faint)}
+.wamsg p{font-size:.8125rem;line-height:1.42;color:var(--ink)}
+.walink{display:block;margin-top:.35rem;font-size:.7rem;color:#1a6fb5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.choices{display:flex;flex-direction:column;gap:.3rem}
+.choice{border:0;background:#fff;color:#1f7a45;font-size:.8125rem;padding:0 .6rem;font-weight:600;height:2.3rem;border-radius:.7rem;cursor:pointer;box-shadow:0 1px 1px rgb(20 20 40 / .1);
+  transition:background-color .15s,color .15s,transform .12s var(--ease)}
+.choice:hover:not(:disabled){background:#f4fbf6}
+.choice:active:not(:disabled){transform:scale(.98)}
+.choice:disabled{cursor:default;color:var(--faint)}
+.choice[aria-pressed="true"]{background:#1f8a4c;color:#fff}
+.callme{display:flex;align-items:center;justify-content:center;gap:.45rem;width:100%;margin-top:.5rem;border:0;background:#1f8a4c;color:#fff;font-size:.8125rem;font-weight:600;height:2.3rem;border-radius:.7rem;cursor:pointer;
+  transition:background-color .15s,transform .12s var(--ease)}
+.callme svg{width:.9rem;height:.9rem}
+.callme:hover:not(:disabled){background:#1a7a43}
+.callme:active:not(:disabled){transform:scale(.98)}
+.callme:disabled{cursor:default;background:var(--fill2);color:var(--faint)}
+.wamsg p.clamp{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden}
+.more{border:0;background:none;padding:0;margin-top:.15rem;font-size:.75rem;font-weight:600;color:var(--muted);cursor:pointer}
+.more:hover{color:var(--ink2)}
+.choicebar{position:sticky;bottom:-.75rem;margin:0 -.75rem;padding:.4rem .75rem .75rem;background:#ece5dd;display:flex;flex-direction:column;gap:.45rem}
+.tapnote{font-size:.75rem;line-height:1.35;color:var(--muted);text-align:center;padding:0 .2rem}
+.tapnote.warn{color:var(--rec)}
+.railfoot{margin-top:auto;display:flex;flex-direction:column;gap:.6rem;padding:0 .75rem .25rem}
+.railfoot p{font-size:.75rem;color:var(--faint);line-height:1.4}
+.railfoot .warn{color:var(--rec)}
+.ghost{align-self:flex-start;border:0;background:var(--fill2);color:var(--ink2);font-size:.75rem;font-weight:600;height:1.9rem;padding:0 .85rem;border-radius:999px;cursor:pointer;transition:background-color .15s}
+.ghost:hover{background:#dcdce2}
+
+/* the call */
+.call{display:flex;flex-direction:column;padding:1.25rem 1.5rem 1.25rem;gap:1rem;overflow:hidden}
+.callhead{display:flex;align-items:center;gap:1rem}
+.callhead h2{font-size:1.6rem;line-height:1.15;color:var(--ink);letter-spacing:-.03em;font-weight:700}
+.callhead .sub{font-size:.875rem;color:var(--muted);margin-top:.15rem}
+.pill{margin-left:auto;display:flex;align-items:center;gap:.5rem;font-size:.875rem;font-weight:600;height:2rem;padding:0 .9rem;border-radius:999px;white-space:nowrap;color:var(--muted);background:var(--fill)}
+.pill::before{content:"";width:.5rem;height:.5rem;border-radius:50%;background:currentColor}
+.pill.k-on{color:var(--accent);background:var(--accent-soft)}
+.pill.k-rec{color:var(--rec);background:var(--rec-soft)}
+.pill.k-charged{color:var(--charged);background:var(--charged-soft)}
+.pill.k-held{color:var(--held);background:var(--held-soft)}
+.pill.k-not,.pill.k-cancelled{color:var(--not);background:var(--not-soft)}
+.ok{display:inline-flex;align-items:center;gap:.3rem;color:var(--charged);font-weight:600}
+.ok svg{width:.95em;height:.95em}
+
+/* steps of the call */
+.steps{list-style:none;display:flex;align-items:center;gap:.4rem;flex:none;font-size:.8125rem;font-weight:550;color:var(--faint)}
+.steps li{display:flex;align-items:center;gap:.4rem;white-space:nowrap}
+.steps li+li::before{content:"";width:1.1rem;height:1px;background:var(--fill2);margin-right:.05rem}
+.steps i{display:grid;place-items:center;width:1.2rem;height:1.2rem;border-radius:50%;background:var(--fill);color:var(--faint);font-style:normal;font-size:.65rem;font-weight:700;flex:none}
+.steps i svg{width:.7rem;height:.7rem}
+.steps .done{color:var(--ink2)}
+.steps .done i{background:var(--charged-soft);color:var(--charged)}
+.steps .now{color:var(--ink);font-weight:650}
+.steps .now i{background:var(--accent);color:#fff;box-shadow:0 0 0 .2rem var(--accent-soft)}
+.steps .stop i{background:var(--held-soft);color:var(--held)}
+.steps .stop{color:var(--held)}
+.steps .yr{font-size:.75rem;font-weight:600;font-variant-numeric:tabular-nums;color:var(--muted);background:var(--fill);border-radius:999px;padding:.05rem .45rem}
+.steps .stop .yr{color:var(--held);background:var(--held-soft)}
+.steps .skip{text-decoration:line-through;text-decoration-color:var(--fill2)}
+
+.convo{flex:1 1 auto;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;scrollbar-width:thin;padding:.1rem}
+.bub{max-width:88%;border-radius:1.15rem;padding:.75rem 1rem .8rem}
+.bub .label{margin-bottom:.25rem;display:flex;align-items:center;gap:.5rem}
+.bub.settled{align-self:flex-start;background:var(--accent-soft);border-top-left-radius:.4rem}
+.bub.settled .label{color:var(--accent-ink)}
+.bub.him{align-self:flex-end;background:var(--fill);border-top-right-radius:.4rem;min-width:16rem}
+.native{font-size:1.2rem;line-height:1.45;color:var(--ink);font-weight:500}
+.gloss{font-size:.8125rem;line-height:1.4;color:var(--muted);margin-top:.15rem}
+.words{font-size:1.2rem;line-height:1.4;color:var(--ink);font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.words .none{font-size:.95rem;font-weight:500;color:var(--faint)}
+.read{display:flex;align-items:center;gap:.5rem;margin-top:.35rem;font-size:.8125rem;color:var(--muted)}
+.kind{display:inline-flex;align-items:center;height:1.4rem;padding:0 .55rem;border-radius:999px;font-size:.75rem;font-weight:650;background:var(--surface);color:var(--ink2)}
+.kind.haan{color:var(--charged)} .kind.na{color:var(--held)}
+.bub.old{padding:.45rem .85rem .5rem}
+.bub.old .native{font-size:.95rem;color:var(--ink2)}
+.bub.old .label{display:none}
+.bub.old .words{font-size:.95rem}
+.bub.old .read{margin-top:.15rem}
+.bub.settled.old{max-width:72%}
+.sys{align-self:center;display:flex;flex-direction:column;align-items:center;gap:.2rem;text-align:center;padding:.5rem 1rem;max-width:80%}
+.sys b{font-size:1rem;font-weight:600;color:var(--ink)}
+.sys span{font-size:.8125rem;color:var(--muted)}
+.eq{display:inline-flex;gap:2px;align-items:center;height:.7rem}
+.eq i{width:3px;height:100%;background:currentColor;border-radius:2px}
+.meter{display:flex;align-items:center;gap:3px;height:1.9rem;width:100%}
+.meter i{flex:1;height:100%;border-radius:3px;background:var(--rec);transform:scaleY(.08);transition:transform 60ms linear}
+.dots{display:inline-flex;gap:.3rem}
+.dots i{width:.4rem;height:.4rem;border-radius:50%;background:var(--faint)}
+
+/* controls */
+.controls{display:flex;align-items:center;gap:.75rem;min-height:3.25rem;flex:none}
+.btn{border:0;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:.55rem;font-weight:600;white-space:nowrap;
+  transition:background-color .15s,transform .12s var(--ease),box-shadow .2s}
+.btn svg{width:1.1em;height:1.1em;flex:none}
+.btn:disabled{opacity:.5;cursor:default}
+.start{font-size:1rem;height:3.25rem;padding:0 1.75rem;background:var(--ink);color:#fff;margin-left:auto}
+.start:hover{background:#000}
+.start.again{background:var(--fill2);color:var(--ink)}
+.start.again:hover{background:#dcdce2}
+.talk{font-size:1.05rem;height:3.25rem;padding:0 1.75rem;background:var(--accent);color:#fff;touch-action:none;user-select:none;-webkit-user-select:none;min-width:13rem}
+.talk.on{background:var(--rec);transform:scale(.97);box-shadow:0 0 0 .4rem var(--rec-soft)}
+.typed{display:flex;gap:.5rem;flex:1;min-width:0}
+.typed input{flex:1;min-width:0;font-size:.95rem;height:3.25rem;padding:0 1.25rem;border:0;border-radius:999px;background:var(--fill);color:var(--ink)}
+.typed input::placeholder{color:var(--faint)}
+.typed input:focus{outline:2px solid var(--accent);outline-offset:0;background:#fff}
+.typed button{font-size:.95rem;font-weight:600;border:0;border-radius:999px;background:var(--fill2);color:var(--ink2);height:3.25rem;padding:0 1.25rem;cursor:pointer}
+.typed button:hover{background:#dcdce2}
+.lang{appearance:none;font-size:.875rem;font-weight:600;color:var(--ink2);background:var(--fill) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 14'%3E%3Cpath d='M2 5l3-3 3 3M2 9l3 3 3-3' fill='none' stroke='%236c6c73' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right .8rem center/.5rem;
+  border:0;border-radius:999px;height:3.25rem;padding:0 2.2rem 0 1.15rem;cursor:pointer;max-width:14rem}
+.lang:hover{background-color:var(--fill2)}
+.note{font-size:.8125rem;color:var(--muted);flex:none;max-width:16rem;line-height:1.35}
+.note:empty{display:none}
+.note .warn{color:var(--rec);font-weight:600}
+.note span{display:block}
+
+/* result */
+.side{display:flex;flex-direction:column;gap:1rem;min-height:0}
+.result{padding:1.1rem 1.4rem 1.15rem;display:flex;flex-direction:column;gap:.75rem;flex:none}
+.result h3{font-size:.75rem;font-weight:600;color:var(--muted)}
+.verdict{display:flex;align-items:center;gap:.9rem}
+.verdict svg{width:2.9rem;height:2.9rem;flex:none}
+.verdict strong{display:block;font-size:2rem;line-height:1.05;letter-spacing:-.035em;font-weight:700;font-variant-numeric:tabular-nums}
+.verdict span{display:block;font-size:.875rem;font-weight:500;margin-top:.3rem;color:var(--muted)}
+.v-charged{color:var(--charged)} .v-held{color:var(--held)} .v-not,.v-cancelled{color:var(--not)}
+.verdict strong{color:inherit}
+.facts{display:flex;flex-direction:column;gap:.6rem;padding-top:.75rem;border-top:1px solid var(--hair)}
+.facts p{font-size:.875rem;line-height:1.45;color:var(--ink)}
+.facts .label{margin-bottom:.15rem}
+.arr{width:.95em;height:.6em;color:var(--muted);vertical-align:.05em;margin:0 .1em}
+.acts .label{display:flex;align-items:center;gap:.4rem}
+.acts .sep{color:var(--faint)}
+.mock{display:inline-flex;align-items:center;font-size:.6rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mock);background:#fff;border-radius:999px;height:1.15rem;padding:0 .45rem;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--mock) 40%,transparent)}
+.outs{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.outs li{display:grid;grid-template-columns:.6rem 1fr;column-gap:.7rem;align-items:baseline;font-size:.875rem;color:var(--ink)}
+.outs li::before{content:"";width:.6rem;height:.6rem;border-radius:50%;background:var(--c);transform:translateY(-.05rem)}
+.outs li span{grid-column:2;font-size:.8125rem;color:var(--muted)}
+.outs b{font-weight:650;color:var(--c)}
+.recs{font-size:.875rem;color:var(--ink);line-height:1.45}
+.team{list-style:none;display:flex;flex-direction:column;gap:.35rem}
+.team li{font-size:.8125rem;line-height:1.4;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.acts-label{display:flex;align-items:center;gap:.4rem}
+.team b{font-weight:650;color:var(--ink)}
+
+.texthead{display:flex;align-items:baseline;justify-content:space-between;padding:1rem 1.4rem .6rem}
+.texthead h3{font-size:.75rem;font-weight:600;color:var(--muted)}
+.texthead p{font-size:.75rem;color:var(--faint)}
+.hangup{display:inline-flex;align-items:center;gap:.4rem;border:0;border-radius:999px;background:var(--rec);color:#fff;font-size:.75rem;font-weight:650;height:1.9rem;padding:0 .8rem 0 .6rem;cursor:pointer;
+  transition:background-color .15s,transform .12s var(--ease)}
+.hangup svg{width:1.1rem;height:1.1rem}
+.hangup:hover{background:#b8202f}
+.hangup:active{transform:scale(.96)}
+.hangup:disabled{opacity:.6;cursor:default}
+
+/* where his rent goes: AI reads, plain code and his tap move it */
+.money{position:relative;flex:none;height:9.4rem;display:grid;grid-template-columns:6rem minmax(0,1fr) 2.4rem 14rem;align-items:center;
+  background:var(--fill);border-radius:1rem;padding:.6rem 1rem .6rem .9rem}
+.mstart{display:flex;flex-direction:column;align-items:center;gap:.35rem;text-align:center}
+.mstart b{font-size:.75rem;font-weight:650;color:var(--ink)}
+.mstart span{font-size:.68rem;color:var(--muted);line-height:1.25}
+.dock{width:2.7rem;height:2.7rem;border-radius:50%;flex:none;box-shadow:inset 0 0 0 1.5px var(--fill2);background:rgb(255 255 255 / .55)}
+.gate{display:flex;flex-direction:column;gap:.45rem;padding:0 .2rem 0 .6rem;min-width:0}
+.gate em{font-style:normal;font-size:.72rem;color:var(--muted);text-align:center}
+.gate em b{font-weight:650;color:var(--ink2)}
+.locks{position:relative;display:flex;align-items:center;gap:.6rem}
+.locks::before{content:"";position:absolute;left:0;right:0;top:50%;height:2px;background:var(--fill2);border-radius:2px}
+.gate.go .locks::before{background:linear-gradient(90deg,var(--fill2),var(--c,var(--accent)))}
+.lock{position:relative;flex:1 1 0;min-width:0;background:var(--surface);border-radius:.85rem;padding:.5rem .7rem .55rem;box-shadow:0 1px 2px rgb(20 20 40 / .06);
+  display:grid;grid-template-columns:1.6rem minmax(0,1fr);column-gap:.5rem;align-items:center;transition:box-shadow .3s var(--ease)}
+.lock .ic{grid-row:span 2;display:grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;background:var(--fill);color:var(--faint)}
+.lock .ic svg{width:.85rem;height:.85rem}
+.lock small{font-size:.68rem;font-weight:600;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lock p{font-size:.8125rem;font-weight:600;color:var(--ink);line-height:1.3;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.lock p.idle{color:var(--faint);font-weight:500}
+.lock .kind{height:1.25rem;background:var(--fill);margin-right:.25rem}
+.lock.open .ic{background:var(--charged-soft);color:var(--charged)}
+.lock.shut .ic{background:var(--held-soft);color:var(--held)}
+.lock.shut{box-shadow:0 0 0 1.5px color-mix(in srgb,var(--held) 30%,transparent)}
+.fork{width:100%;height:100%;overflow:visible}
+.fork path{fill:none;stroke:var(--fill2);stroke-width:2;stroke-linecap:round;vector-effect:non-scaling-stroke;transition:stroke .4s}
+.fork path.on{stroke:var(--c)}
+.dests{display:flex;flex-direction:column;justify-content:space-between;height:100%;padding:.1rem 0}
+.dest{display:grid;grid-template-columns:2.7rem minmax(0,1fr);column-gap:.6rem;align-items:center;opacity:.55;transition:opacity .4s}
+.dest.on{opacity:1}
+.dest b{display:block;font-size:.8125rem;font-weight:650;color:var(--c)}
+.dest span{display:block;font-size:.68rem;color:var(--muted);line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dest .dock{box-shadow:inset 0 0 0 1.5px color-mix(in srgb,var(--c) 35%,transparent)}
+.dest.held .dock{background:repeating-linear-gradient(135deg,var(--held-soft) 0 4px,#fff 4px 8px)}
+.coin{position:absolute;left:0;top:0;width:2.7rem;height:2.7rem;border-radius:50%;display:grid;place-items:center;z-index:1;
+  font-size:.75rem;font-weight:750;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink);background:#fff;
+  box-shadow:inset 0 0 0 2px var(--ink),0 3px 10px -3px rgb(20 20 40 / .35);will-change:transform}
+.coin.c-charged{background:var(--charged);color:#fff;box-shadow:0 3px 10px -3px rgb(30 125 60 / .6)}
+.coin.c-held{background:#fff;color:var(--held);box-shadow:inset 0 0 0 2px var(--held),0 3px 10px -3px rgb(178 83 0 / .4)}
+.coin.c-back{background:#fff;color:var(--not);box-shadow:inset 0 0 0 2px var(--not),0 3px 10px -3px rgb(20 20 40 / .25)}
+@media (prefers-reduced-motion:no-preference){
+  .coin.moving{transition:transform .9s var(--ease),background-color .4s .6s,color .4s .6s,box-shadow .4s .6s}
+}
+@media (prefers-reduced-motion:no-preference){
+  .pill.breathe::before{animation:breathe 1.6s ease-in-out infinite}
+  .eq i{animation:eq .7s var(--ease) infinite alternate}
+  .eq i:nth-child(2){animation-delay:-.25s}
+  .eq i:nth-child(3){animation-delay:-.5s}
+  .dots i{animation:breathe 1.2s ease-in-out infinite}
+  .dots i:nth-child(2){animation-delay:.2s}
+  .dots i:nth-child(3){animation-delay:.4s}
+  .enter{animation:enter .45s var(--ease) both}
+  .pop{animation:pop .5s var(--ease) both}
+}
+@keyframes breathe{50%{opacity:.3}}
+@keyframes eq{from{transform:scaleY(.3)}to{transform:scaleY(1)}}
+@keyframes enter{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}
+</style>
+</head>
+<body>
+<header class="bar">
+  <div class="brand">
+    <svg class="mark" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="11" fill="#1d1d1f"/><path d="M11 13.5h18a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3h-9l-5.5 4v-4H11a3 3 0 0 1-3-3v-8a3 3 0 0 1 3-3z" fill="#fff"/><path d="M15 20.5l3.4 3.2 6.6-6.7" fill="none" stroke="#1d1d1f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <div>
+      <h1>Settled</h1>
+      <p>Asks the shopkeeper before the first Soundbox rent is taken</p>
+    </div>
+  </div>
+  <ol class="how" aria-label="How it works">
+    <li>Asks him in his language</li>
+    <li>AI only sorts his reply</li>
+    <li>Plain rules decide the money</li>
+  </ol>
+  <div class="live off" id="live">Connecting</div>
+</header>
+
+<main>
+  <nav class="rail" aria-label="Shops">
+    <h2>Rent due 1 Nov</h2>
+    <ul class="shops" id="shops"></ul>
+    <div class="railfoot">
+      <p id="fresh-note"></p>
+      <button class="ghost" type="button" id="fresh"></button>
+    </div>
+  </nav>
+
+  <section class="panel call" aria-label="The call">
+    <div class="callhead">
+      <div><h2 id="name"></h2><p class="sub" id="sub"></p></div>
+      <div class="pill" id="pill"></div>
+    </div>
+    <ol class="steps" id="steps" aria-label="Steps of the call" hidden></ol>
+    <div class="money" id="money" aria-label="Where his rent goes"></div>
+    <div class="convo" id="convo"></div>
+    <div class="controls" id="controls">
+      <select class="lang" id="lang" aria-label="Language for the next call"></select>
+      <button class="btn talk" type="button" id="talk" hidden></button>
+      <form class="typed" id="typed" hidden><input name="text" placeholder="Type his reply instead" autocomplete="off" aria-label="Type his reply instead"><button>Send</button></form>
+      <div class="note" id="note"></div>
+      <button class="btn start" type="button" id="start"></button>
+    </div>
+  </section>
+
+  <aside class="side">
+    <section class="panel result" id="result" aria-label="Result"></section>
+    <section class="panel phonepanel" aria-label="His phone">
+      <div class="texthead"><h3 id="phone-title">His phone</h3><p id="phone-note">Mock, nothing is sent</p><button class="hangup" type="button" id="hangup" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 9c-2.6 0-5 .6-7.2 1.7-.6.3-.9.9-.9 1.5v2.4c0 .7.6 1.2 1.3 1.1l2.9-.5c.6-.1 1-.6 1-1.2v-1.7c1.9-.6 3.9-.6 5.8 0V14c0 .6.4 1.1 1 1.2l2.9.5c.7.1 1.3-.4 1.3-1.1v-2.4c0-.6-.3-1.2-.9-1.5C17 9.6 14.6 9 12 9z" fill="currentColor"/></svg>Hang up</button></div>
+      <div class="screen" id="phone"></div>
+    </section>
+  </aside>
+</main>
+
+<script>
+let SHOPS = {};
+let focus = null;
+let rows = [];
+let lastId = 0;
+let lastAt = null;
+let msgs = [];
+let msgLast = 0;
+let msgLastAt = null;
+let refetch = false;
+const live = {};
+const BARS = 30;
+const FINAL = {'charged': 'charged', 'held': 'held', 'not charged': 'not', 'cancelled': 'cancelled'};
+const ICONS = {
+  charged: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M12.5 20.5l5 4.8 10-10.3" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  held: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><rect x="14.5" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/><rect x="21.9" y="12.5" width="3.6" height="15" rx="1.4" fill="#fff"/></svg>',
+  not: '<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="18" fill="currentColor"/><path d="M13 20h14" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg>',
+  phone: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.6 3.5l2.6-.6 1.9 4.4-2 1.7a12 12 0 0 0 5.9 5.9l1.7-2 4.4 1.9-.6 2.6a2 2 0 0 1-2 1.6A16.5 16.5 0 0 1 3.5 5.5a2 2 0 0 1 1.6-2z" fill="currentColor"/></svg>',
+  tick: '<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7.5" fill="currentColor"/><path d="M4.8 8.2l2.2 2.1 4.2-4.4" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  mic: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8.5" y="2.5" width="7" height="12" rx="3.5" fill="currentColor"/><path d="M5 11.5a7 7 0 0 0 14 0M12 18.5v3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
+};
+const CHANNEL_ICONS = {
+  SMS: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4.5h14a2.5 2.5 0 0 1 2.5 2.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5v-3.5H5A2.5 2.5 0 0 1 2.5 15V7A2.5 2.5 0 0 1 5 4.5z" fill="currentColor"/></svg>',
+  WhatsApp: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3z" fill="currentColor"/><circle cx="8" cy="12" r="1.3" fill="#1f8a4c"/><circle cx="12" cy="12" r="1.3" fill="#1f8a4c"/><circle cx="16" cy="12" r="1.3" fill="#1f8a4c"/></svg>',
+  ticket: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7.5A1.5 1.5 0 0 1 4.5 6h15A1.5 1.5 0 0 1 21 7.5V10a2 2 0 0 0 0 4v2.5a1.5 1.5 0 0 1-1.5 1.5h-15A1.5 1.5 0 0 1 3 16.5V14a2 2 0 0 0 0-4z" fill="currentColor"/></svg>'
+};
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'}[c]));
+const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
+const clock = at => (at || '').split('T').pop().slice(0, 5);
+const arrows = s => esc(s).replace(/\s*→\s*/g, ' <svg class="arr" viewBox="0 0 16 10" aria-label="then"><path d="M1 5h13M10 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ');
+const html = (el, str) => { if (el._html !== str) { el._html = str; el.innerHTML = str; return true; } return false; };
+const me = key => live[key] || (live[key] = {});
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const day = s => s.replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g, (_, y, m, d) => `${+d} ${MONTHS[+m - 1]}`);
+
+/* "Fresh board" hides earlier rows from view for the next group at the table; the log keeps them */
+const FRESH_KEY = 'settled-fresh-board';
+let fresh = null;
+try { fresh = JSON.parse(localStorage.getItem(FRESH_KEY)); } catch (e) { fresh = null; }
+const view = () => fresh ? rows.filter(r => r.id > fresh.id) : rows;
+const viewMsgs = () => fresh ? msgs.filter(m => m.id > fresh.msg) : msgs;
+
+function setFresh(on) {
+  fresh = on ? {id: lastId, at: lastAt, msg: msgLast, t: new Date().toTimeString().slice(0, 5)} : null;
+  if (!on && rows[0]?.id > 1) refetch = true;
+  try {
+    if (fresh) localStorage.setItem(FRESH_KEY, JSON.stringify(fresh));
+    else localStorage.removeItem(FRESH_KEY);
+  } catch (e) {}
+  render();
+}
+
+/* a new demo round resets every shop on the server, so each can be called again; the log keeps every row */
+let roundNote = '';
+let seenRound = null;
+$('fresh').onclick = async () => {
+  if (fresh) return setFresh(false);
+  roundNote = '';
+  try {
+    const res = await fetch('/api/round/new', {method: 'POST'});
+    if (res.ok) seenRound = (await res.json()).round;
+    else if (res.status !== 404) roundNote = (await res.json().catch(() => ({}))).error || 'Could not start a new round';
+  } catch (e) {
+    roundNote = 'Network failed, try again';
+  }
+  if (roundNote) return render();
+  for (const k in coinAt) delete coinAt[k];
+  setFresh(true);
+};
+
+function watchRound(list) {
+  const round = Math.max(0, ...list.map(x => x.round || 0));
+  if (!round) return;
+  if (seenRound !== null && round > seenRound && !fresh) {
+    for (const k in coinAt) delete coinAt[k];
+    seenRound = round;
+    setFresh(true);
+  }
+  seenRound = Math.max(seenRound ?? 0, round);
+}
+
+/* one shop's latest run, read from its log rows */
+function runOf(key) {
+  let s = null;
+  for (const r of view()) {
+    if (r.shop !== key) continue;
+    /* a second call in the same run is him calling back from the SMS: the conversation starts again */
+    if (r.step === 'calling' && s?.called) s = {status: 'waiting', settled: false, startAt: s.startAt, why: null, turns: [], acts: [], charge: null, pick: null, records: s.records, called: false, rule: null, identity: null, callback: true};
+    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null, identity: null};
+    if (FINAL[r.outcome]) {
+      s.status = FINAL[r.outcome];
+      s.settled = true;
+    } else if (!s.settled) {
+      if (r.outcome === 'ask again' || r.outcome === 'call' || r.step === 'calling' || r.step === 'answered') s.status = 'on';
+      else if (r.step === 'records checked') s.status = 'on';
+    }
+    if (r.step === 'decided' && r.rule && (!s.pinned || (FINAL[r.outcome] && r.rule !== s.why))) {
+      s.why = r.rule;
+      if (FINAL[r.outcome]) s.pinned = true;
+    }
+    if (r.said) s.turns.push(r);
+    if (r.step === 'answered' && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
+    if (r.step === 'tap' && r.rule) { s.why = r.rule; s.pinned = true; s.tap = {said: (r.heard || '').replace(/^tapped:\s*/, ''), outcome: r.outcome}; }
+    if (r.step === 'records checked') s.records = r.reason;
+    if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
+    if (r.step === 'calling') s.called = true;
+    if ((r.step === 'due' || r.step === 'calling') && /call(ed)?[\s_]?back|call_me/i.test([r.rule, r.action, r.reason].join(' '))) s.callback = true;
+    if (r.step === 'identity' && isYear(r) && /^\d{4}$/.test(r.read_as || '')) s.year = {said: r.read_as, ok: /^verified/i.test(r.rule || '')};
+    if (r.step === 'identity') s.idTried = true;
+    if (/send code/i.test(r.action || '')) s.codeAt = r.at;
+    if (r.action) s.acts.push(r.action.replace(/\s*\(mock\)\s*/i, '').trim());
+    if (r.step === 'follow-up' && r.outcome === 'charged') s.charge = r.rule;
+    if (r.step === 'follow-up' && /confirm by SMS/i.test(r.action || '')) s.pick = r.rule;
+  }
+  if (s) {
+    s.msgs = viewMsgs().filter(m => m.shop === key && m.at >= s.startAt);
+    const call = SHOPS[key]?.call;
+    /* a call that stopped without a decided row still ended: nothing was taken */
+    if (!call?.active && s.called && !s.settled) {
+      s.settled = true;
+      s.status = 'held';
+      s.ended = true;
+      if (!s.why) s.why = s.idTried && !s.identity?.ok ? 'not verified → nothing changes' : 'call ended before a decision → nothing taken';
+    }
+    if (s.called && !s.tap && /restart|got cut|line dropped|\bhung up\b|\bhang up\b/i.test(s.why || '')) s.ended = true;
+    s.unverified = s.settled && s.called && s.idTried && !s.identity?.ok && !s.tap && !s.ended;
+  }
+  return s || {status: 'waiting', settled: false, turns: [], acts: [], msgs: []};
+}
+
+function statusLine(key, s) {
+  const call = SHOPS[key]?.call || {};
+  const m = me(key);
+  const active = !!call.active;
+  const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0] || '';
+  if (m.rec) return ['rec', 'Recording his reply'];
+  if (active) {
+    if (m.speaking) return ['on', 'Settled is speaking'];
+    if (call.hearing || m.sending) return ['on', 'Hearing his reply'];
+    if (call.waiting) return ['on', 'Listening for his reply'];
+    if (!call.seq) return ['on', 'Checking records'];
+    return ['on', 'Deciding'];
+  }
+  if (s.unverified) return ['not', 'Not verified, nothing changed'];
+  if (s.ended) return ['not', 'Call ended, nothing taken'];
+  if (s.status === 'charged') return ['charged', `Charged ${amount}`.trim()];
+  if (s.status === 'held') return ['held', 'Held'];
+  if (s.status === 'not') return ['not', 'Not charged'];
+  if (s.status === 'cancelled') return ['cancelled', 'Cancelled by his tap'];
+  return ['', 'Ready'];
+}
+
+function render() {
+  const keys = Object.keys(SHOPS);
+  if (!keys.length) return;
+  if (!focus || !SHOPS[focus]) focus = keys[0];
+  renderRail(keys);
+  const s = runOf(focus);
+  s.shop = SHOPS[focus];
+  renderHead(s);
+  renderSteps(s);
+  renderMoney(s);
+  renderPhone(s);
+  renderConvo(s);
+  renderControls(s);
+  renderResult(s);
+  html($('fresh'), fresh ? 'Show all' : 'New demo round');
+  html($('fresh-note'), roundNote ? `<span class="warn">${esc(roundNote)}</span>` : fresh ? `New round from ${esc(fresh.t)}. The log keeps every row.` : 'Every call is logged. A new round makes every shop ready to call again.');
+}
+
+function renderRail(keys) {
+  const list = $('shops');
+  if (list.children.length !== keys.length) {
+    list.innerHTML = keys.map(k => `<li><button class="shop" type="button" data-shop="${esc(k)}"></button></li>`).join('');
+  }
+  for (const b of list.querySelectorAll('.shop')) {
+    const k = b.dataset.shop;
+    const shop = SHOPS[k];
+    const [kind, text] = statusLine(k, runOf(k));
+    b.setAttribute('aria-current', k === focus);
+    html(b, `<b>${esc(shop.name)}</b><span class="st k-${kind}">${esc(text)}</span>`);
+  }
+}
+
+$('shops').addEventListener('click', e => {
+  const b = e.target.closest('.shop');
+  if (!b || b.dataset.shop === focus) return;
+  focus = b.dataset.shop;
+  try { localStorage.setItem('settled-focus', focus); } catch (e) {}
+  render();
+});
+
+function renderHead(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  html($('name'), esc(shop.name));
+  const lang = call.active ? shop.language : shop.languages.find(l => l.code === (me(focus).lang || shop.default));
+  const who = s.identity?.ok ? `<span class="ok">${ICONS.tick}Verified: ${esc(shop.owner || 'shopkeeper')}</span>` : shop.owner ? `Owner ${esc(shop.owner)}` : 'Shopkeeper';
+  html($('sub'), [who, lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
+  const [kind, text] = statusLine(focus, s);
+  const pill = $('pill');
+  pill.className = `pill k-${kind}${call.active && call.waiting && !me(focus).speaking ? ' breathe' : ''}`;
+  pill.textContent = text;
+}
+
+/* Identity, Plan question, Read-back, Result */
+const STEPS = [['identity', 'Identity'], ['ask', 'Plan question'], ['readback', 'Read-back'], ['done', 'Result']];
+const STEP_AT = {consent: 0, identity: 0, ask: 1, readback: 2, followup: 3, done: 3};
+const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.2 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+const WHY_NOT = {'someone else': 'someone else answered', 'not confirmed': 'no clear answer', 'no code': 'no code given', 'wrong code': 'wrong code',
+  'no year': 'no year of birth given', 'wrong year': 'year of birth did not match', 'refused': 'he would not say his year of birth', 'angry': 'he was upset, so Settled stopped'};
+
+function renderSteps(s) {
+  const call = s.shop.call || {};
+  const box = $('steps');
+  let at = -1;
+  if (call.active && call.step in STEP_AT) at = STEP_AT[call.step];
+  else if (s.settled && s.called) at = 3;
+  if (at < 0 && !(call.active && call.step)) { box.hidden = true; return; }
+  box.hidden = false;
+  const failed = (s.identity && !s.identity.ok) || s.unverified;
+  const ended = at === 3 && !call.active;
+  html(box, STEPS.map(([k, name], i) => {
+    let kind = i < at ? 'done' : i === at ? 'now' : '';
+    if (at === 3 && i < 3) {
+      const asked = s.asked?.length || 0;
+      const reached = [!!s.identity?.ok, asked > 0, asked > 1 && s.asked[0].read_as === 'haan'][i];
+      kind = reached ? 'done' : i === 2 && asked === 1 ? 'skip' : '';
+    }
+    if (failed && i === 0) kind = 'stop';
+    if (ended && i === 3) kind = 'done';
+    const mark = kind === 'done' ? TICK : kind === 'stop' ? '!' : i + 1;
+    const yr = k === 'identity' && s.year ? ` <span class="yr" title="Year of birth checked in plain code, not AI">${esc(s.year.said)}</span>` : '';
+    return `<li class="${kind}"${kind === 'now' ? ' aria-current="step"' : ''}><i>${mark}</i>${name}${yr}</li>`;
+  }).join(''));
+}
+
+/* where his rent goes. The AI only reads his answer; plain code, or his own tap, moves the money */
+const LOCK_SHUT = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.6 0V7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>';
+const LOCK_OPEN = '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7.5" rx="1.8" fill="currentColor"/><path d="M5.2 7V5.2a2.8 2.8 0 0 1 5.5-.8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>';
+const DEST_C = {paytm: 'var(--charged)', held: 'var(--held)', back: 'var(--not)'};
+
+function renderMoney(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const box = $('money');
+  const price = shop.record?.signup?.price;
+  const amount = (s.status === 'charged' && (s.charge || s.why || '').match(/₹\s?\d+/)?.[0]) || (price ? `₹${price}` : '₹—');
+  const dest = !s.settled ? 'start' : s.unverified || s.ended ? 'back' : {charged: 'paytm', held: 'held', not: 'back', cancelled: 'back'}[s.status] || 'start';
+  const verified = !!s.identity?.ok;
+  const failed = (s.identity && !s.identity.ok) || s.unverified;
+  const noCall = s.settled && !s.called;
+  const read = s.asked?.length ? s.asked[s.asked.length - 1].read_as : null;
+  const tapped = !!s.tap;
+
+  let ai, aiKind = '';
+  if (noCall) ai = '<p class="idle">Not asked, no call made</p>';
+  else if (s.ended && !read) { ai = '<p>Call cut before his answer</p>'; aiKind = 'shut'; }
+  else if (failed) { ai = `<p>Not verified</p>`; aiKind = 'shut'; }
+  else if (!verified) { ai = `<p class="idle">${s.startAt || call.active ? 'Not verified yet' : 'Waits for his answer'}</p>`; aiKind = s.startAt || call.active ? 'shut' : ''; }
+  else if (!read) ai = '<p class="idle">Listening for his answer</p>';
+  else { ai = `<p><span class="kind ${esc(read)}">${esc(read)}</span>${read === 'haan' && s.asked.length > 1 ? 'twice' : ''}</p>`; aiKind = 'open'; }
+
+  let code, codeKind = '';
+  const rule = s.why ? cap(s.why.split('→').pop().split(',')[0].replace(/\s*\([^)]*\)/g, '').trim()) : '';
+  if (tapped) { code = `<p>${esc(s.tap.said || 'his choice')}</p>`; codeKind = 'open'; }
+  else if (failed || s.ended) { code = '<p>Nothing taken</p>'; codeKind = 'shut'; }
+  else if (s.settled && rule) { code = `<p>${esc(rule)}</p>`; codeKind = 'open'; }
+  else code = '<p class="idle">Decides once he answers</p>';
+
+  const by = tapped ? 'by his tap' : 'by plain code';
+  const subs = {
+    paytm: dest === 'paytm' ? `${amount} a month, ${by}` : 'Only haan twice, or his tap',
+    held: dest === 'held' ? (s.msgs.some(m => m.channel === 'WhatsApp' && m.choices) ? 'Nothing taken, waits for his tap' : 'Nothing taken, a person calls') : 'Nothing taken, a person decides',
+    back: dest === 'back' ? (s.status === 'cancelled' ? 'Cancelled by his tap, pickup booked' : noCall ? 'Box never delivered' : s.unverified ? 'Not verified, nothing changed' : s.ended ? 'Call cut, Paytm calls again' : 'Stays with him') : 'Stays with him'
+  };
+  const sig = [focus, dest, amount, ai, aiKind, code, codeKind, subs.paytm, subs.held, subs.back].join('|');
+  if (box._sig !== sig) {
+    const c = DEST_C[dest] || 'var(--accent)';
+    box._sig = sig;
+    box.innerHTML = `
+      <div class="mstart"><span class="dock" data-dock="start"></span><b>His rent</b><span>${esc(shop.owner ? shop.owner.split(' ')[0] : 'Shop')}, from 1 Nov</span></div>
+      <div class="gate${dest !== 'start' ? ' go' : ''}" style="--c:${c}"><div class="locks">
+        <div class="lock ${aiKind}"><span class="ic">${aiKind === 'open' ? LOCK_OPEN : LOCK_SHUT}</span><small>AI read his answer</small>${ai}</div>
+        <div class="lock ${codeKind}"><span class="ic">${codeKind === 'open' ? LOCK_OPEN : LOCK_SHUT}</span><small>${tapped ? 'His tap decided' : 'Plain code decided'}</small>${code}</div>
+      </div><em>The AI only reads. <b>Plain code or his own tap moves the money.</b></em></div>
+      <svg class="fork" viewBox="0 0 40 100" preserveAspectRatio="none" aria-hidden="true">
+        ${['paytm', 'held', 'back'].map((d, i) => `<path class="${d === dest ? 'on' : ''}" style="--c:${DEST_C[d]}" d="M0 50 C 22 50, 18 ${[12, 50, 88][i]}, 40 ${[12, 50, 88][i]}"/>`).join('')}
+      </svg>
+      <div class="dests">
+        <div class="dest${dest === 'paytm' ? ' on' : ''}" style="--c:var(--charged)"><span class="dock" data-dock="paytm"></span><div><b>Paytm, charged</b><span>${esc(subs.paytm)}</span></div></div>
+        <div class="dest held${dest === 'held' ? ' on' : ''}" style="--c:var(--held)"><span class="dock" data-dock="held"></span><div><b>Held</b><span>${esc(subs.held)}</span></div></div>
+        <div class="dest${dest === 'back' ? ' on' : ''}" style="--c:var(--not)"><span class="dock" data-dock="back"></span><div><b>Not taken</b><span>${esc(subs.back)}</span></div></div>
+      </div>
+      <div class="coin" id="coin"></div>`;
+  }
+  const coin = $('coin');
+  coin.textContent = amount;
+  coin.className = `coin${dest !== 'start' ? ` c-${dest === 'paytm' ? 'charged' : dest}` : ''}`;
+  placeCoin(box, coin, dest);
+}
+
+/* the coin keeps its last place per shop, so it only moves when the rule or his tap moves it */
+const coinAt = {};
+function placeCoin(box, coin, dest) {
+  const dock = box.querySelector(`[data-dock="${dest}"]`);
+  if (!dock) return;
+  const b = box.getBoundingClientRect(), d = dock.getBoundingClientRect();
+  const to = `translate(${(d.left - b.left).toFixed(1)}px,${(d.top - b.top).toFixed(1)}px)`;
+  const was = coinAt[focus];
+  if (was && was.dest !== dest && was.to) {
+    coin.classList.remove('moving');
+    coin.style.transform = was.to;
+    coin.getBoundingClientRect();
+    coin.classList.add('moving');
+  }
+  coin.style.transform = to;
+  coinAt[focus] = {dest, to};
+}
+addEventListener('resize', () => { for (const k in coinAt) coinAt[k].to = null; render(); });
+
+/* his phone: the Paytm code during identity, the WhatsApp choices after a na */
+const CHOICES = {keep_plan: 'Keep my plan', cheaper_plan: 'Show me a cheaper plan', cancel: 'Cancel'};
+const APP_ICON = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M3 2.5h6v7H3z" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M5 7.5h2" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/></svg>';
+const taps = {};
+let hangupMissing = false;
+let callbackMissing = false;
+const callMe = m => m.action === 'call_me' || /call_me/.test(m.choices || '') || /\bTap Call me now\b/i.test(m.text);
+
+/* he cuts the call: the server ends it in plain code, nothing is taken */
+$('hangup').onclick = async () => {
+  const key = focus;
+  const m = me(key);
+  m.hanging = true;
+  render();
+  try {
+    const res = await fetch(`/api/call/${key}/hangup`, {method: 'POST'});
+    if (res.status === 404) hangupMissing = true;
+    else if (!res.ok) m.note = (await res.json().catch(() => ({}))).error || 'Could not hang up';
+  } catch (e) {
+    m.note = 'Network failed, could not hang up';
+  }
+  m.hanging = false;
+  await refreshShops().catch(() => render());
+};
+const opened = new Set();
+
+function choicesOf(m) {
+  let c = m.choices;
+  if (typeof c === 'string') { try { c = JSON.parse(c); } catch (e) { c = c.split(/[,|]/); } }
+  if (!Array.isArray(c)) return [];
+  return c.map(x => typeof x === 'string' ? {id: x.trim(), label: CHOICES[x.trim()] || x.trim()} : {id: x.id || x.choice, label: x.label || CHOICES[x.id || x.choice] || x.id})
+    .filter(x => x.id in CHOICES);
+}
+
+function renderPhone(s) {
+  const call = s.shop.call || {};
+  const hang = $('hangup');
+  hang.hidden = !call.active || hangupMissing;
+  hang.disabled = !!me(focus).hanging;
+  $('phone-note').hidden = !hang.hidden;
+  const who = s.shop.owner || 'the shopkeeper';
+  html($('phone-title'), `${esc(s.shop.owner ? s.shop.owner.split(' ')[0] + "'s" : 'His')} phone`);
+  const mine = s.msgs.filter(m => m.to_whom === 'shopkeeper');
+  const asking = mine.filter(m => m.channel === 'WhatsApp' && (m.link || m.choices)).pop();
+  const callNow = callbackMissing ? null : mine.filter(callMe).pop();
+  const parts = [];
+  if (call.active && call.step === 'identity' && call.app_code) {
+    parts.push(`<div class="notif top pop"><div class="app"><i>${APP_ICON}</i>Paytm<time>now</time></div>
+      <p>Your Settled verification code: <span class="code">${esc(call.app_code)}</span></p></div>`);
+  } else if (s.codeAt) {
+    parts.push(`<div class="notif"><div class="app"><i>${APP_ICON}</i>Paytm<time>${esc(clock(s.codeAt))}</time></div>
+      <p>Your Settled verification code: <span class="code">••••</span></p></div>`);
+  }
+  for (const m of mine) {
+    const wa = m.channel === 'WhatsApp';
+    const inText = m.link && m.text.includes(m.link);
+    const text = m.text.replace(/^Paytm:\s*/, '').replace(inText ? m.link : /$^/, '').replace(/[\s:]+$/, '');
+    let extra = '';
+    if (m === callNow) {
+      const busy = !!me(focus).calling || !!call.active || !!s.callback;
+      extra = `<button class="callme" type="button" data-callme="${esc(focus)}"${busy ? ' disabled' : ''}>${ICONS.phone}Call me now</button></div>`;
+    }
+    if (m === asking) {
+      const choices = choicesOf(m);
+      const tap = taps[m.id] || {};
+      const picked = tap.choice || m.tapped || null;
+      const expired = !picked && !tap.busy && m.id !== s.shop.link;
+      const note = tap.note || (picked ? 'His tap is recorded' : expired ? 'This link has expired' : 'Only his tap here changes the plan');
+      extra = (m.link ? `<span class="walink">${esc(m.link)}</span>` : '') + `</div>
+        <div class="choicebar">${choices.length ? `<div class="choices">${choices.map(c => `<button class="choice" type="button" data-msg="${esc(m.id)}" data-choice="${esc(c.id)}"
+          aria-pressed="${picked === c.id}"${picked || expired || tap.busy ? ' disabled' : ''}>${esc(c.label)}</button>`).join('')}</div>` : ''}
+        <p class="tapnote${tap.warn ? ' warn' : ''}">${esc(note)}</p></div>`;
+    }
+    parts.push(`<div class="wamsg"><div class="from"><span class="app${wa ? ' wa' : ''}"><i>${wa ? CHANNEL_ICONS.WhatsApp.replace('fill="currentColor"', 'fill="#fff"') : APP_ICON}</i>${wa ? 'WhatsApp' : 'SMS'} · Paytm</span><time>${esc(clock(m.at))}</time></div>
+      <p${m === asking && !opened.has(m.id) ? ' class="clamp"' : ''}>${esc(text)}</p>${m === asking ? `<button class="more" type="button" data-more="${esc(m.id)}">${opened.has(m.id) ? 'Less' : 'More'}</button>` : ''}${extra || '</div>'}`);
+  }
+  const box = $('phone');
+  const before = box.childElementCount;
+  if (html(box, parts.length ? parts.join('') : `<p class="empty">${call.active ? 'On a call with Paytm' : s.startAt ? `Nothing sent to ${esc(who)} yet` : `What ${esc(who)} gets on his phone shows here`}</p>`)) {
+    if (box._focus === focus && box.childElementCount > before) [...box.children].slice(before).forEach(k => k.classList.add('enter'));
+    box._focus = focus;
+    box.scrollTop = box.scrollHeight;
+  }
+}
+
+$('phone').addEventListener('click', async e => {
+  const more = e.target.closest('.more');
+  if (more) {
+    const id = +more.dataset.more;
+    if (!opened.delete(id)) opened.add(id);
+    return render();
+  }
+  const back = e.target.closest('.callme');
+  if (back) return back.disabled || callBack(back.dataset.callme);
+  const b = e.target.closest('.choice');
+  if (!b || b.disabled) return;
+  const id = b.dataset.msg;
+  const tap = taps[id] = {busy: true, note: 'Sending his tap…'};
+  render();
+  try {
+    const res = await fetch(`/api/consent/${encodeURIComponent(id)}/${encodeURIComponent(b.dataset.choice)}`, {method: 'POST'});
+    const got = await res.json().catch(() => ({}));
+    if (res.ok) Object.assign(tap, {choice: b.dataset.choice, note: got.note || 'His tap is recorded'});
+    else if (got.expired) Object.assign(tap, {note: 'This link has expired'});
+    else Object.assign(tap, {warn: true, note: got.error || 'Could not send his tap'});
+  } catch (e) {
+    Object.assign(tap, {warn: true, note: 'Network failed, tap again'});
+  }
+  tap.busy = false;
+  await refreshShops().catch(() => render());
+});
+
+function bubbleSettled(said, shop, old, speaking) {
+  const native = shop.lines[said];
+  return `<div class="bub settled${old ? ' old' : ''}"><span class="label">Settled${speaking ? ' <span class="eq" aria-label="speaking"><i></i><i></i><i></i></span>' : ''}</span>
+    <p class="native">${esc(native || said)}</p>${native && native !== said ? `<p class="gloss">${esc(said)}</p>` : ''}</div>`;
+}
+
+function bubbleHim(who, inner, read, old) {
+  return `<div class="bub him${old ? ' old' : ''}"><span class="label">${esc(who)}</span>${inner}${read || ''}</div>`;
+}
+
+/* identity rows from the year of birth check, as against the older app code */
+const isYear = r => /year|refused/i.test(r.rule || '');
+
+function readAs(r) {
+  if (!r.read_as) return '';
+  if (r.step === 'identity' && isYear(r)) {
+    if (r.read_as === 'wait') return `<p class="read">No year yet, Settled gives him a moment</p>`;
+    return `<p class="read">Year of birth checked in plain code, not AI <span class="kind ${/^verified/i.test(r.rule || '') ? 'haan' : 'na'}">${esc(r.read_as)}</span></p>`;
+  }
+  if (r.step === 'identity' && r.read_as === 'wait') return `<p class="read">No code yet, Settled waits while he opens the app</p>`;
+  if (r.step === 'identity' && /^\d+$|^no code$/.test(r.read_as)) return `<p class="read">Code read in plain code, not AI <span class="kind ${r.rule === 'verified' ? 'haan' : 'na'}">${esc(r.read_as)}</span></p>`;
+  return `<p class="read">AI read it as <span class="kind ${esc(r.read_as)}">${esc(r.read_as)}</span>${r.reason ? `<span>${esc(r.reason)}</span>` : ''}</p>`;
+}
+
+function renderConvo(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const m = me(focus);
+  const who = shop.owner || 'Shopkeeper';
+  const active = !!call.active;
+  const turns = s.turns.slice();
+  const pending = active && call.said && (!turns.length || turns[turns.length - 1].said !== call.said);
+  const parts = [];
+  if (!s.startAt || (s.status === 'waiting' && !active)) {
+    const own = (m.lang || shop.default) === shop.language.code;
+    const ask = Object.keys(shop.lines)[0];
+    parts.push(`<div class="bub settled"><span class="label">Settled will ask</span>${own ? `<p class="native">${esc(shop.lines[ask])}</p>` : ''}<p class="gloss">${esc(ask)}</p></div>`);
+  } else if (!s.called && s.settled) {
+    parts.push(`<div class="sys enter"><b>No call made</b><span>Records checked: ${esc(day(s.records || ''))}</span></div>`);
+  } else if (!turns.length && !pending) {
+    parts.push(`<div class="sys"><b>${active ? 'Calling' : 'Call ended'}</b>${s.records ? `<span>Records checked: ${esc(day(s.records))}</span>` : ''}</div>`);
+  }
+  if (s.callback && s.called) parts.unshift(`<div class="sys"><b>He called back</b><span>${esc(shop.owner || 'The shopkeeper')} tapped Call me now on the SMS</span></div>`);
+  const total = turns.length + (pending ? 1 : 0);
+  turns.forEach((r, i) => {
+    const old = i < total - 1;
+    parts.push(bubbleSettled(r.said, shop, old, false));
+    if (r.step === 'said') return;
+    const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q></p>` : `<p class="words"><span class="none">No reply</span></p>`;
+    parts.push(bubbleHim(`${who} said`, inner, readAs(r), old));
+  });
+  if (((s.identity && !s.identity.ok) || s.unverified) && !pending) {
+    parts.push(`<div class="sys enter"><b>Call ended calmly</b><span>Could not confirm it's ${esc(shop.owner || 'the registered shopkeeper')}: ${esc(WHY_NOT[s.identity?.why] || s.identity?.why || 'no clear answer')}. Nothing taken, nothing changed.</span></div>`);
+  }
+  if (pending) {
+    parts.push(bubbleSettled(call.said, shop, false, m.speaking));
+    let inner;
+    if (m.rec) inner = `<div class="meter" id="meter">${'<i></i>'.repeat(BARS)}</div>`;
+    else if (m.heard && m.heardSeq === call.seq) inner = `<p class="words"><q>${esc(m.heard)}</q></p>`;
+    else if (call.hearing || m.sending) inner = `<p class="words"><span class="none">Hearing his reply <span class="dots"><i></i><i></i><i></i></span></span></p>`;
+    else if (call.waiting) inner = `<p class="words"><span class="none">Listening <span class="dots"><i></i><i></i><i></i></span></span></p>`;
+    else inner = `<p class="words"><span class="none">…</span></p>`;
+    parts.push(bubbleHim(m.rec ? `${who} is speaking` : `${who}`, inner, ''));
+  }
+  const box = $('convo');
+  const keep = m.rec && $('meter');
+  if (keep) return;
+  const before = box.childElementCount;
+  if (html(box, parts.join(''))) {
+    const kids = [...box.children];
+    if (box._focus === focus && kids.length > before) kids.slice(before).forEach(k => k.classList.add('enter'));
+    box._focus = focus;
+    box.scrollTop = box.scrollHeight;
+  }
+}
+
+function renderControls(s) {
+  const shop = s.shop;
+  const call = shop.call || {};
+  const m = me(focus);
+  const active = !!call.active;
+  const listening = active && call.waiting;
+
+  const pick = $('lang');
+  if (pick._shop !== focus) {
+    pick._shop = focus;
+    pick.innerHTML = shop.languages.map(l => `<option value="${esc(l.code)}">${esc(l.name)} · ${esc(l.own)}</option>`).join('');
+  }
+  pick.hidden = active;
+  const lang = m.lang || shop.default;
+  if (pick.value !== lang && document.activeElement !== pick) pick.value = lang;
+
+  const start = $('start');
+  start.hidden = active;
+  html(start, `${ICONS.phone}${s.startAt ? 'Call again' : 'Start call'}`);
+  start.classList.toggle('again', !!s.settled);
+
+  const talk = $('talk');
+  talk.hidden = !listening || !m.stream;
+  talk.disabled = call.hearing || m.sending;
+  talk.classList.toggle('on', !!m.rec);
+  html(talk, `${ICONS.mic}${m.rec ? 'Let go to send' : call.hearing || m.sending ? 'Hearing…' : 'Hold to speak'}`);
+  const typed = $('typed');
+  typed.hidden = !listening;
+  typed.querySelector('input').disabled = call.hearing || m.sending;
+
+  if (active && !m.stream && !m.asking && !m.micTried) {
+    m.micTried = true;
+    askMic(m).then(render);
+  }
+  let note = m.note || '';
+  if (!active && /^Heard/.test(note)) note = '';
+  if (call.problem) note = call.problem;
+  const mic = active && !m.stream && m.mic ? m.mic : '';
+  html($('note'), [mic, note].filter(Boolean).map(n =>
+    `<span${/Try again|Hold the button|heard nothing|problem|stopped|no voice|could not/i.test(n) ? ' class="warn"' : ''}>${esc(n)}</span>`).join(''));
+
+  playLine(focus, call);
+}
+
+/* every line Settled says plays once, in order: its audio is fetched as soon as the line
+   shows up (the server keeps only the latest), and played after the one before ends */
+function playLine(key, call) {
+  const m = me(key);
+  if (call.active) m.tracking = true;
+  if (!m.tracking || !call.seq || m.played === call.seq) return;
+  m.played = call.seq;
+  if (call.waiting) m.note = '';
+  if (!call.voice) return;
+  const url = `/api/call/${key}/audio/${call.seq}`;
+  const got = fetch(url, {cache: 'no-store'}).then(r => r.ok ? r.blob() : null).catch(() => null);
+  m.unplayed = (m.unplayed || 0) + 1;
+  m.voices = (m.voices || Promise.resolve()).then(() => got).then(blob => blob && new Promise(done => {
+    const audio = new Audio(URL.createObjectURL(blob));
+    const end = () => { URL.revokeObjectURL(audio.src); m.speaking = false; render(); done(); };
+    m.speaking = true;
+    render();
+    audio.onended = end;
+    audio.onerror = end;
+    audio.play().catch(end);
+  })).then(() => { m.unplayed--; });
+}
+
+function renderResult(s) {
+  const box = $('result');
+  if (s.settled) {
+    const amount = (s.charge || s.why || '').match(/₹\s?\d+/)?.[0];
+    const plan = s.charge ? `${s.charge}, from 1 Nov` : null;
+    const head = {
+      charged: [`Charged${amount ? ` ${amount}` : ''}`, plan || 'Rent taken'],
+      held: ['Held', s.pick ? `₹0 taken. ${cap(s.pick)} only after his SMS yes`
+        : s.msgs.some(m => m.channel === 'WhatsApp' && (m.link || m.choices)) ? '₹0 taken. Callback promised, only his tap changes the plan'
+        : '₹0 taken, ₹125 a month on hold'],
+      not: ['Not charged', s.called ? '₹0 taken' : '₹0 taken, no call made'],
+      cancelled: ['Cancelled', '₹0 taken. He chose it in WhatsApp, pickup booked'],
+      unverified: ['Not verified', '₹0 taken, nothing changed. Paytm calls the registered number'],
+      ended: ['Call ended', '₹0 taken, nothing changed. Paytm calls again']
+    }[s.unverified ? 'unverified' : s.ended ? 'ended' : s.status];
+    const fresh = box.dataset.v !== `${focus}:${s.status}:${s.startAt}`;
+    box.dataset.v = `${focus}:${s.status}:${s.startAt}`;
+    html(box, `<h3>Result</h3>
+      <div class="verdict v-${s.unverified || s.ended ? 'not' : s.status}${fresh ? ' pop' : ''}">${ICONS[s.unverified || s.ended ? 'not' : s.status] || ICONS.not}<div><strong>${esc(head[0])}</strong><span>${esc(head[1])}</span></div></div>
+      <div class="facts">
+        ${s.why ? `<p><span class="label">Rule that fired</span>${arrows(s.why)}</p>` : ''}
+        ${!s.called && s.records ? `<p><span class="label">Records</span>${esc(cap(day(s.records)))}</p>` : ''}
+        ${teamLines(s) ? `<div><span class="label acts-label">Paytm team gets <span class="mock">mock</span></span><ul class="team">${teamLines(s)}</ul></div>` : ''}
+              </div>`);
+    return;
+  }
+  box.dataset.v = '';
+  html(box, `<h3>${s.records ? 'Records checked' : 'What plain rules can decide'}</h3>
+    ${s.records ? `<p class="recs">${esc(cap(day(s.records)))}</p>` : ''}
+    <ul class="outs">
+      <li style="--c:var(--charged)"><b>Charged</b><span>Haan, then haan again on the price read-back</span></li>
+      <li style="--c:var(--held)"><b>Held</b><span>Na, unsure, a question, silence, or someone else answers</span></li>
+      <li style="--c:var(--not)"><b>Not charged</b><span>Box never delivered. No call is made</span></li>
+    </ul>`);
+}
+
+const TEAM = {manager: 'Manager', support: 'Support'};
+function teamLines(s) {
+  return (s.msgs || []).filter(m => m.to_whom !== 'shopkeeper').map(m => {
+    const whom = m.to_whom === 'manager' ? (m.text.match(/^For ([^:]+):/)?.[1] || 'Manager') : m.channel === 'ticket' ? 'Support ticket' : TEAM[m.to_whom] || m.to_whom;
+    const text = m.text.replace(/^\{ticket\}\s*·\s*/, '').replace(/^For [^:]+:\s*/, '');
+    return `<li><b>${esc(cap(whom))}:</b> ${esc(text)}</li>`;
+  }).join('');
+}
+
+/* call actions */
+function freshCall(m) {
+  m.note = '';
+  m.played = 0;
+  m.tracking = false;
+  m.speaking = false;
+  m.heard = null;
+  m.micTried = true;
+  askMic(m).then(render);
+}
+
+/* he taps Call me now on the SMS: the call starts again as if he rang back */
+async function callBack(key) {
+  const m = me(key);
+  m.calling = true;
+  freshCall(m);
+  render();
+  try {
+    const res = await fetch(`/api/call/${key}/callback`, {method: 'POST'});
+    if (res.status === 404) callbackMissing = true;
+    else if (!res.ok) m.note = (await res.json().catch(() => ({}))).error || 'Could not call back';
+  } catch (e) {
+    m.note = 'Network failed, could not call back';
+  }
+  m.calling = false;
+  await refreshShops().catch(() => render());
+}
+
+$('start').onclick = async () => {
+  const key = focus;
+  const m = me(key);
+  freshCall(m);
+  const language = m.lang || SHOPS[key].default;
+  try {
+    const res = await fetch(`/api/call/${key}/start`, {method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({language})});
+    if (!res.ok) m.note = (await res.json()).error || 'could not start';
+  } catch (e) {
+    m.note = 'Network failed, could not start';
+  }
+  await refreshShops();
+};
+
+$('lang').onchange = e => { me(focus).lang = e.target.value; render(); };
+
+$('typed').onsubmit = e => {
+  e.preventDefault();
+  const input = e.target.elements.text;
+  const text = input.value.trim();
+  if (text) sendReply(focus, JSON.stringify({text}), 'application/json').then(ok => { if (ok) input.value = ''; });
+};
+
+const talk = $('talk');
+talk.addEventListener('pointerdown', e => { e.preventDefault(); talk.setPointerCapture(e.pointerId); holdStart(focus); });
+for (const ev of ['pointerup', 'pointercancel', 'lostpointercapture']) talk.addEventListener(ev, () => holdEnd(focus));
+
+function askMic(m) {
+  if (m.stream) return Promise.resolve();
+  if (m.asking) return m.asking;
+  if (!navigator.mediaDevices?.getUserMedia) {
+    m.mic = 'No mic here, type his reply';
+    return Promise.resolve();
+  }
+  m.asking = navigator.mediaDevices.getUserMedia({audio: true})
+    .then(stream => { m.stream = stream; m.mic = ''; })
+    .catch(() => { m.mic = 'No mic, type his reply'; })
+    .finally(() => { m.asking = null; });
+  return m.asking;
+}
+
+function holdStart(key) {
+  const m = live[key];
+  if (!m?.stream || m.rec) return;
+  const chunks = [];
+  const rec = new MediaRecorder(m.stream);
+  rec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+  rec.onstop = () => {
+    meterStop(m);
+    const seconds = (performance.now() - m.t0) / 1000;
+    m.rec = null;
+    if (seconds < 0.4) { m.note = 'Hold the button while you talk'; render(); return; }
+    const blob = new Blob(chunks, {type: rec.mimeType || 'audio/webm'});
+    sendReply(key, blob, blob.type, seconds);
+  };
+  m.rec = rec;
+  m.t0 = performance.now();
+  rec.start();
+  render();
+  meterStart(key, m, $('meter'));
+}
+
+function meterStart(key, m, el) {
+  if (!el) return;
+  try {
+    const ctx = m.ctx || (m.ctx = new AudioContext());
+    ctx.resume();
+    const src = ctx.createMediaStreamSource(m.stream);
+    const an = ctx.createAnalyser();
+    an.fftSize = 1024;
+    src.connect(an);
+    const buf = new Float32Array(an.fftSize);
+    const bars = [...el.children];
+    const levels = new Array(bars.length).fill(0);
+    let at = 0;
+    const tick = t => {
+      if (t - at > 45) {
+        at = t;
+        an.getFloatTimeDomainData(buf);
+        let sum = 0;
+        for (const v of buf) sum += v * v;
+        const db = 20 * Math.log10(Math.sqrt(sum / buf.length) + 1e-9);
+        levels.shift();
+        levels.push(Math.min(1, Math.max(0, (db + 58) / 46)));
+        bars.forEach((b, i) => { b.style.transform = `scaleY(${(0.08 + levels[i] * 0.92).toFixed(3)})`; });
+      }
+      m.raf = requestAnimationFrame(tick);
+    };
+    m.meter = src;
+    m.raf = requestAnimationFrame(tick);
+  } catch (e) {
+    m.meter = null;
+  }
+}
+
+function meterStop(m) {
+  cancelAnimationFrame(m.raf);
+  m.meter?.disconnect();
+  m.meter = null;
+}
+
+function holdEnd(key) {
+  const m = live[key];
+  if (m?.rec && m.rec.state === 'recording') m.rec.stop();
+}
+
+async function sendReply(key, body, type, seconds) {
+  const m = me(key);
+  const call = SHOPS[key].call;
+  m.sending = true;
+  m.note = '';
+  render();
+  const headers = {'Content-Type': type};
+  if (seconds) headers['X-Seconds'] = seconds.toFixed(2);
+  let ok = false;
+  try {
+    const res = await fetch(`/api/call/${key}/reply?seq=${call.seq}`, {method: 'POST', headers, body});
+    const got = await res.json();
+    ok = res.ok;
+    if (ok) { m.heard = got.heard; m.heardSeq = call.seq; }
+    m.note = ok ? '' : `${got.error || 'failed'}. Try again or type it.`;
+  } catch (e) {
+    m.note = 'Network failed. Try again or type it.';
+  }
+  m.sending = false;
+  await refreshShops();
+  return ok;
+}
+
+/* polling */
+async function refreshShops() {
+  const res = await fetch('/api/shops', {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  const list = await res.json();
+  SHOPS = Object.fromEntries(list.map(s => [s.id, s]));
+  watchRound(list);
+  if (!focus) {
+    let saved = null;
+    try { saved = localStorage.getItem('settled-focus'); } catch (e) {}
+    focus = list.find(s => s.call?.active)?.id || (SHOPS[saved] ? saved : list[0]?.id);
+  }
+  render();
+}
+
+async function fetchAfter(id, what = 'log') {
+  const res = await fetch(`/api/${what}?after=${id}`, {cache: 'no-store'});
+  if (!res.ok) throw new Error(res.status);
+  return res.json();
+}
+
+async function fetchAll(id) {
+  let got = await fetchAfter(id);
+  for (let page = got; page.length >= 500;) {
+    page = await fetchAfter(page[page.length - 1].id);
+    got = got.concat(page);
+  }
+  return got;
+}
+
+async function pollLog() {
+  let reset = refetch;
+  refetch = false;
+  let got = lastId > 0 && !reset ? await fetchAll(lastId - 1) : [];
+  if (lastId > 0 && !reset && (!got[0] || got[0].id !== lastId || got[0].at !== lastAt)) reset = true;
+  if (lastId === 0 || reset) {
+    rows = [];
+    got = await fetchAll(0);
+    if (fresh && fresh.id && !got.some(r => r.id === fresh.id && r.at === fresh.at)) {
+      fresh = null;
+      try { localStorage.removeItem(FRESH_KEY); } catch (e) {}
+    }
+  } else {
+    got = got.slice(1);
+  }
+  rows = rows.concat(got);
+  const last = rows[rows.length - 1];
+  lastId = last ? last.id : 0;
+  lastAt = last ? last.at : null;
+}
+
+async function pollMessages() {
+  let got = await fetchAfter(Math.max(msgLast - 1, 0), 'messages');
+  if (msgLast > 0) {
+    const anchor = got[0];
+    if (!anchor || anchor.id !== msgLast || anchor.at !== msgLastAt) {
+      msgs = [];
+      got = await fetchAfter(0, 'messages');
+    } else {
+      got = got.slice(1);
+    }
+  }
+  msgs = msgs.concat(got);
+  const last = msgs[msgs.length - 1];
+  msgLast = last ? last.id : 0;
+  msgLastAt = last ? last.at : null;
+}
+
+async function poll() {
+  const dot = $('live');
+  try {
+    await pollLog();
+    await pollMessages();
+    await refreshShops();
+    dot.className = 'live';
+    dot.textContent = 'Live';
+  } catch (e) {
+    dot.className = 'live off';
+    dot.textContent = 'Not connected';
+  }
+  setTimeout(poll, 800);
+}
+
+poll();
+
+let seenVersion;
+async function checkVersion() {
+  try {
+    const v = await (await fetch('/api/version', {cache: 'no-store'})).text();
+    if (seenVersion === undefined) seenVersion = v;
+    const busy = Object.keys(SHOPS).some(k => SHOPS[k].call?.active || live[k]?.rec || live[k]?.sending || live[k]?.unplayed > 0);
+    if (v !== seenVersion && !busy) location.reload();
+  } catch (e) {}
+}
+checkVersion();
+setInterval(checkVersion, 2500);
+</script>
+</body>
+</html>
