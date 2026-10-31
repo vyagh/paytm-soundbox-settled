@@ -561,7 +561,7 @@ const STEP_AT = {consent: 0, identity: 0, ask: 1, readback: 2, followup: 3, done
 const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.2 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const WHY_NOT = {'someone else': 'someone else answered', 'not confirmed': 'no clear answer', 'no code': 'no code given', 'wrong code': 'wrong code',
-  'no year': 'no year of birth given', 'wrong year': 'year of birth did not match', 'refused': 'he would not say his year of birth'};
+  'no year': 'no year of birth given', 'wrong year': 'year of birth did not match', 'refused': 'he would not say his year of birth', 'angry': 'he was upset, so Settled stopped'};
 
 function renderSteps(s) {
   const call = s.shop.call || {};
@@ -716,6 +716,7 @@ function renderPhone(s) {
   html($('phone-title'), `${esc(s.shop.owner ? s.shop.owner.split(' ')[0] + "'s" : 'His')} phone`);
   const mine = s.msgs.filter(m => m.to_whom === 'shopkeeper');
   const asking = mine.filter(m => m.channel === 'WhatsApp' && (m.link || m.choices)).pop();
+  const callNow = callbackMissing ? null : mine.filter(callMe).pop();
   const parts = [];
   if (call.active && call.step === 'identity' && call.app_code) {
     parts.push(`<div class="notif top pop"><div class="app"><i>${APP_ICON}</i>Paytm<time>now</time></div>
@@ -729,8 +730,8 @@ function renderPhone(s) {
     const inText = m.link && m.text.includes(m.link);
     const text = m.text.replace(/^Paytm:\s*/, '').replace(inText ? m.link : /$^/, '').replace(/[\s:]+$/, '');
     let extra = '';
-    if (callMe(m) && !callbackMissing && m === mine[mine.length - 1]) {
-      const busy = !!me(focus).calling || !!call.active;
+    if (m === callNow) {
+      const busy = !!me(focus).calling || !!call.active || !!s.callback;
       extra = `<button class="callme" type="button" data-callme="${esc(focus)}"${busy ? ' disabled' : ''}>${ICONS.phone}Call me now</button></div>`;
     }
     if (m === asking) {
