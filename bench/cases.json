@@ -658,5 +658,339 @@
    }
   ],
   "expect": "held"
+ },
+ {
+  "id": "ta-yes-yes",
+  "shop": "gupta",
+  "note": "",
+  "language": "ta-IN",
+  "turns": [
+   {
+    "text": "ஆமா, வாங்கினேன்",
+    "kind": "haan",
+    "en": "yes, I took it"
+   },
+   {
+    "text": "ஆமா ஆமா, உறுதியா",
+    "kind": "haan",
+    "en": "yes yes, sure"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "ta-no-reason",
+  "shop": "sharma",
+  "note": "",
+  "language": "ta-IN",
+  "turns": [
+   {
+    "text": "இல்ல, அவன் ஒரு ரூபாய்னு சொன்னான்",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he said one rupee"
+   },
+   {
+    "text": "வேணாம், பாக்ஸ் எடுத்துக்கோங்க",
+    "kind": "na",
+    "en": "don't want it, take the box"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "ta-but",
+  "shop": "gupta",
+  "note": "",
+  "language": "ta-IN",
+  "turns": [
+   {
+    "text": "சரி, ஆனா ஒரு ரூபாய்னு சொன்னாங்களே",
+    "kind": "unsure",
+    "en": "ok, but they said one rupee"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "te-yes-yes",
+  "shop": "sharma",
+  "note": "",
+  "language": "te-IN",
+  "turns": [
+   {
+    "text": "అవును, తీసుకున్నాను",
+    "kind": "haan",
+    "en": "yes, I took it"
+   },
+   {
+    "text": "అవును అవును, ఖచ్చితంగా",
+    "kind": "haan",
+    "en": "yes yes, definitely"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "te-no-reason",
+  "shop": "gupta",
+  "note": "",
+  "language": "te-IN",
+  "turns": [
+   {
+    "text": "లేదు, అతను ఒక్క రూపాయి అన్నాడు",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he said one rupee"
+   },
+   {
+    "text": "వద్దు, బాక్స్ తీసుకెళ్ళండి",
+    "kind": "na",
+    "en": "don't want it, take the box"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "te-someone-else",
+  "shop": "sharma",
+  "note": "",
+  "language": "te-IN",
+  "turns": [
+   {
+    "text": "నేను పనివాడిని, యజమాని బయటకు వెళ్ళారు",
+    "kind": "unsure",
+    "en": "I'm the worker, the owner has gone out"
+   },
+   {
+    "text": "సరే సరే, కట్ చేసుకోండి",
+    "kind": "unsure",
+    "en": "ok ok, go ahead and deduct"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "bn-yes-yes",
+  "shop": "gupta",
+  "note": "",
+  "language": "bn-IN",
+  "turns": [
+   {
+    "text": "হ্যাঁ, নিয়েছিলাম",
+    "kind": "haan",
+    "en": "yes, I took it"
+   },
+   {
+    "text": "হ্যাঁ হ্যাঁ, ঠিক আছে",
+    "kind": "haan",
+    "en": "yes yes, it's fine"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "bn-no-reason",
+  "shop": "sharma",
+  "note": "",
+  "language": "bn-IN",
+  "turns": [
+   {
+    "text": "না, ও তো এক টাকা বলেছিল",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he had said one rupee"
+   },
+   {
+    "text": "না, বাক্স নিয়ে যান",
+    "kind": "na",
+    "en": "no, take the box away"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "bn-but",
+  "shop": "gupta",
+  "note": "",
+  "language": "bn-IN",
+  "turns": [
+   {
+    "text": "হ্যাঁ, কিন্তু প্রথম মাস ফ্রি বলেছিল না?",
+    "kind": "unsure",
+    "en": "yes, but didn't he say the first month was free?"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "mr-yes-yes",
+  "shop": "sharma",
+  "note": "",
+  "language": "mr-IN",
+  "turns": [
+   {
+    "text": "हो, घेतला होता",
+    "kind": "haan",
+    "en": "yes, I had taken it"
+   },
+   {
+    "text": "हो हो, पक्कं",
+    "kind": "haan",
+    "en": "yes yes, sure"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "mr-no-reason",
+  "shop": "gupta",
+  "note": "",
+  "language": "mr-IN",
+  "turns": [
+   {
+    "text": "नाही, त्याने ₹1 सांगितलं होतं",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he had said ₹1"
+   },
+   {
+    "text": "नाही, बॉक्स घेऊन जा",
+    "kind": "na",
+    "en": "no, take the box away"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "mr-but",
+  "shop": "sharma",
+  "note": "",
+  "language": "mr-IN",
+  "turns": [
+   {
+    "text": "हो, पण ₹1 सांगितलं होतं",
+    "kind": "unsure",
+    "en": "yes, but ₹1 was what I was told"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "kn-yes-yes",
+  "shop": "gupta",
+  "note": "",
+  "language": "kn-IN",
+  "turns": [
+   {
+    "text": "ಹೌದು, ತಗೊಂಡಿದ್ದೆ",
+    "kind": "haan",
+    "en": "yes, I had taken it"
+   },
+   {
+    "text": "ಹೌದು ಹೌದು, ಖಂಡಿತ",
+    "kind": "haan",
+    "en": "yes yes, definitely"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "kn-no-reason",
+  "shop": "sharma",
+  "note": "",
+  "language": "kn-IN",
+  "turns": [
+   {
+    "text": "ಇಲ್ಲ, ಅವನು ಒಂದು ರೂಪಾಯಿ ಅಂದಿದ್ದ",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he had said one rupee"
+   },
+   {
+    "text": "ಬೇಡ, ಬಾಕ್ಸ್ ತಗೊಂಡು ಹೋಗಿ",
+    "kind": "na",
+    "en": "don't want it, take the box away"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "kn-but",
+  "shop": "gupta",
+  "note": "",
+  "language": "kn-IN",
+  "turns": [
+   {
+    "text": "ಹೌದು, ಆದ್ರೆ ದರ ಸ್ವಲ್ಪ ಕಮ್ಮಿ ಮಾಡಿ",
+    "kind": "unsure",
+    "en": "yes, but lower the rate a bit"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "gu-yes-yes",
+  "shop": "sharma",
+  "note": "",
+  "language": "gu-IN",
+  "turns": [
+   {
+    "text": "હા, લીધું હતું",
+    "kind": "haan",
+    "en": "yes, I had taken it"
+   },
+   {
+    "text": "હા હા, પાક્કું",
+    "kind": "haan",
+    "en": "yes yes, sure"
+   }
+  ],
+  "expect": "charged",
+  "honest": true
+ },
+ {
+  "id": "gu-no-reason",
+  "shop": "gupta",
+  "note": "",
+  "language": "gu-IN",
+  "turns": [
+   {
+    "text": "ના, એણે ₹1 કીધું હતું",
+    "kind": "na",
+    "reason": "salesman said ₹1",
+    "en": "no, he had said ₹1"
+   },
+   {
+    "text": "ના, બોક્સ લઈ જાવ",
+    "kind": "na",
+    "en": "no, take the box away"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "gu-someone-else",
+  "shop": "sharma",
+  "note": "",
+  "language": "gu-IN",
+  "turns": [
+   {
+    "text": "હું તો નોકર છું, શેઠ બહાર ગયા છે",
+    "kind": "unsure",
+    "en": "I'm only the worker, the boss is out"
+   },
+   {
+    "text": "હા હા, કાપી લો",
+    "kind": "unsure",
+    "en": "yes yes, go ahead and deduct"
+   }
+  ],
+  "expect": "held"
  }
 ]
