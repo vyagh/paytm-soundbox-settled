@@ -2,10 +2,10 @@ import time
 
 from voice import script
 from voice.script import (A_CHARGE, A_EXTRA, A_HOW, A_OTHER, A_PRICE, A_START, A_STOP, A_WHO, ASK, ASK_AGAIN, AUTOMATED,
-                          CALL_LATER, CALLBACK, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER,
+                          CALL_LATER, CALLBACK, CANCEL, CHARGED, CLOSING, DECLINED, FOLLOW_UP, GOODBYE_OTHER,
                           GOODBYE_UNVERIFIED, GREETING, NAME_AFTER_WHO, NAME_AGAIN, OFFER_AGAIN, OFFER_B, ON_THE_LINE,
-                          PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, REASSURE, SOFT, TAP_B, WHO_WHY, YEAR,
-                          YEAR_AGAIN, YEAR_WAIT, YEAR_WRONG)
+                          PERSON_LATER, PROMISE_FREE, PROMISE_LOWER, PROMISE_ONE, READ_BACK, REASSURE, SOFT, SUPPORT, TAP_B,
+                          WHO_WHY, YEAR, YEAR_AGAIN, YEAR_WAIT, YEAR_WRONG)
 
 from . import log, paytm_mock, records, rules, year
 from .models import CallState
@@ -25,7 +25,7 @@ ANSWERS = {"price": A_PRICE, "start": A_START, "charge": A_CHARGE, "who": A_WHO,
            "how": A_HOW, "stop": A_STOP}
 TOPICS = {"cheaper": "cheaper plan", "price": "price", "start": "start date", "charge": "what the charge is",
           "who": "who's calling", "other": "other", "extra": "hidden charge", "how": "how the rent is taken",
-          "stop": "how to stop it"}
+          "stop": "how to stop it", "support": "a complaint, not about the rent"}
 # A salesman's promise his na or doubt rests on, to the line that owns it and offers the cheaper plan.
 PROMISES = {"one rupee": PROMISE_ONE, "free": PROMISE_FREE, "lower price": PROMISE_LOWER}
 OFFERS = (OFFER_B, OFFER_AGAIN, *PROMISES.values())
@@ -44,7 +44,7 @@ class _Busy(Exception):
 
 
 class _Robot(_Busy):
-    """He asked if this is a machine, or for a person."""
+    """He asked for a person, after hearing it's an automated call."""
 
 
 def run(shop_id, listener, state=None, callback=False):
@@ -87,14 +87,14 @@ def _run(shop, listener, state, callback=False):
 
     log.add(shop.id, "calling", rule="callback: he tapped Call me now or called the number back" if callback else None)
     try:
-        return _call(shop, _busy_aware(listener), state)
+        return _call(shop, _busy_aware(listener, state), state)
     except _Robot as asked:
         step = "answered" if state.step in ("ask", "readback") else state.step
-        _log_reply(shop, state, step, asked.line, asked.answer, rule="asked if it's a robot or for a person → a person calls back")
+        _log_reply(shop, state, step, asked.line, asked.answer, rule="asked for a person → a person calls back")
         decision = _decided(shop, rules.person_later())
         paytm_mock.tell_call_later(shop)
         paytm_mock.book_retry(shop, "a person calls him back")
-        _say(shop, listener, AUTOMATED)
+        _say(shop, listener, PERSON_LATER)
         return decision
     except _Busy as busy:
         step = "answered" if state.step in ("ask", "readback") else state.step
@@ -106,15 +106,28 @@ def _run(shop, listener, state, callback=False):
         return decision
 
 
-def _busy_aware(listener):
-    """"Busy hoon, baad mein call karo" at any step ends the call, checked in plain code."""
+def _busy_aware(listener, state):
+    """"Busy hoon, baad mein call karo" at any step ends the call, checked in plain code.
+    "Are you a robot?" gets told it's an automated call and asked whether to carry on: a carry on
+    asks the same line again, a person, anything else or a second robot question ends the call."""
+    explained = []
+
     def listen(shop, line, wait=True):
         if not wait:
             return listener(shop, line, wait=False)
         answer = listener(shop, line)
         if rules.robot(answer.words):
-            raise _Robot(line, answer)
-        if rules.busy(answer.words):
+            if explained:
+                raise _Robot(line, answer)
+            explained.append(line)
+            step = "answered" if state.step in ("ask", "readback") else state.step
+            _log_reply(shop, state, step, line, answer, rule="asked if it's a robot or for a person → said it's automated, asked to carry on")
+            reply = listener(shop, AUTOMATED)
+            if not rules.carry_on(reply):
+                raise _Robot(AUTOMATED, reply)
+            _log_reply(shop, state, step, AUTOMATED, reply, rule="carry on → asked the same again")
+            return listen(shop, line)
+        if rules.busy(answer.words) and answer.topic != "support":
             raise _Busy(line, answer)
         return answer
     return listen
@@ -186,8 +199,10 @@ def _call(shop, listener, state):
         _say(shop, listener, CLOSING)
         return decision
     paytm_mock.open_ticket(shop, decision.rule, "na" if last.kind == "na" else "unclear")
-    # the apology only for anger, a complaint or distress; calm doubt gets time to think
-    if offered or not any(a.upset for _, a in answers):
+    # a cancel ask gets where to tap; the apology only for anger, a complaint or distress; calm doubt gets time to think
+    if any(a.cancel for _, a in answers):
+        ending = CANCEL
+    elif offered or not any(a.upset for _, a in answers):
         ending = SOFT if last.kind == "unsure" and not offered else CALLBACK
     else:
         ending = FOLLOW_UP
@@ -202,7 +217,7 @@ def _plan(shop, state, listener):
     Asks the plan from his record, answers his questions, and reads the price back
     after a haan. rules.decide picks the money and when to stop."""
     signed = shop.plan(shop.signup["plan"])
-    plan, line, answers, offered = signed, ASK, [], False
+    plan, line, answers, offered, booked = signed, ASK, [], False, False
     state.step = "ask"
     while True:
         answer = _ask(shop, state, line, listener)
@@ -216,7 +231,13 @@ def _plan(shop, state, listener):
                 plan, line = shop.cheaper(signed), OFFER_B
                 state.step = "ask"
                 continue
-            if answer.topic in ANSWERS and not (answer.topic in ("price", "extra") and plan != signed):
+            if answer.topic == "support":
+                paytm_mock.open_ticket(shop, decision.rule, "support")
+                _say(shop, listener, SUPPORT)
+            elif answer.topic in ANSWERS and not (answer.topic in ("price", "extra") and plan != signed):
+                if answer.topic == "other" and not booked:
+                    paytm_mock.book_retry(shop, "a person calls him back to answer his question")
+                    booked = True
                 _say(shop, listener, ANSWERS[answer.topic])
             line = AGAIN.get(line, line)
         elif answer.kind == "haan":

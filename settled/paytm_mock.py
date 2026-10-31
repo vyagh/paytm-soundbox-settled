@@ -67,7 +67,7 @@ def charge_rent(shop, plan, tapped=False):
     log.add_settle(shop.id, "follow-up", action="charge rent (mock)", outcome="charged",
                    rule=f"₹{plan.price} a month, {plan.name}")
     _sms(shop, f"Your Soundbox rent for {shop.name} is ₹{plan.price}/month ({plan.name}) from {_starts(shop)}. "
-               f"{why} Not right? Reply NO to this SMS and we will stop it.")
+               f"{why}")
     return DONE
 
 
@@ -124,6 +124,9 @@ def open_ticket(shop, why, case="unclear"):
     elif case == "na":
         _ticket(shop, f"{_who(shop)} said no to the Soundbox rent on our call. His words: {_his_words(answer)}. "
                       f"Nothing is taken. Please call him with the right offer. He has the choices in WhatsApp too.")
+    elif case == "support":
+        _ticket(shop, f"On our call about the Soundbox rent, {_who(shop)} raised a problem that is not about the rent. "
+                      f"His words: {_his_words(answer)}. Please call him about it.")
     elif case == "no answer":
         _ticket(shop, f"{_who(shop)} did not answer our call about the Soundbox rent. Nothing is charged. Please call him.")
     else:
