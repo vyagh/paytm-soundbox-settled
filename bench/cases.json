@@ -467,6 +467,10 @@
    {
     "text": "main to naukar hoon, malik bahar gaye hain",
     "kind": "unsure"
+   },
+   {
+    "text": "haan haan, kaat lo",
+    "kind": "unsure"
    }
   ],
   "expect": "held"
@@ -478,6 +482,10 @@
   "turns": [
    {
     "text": "papa nahi hain, main unka beta bol raha hoon",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan ji, pakka",
     "kind": "unsure"
    }
   ],
@@ -491,6 +499,10 @@
    {
     "text": "haan main Anil bol raha hoon, haan bol do",
     "kind": "unsure"
+   },
+   {
+    "text": "haan bhai, pakka, kaat lo",
+    "kind": "unsure"
    }
   ],
   "expect": "held"
@@ -502,6 +514,26 @@
   "turns": [
    {
     "text": "bhaiya dukaan pe customer hai, baad mein call karo",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan haan theek hai, pakka",
+    "kind": "unsure"
+   }
+  ],
+  "expect": "held"
+ },
+ {
+  "id": "salesman-twice",
+  "shop": "sharma",
+  "note": "the salesman picks up and says haan at both asks",
+  "turns": [
+   {
+    "text": "haan, Anil bol raha hoon, salesman, haan",
+    "kind": "unsure"
+   },
+   {
+    "text": "haan, Anil hi bol raha hoon, haan",
     "kind": "unsure"
    }
   ],

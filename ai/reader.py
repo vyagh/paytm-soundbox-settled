@@ -16,6 +16,7 @@ COST_LOG = ROOT / "bench" / "cost.log"
 URL = "https://api.sarvam.ai/v1/chat/completions"
 MODEL = os.environ.get("SETTLED_MODEL", "sarvam-105b-conversations")
 TIMEOUT = 20
+SPEAKERS = ("shopkeeper", "someone else", "unclear")
 
 # rupees per token, before 18% GST (docs.sarvam.ai/api/getting-started/pricing, 2026-10-31)
 PRICE_IN = 15 / 1_000_000
@@ -98,18 +99,23 @@ def _parse(content, text, said):
     if content.startswith("```"):
         content = content.strip("`").removeprefix("json").strip()
     got = json.loads(content)
-    if not isinstance(got, dict) or set(got) - {"kind", "reason", "plan"}:
+    if not isinstance(got, dict) or set(got) - {"kind", "speaker", "reason", "plan"}:
         raise ValueError("unexpected reply shape")
 
     kind = got.get("kind")
     if kind not in KINDS:
         raise ValueError("unknown kind")
+    speaker = got.get("speaker")
+    if speaker not in SPEAKERS:
+        raise ValueError("unknown speaker")
     reason = got.get("reason")
     if reason is not None and not isinstance(reason, str):
         raise ValueError("reason not a string")
     plan = got.get("plan")
     if plan is not None and plan not in PLAN_IDS:
         raise ValueError("unknown plan")
+    if speaker != "shopkeeper":
+        return Answer("unsure", text, reason=reason or f"{speaker} answered")
     if kind != "haan" or said != NA_FOLLOW_UP:
         plan = None
     return Answer(kind, text, reason=reason or None, plan=plan)
