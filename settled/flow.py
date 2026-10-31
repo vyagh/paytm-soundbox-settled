@@ -1,9 +1,17 @@
+import time
+
 from voice import script
-from voice.script import (ASK, CHARGED, CODE, CONSENT, FOLLOW_UP, GOODBYE_OTHER, GOODBYE_UNVERIFIED,
-                          NAME_RECORDED, NAME_UNRECORDED, READ_BACK)
+from voice.script import (ASK, CHARGED, CODE, CODE_AGAIN, CODE_WAIT, CONSENT, FOLLOW_UP, GOODBYE_OTHER,
+                          GOODBYE_UNVERIFIED, NAME_AGAIN, NAME_RECORDED, NAME_UNRECORDED, READ_BACK)
 
 from . import codes, log, paytm_mock, records, rules
 from .models import CallState
+
+# The code step: he gets 3 real tries, and "ek minute", a pause or silence are waits,
+# for about 45 s in all. MAX_WAITS ends it when no clock runs, as in the bench.
+CODE_TRIES = 3
+CODE_WAIT_SECONDS = 45
+MAX_WAITS = 4
 
 
 def run(shop_id, listener, state=None):
@@ -50,15 +58,18 @@ def _run(shop, listener, state):
     line = NAME_RECORDED if state.recording else NAME_UNRECORDED
     reply = listener(shop, line)
     failed = rules.name(reply)
+    if failed == "ask again":
+        _log_reply(shop, state, "identity", line, reply, rule="not clear → asked once more")
+        line = NAME_AGAIN
+        reply = listener(shop, line)
+        failed = rules.name(reply, first=False)
     _log_reply(shop, state, "identity", line, reply, rule=failed or "name confirmed")
     if failed:
         return _unverified(shop, listener, failed)
 
     state.code = state.code or codes.new()
     paytm_mock.send_app_code(shop)
-    reply = listener(shop, CODE)
-    got, rule = codes.check(reply.words, state.code)
-    _log_reply(shop, state, "identity", CODE, reply, rule=rule, read_as=got or "no code")
+    rule = _code(shop, state, listener)
     if rule != "verified":
         return _unverified(shop, listener, rule)
 
@@ -84,6 +95,31 @@ def _run(shop, listener, state):
     paytm_mock.open_ticket(shop, decision.rule, "na" if answers[-1].kind == "na" else "unclear")
     _say(shop, listener, FOLLOW_UP)
     return decision
+
+
+def _code(shop, state, listener):
+    """"verified" once his reply has the exact code, else the identity rule of his last try."""
+    line, tries, waits, last = CODE, 0, 0, "failed: no code"
+    until = time.monotonic() + CODE_WAIT_SECONDS
+    while True:
+        reply = listener(shop, line)
+        got, rule = codes.check(reply.words, state.code)
+        if rule == "wait":
+            waits += 1
+            over = waits > MAX_WAITS or time.monotonic() >= until
+            _log_reply(shop, state, "identity", line, reply, rule=last if over else "waiting for the code", read_as="wait")
+            if over:
+                return last
+            line = CODE_WAIT
+            continue
+        tries += 1
+        last = rule
+        done = rule == "verified" or tries >= CODE_TRIES
+        _log_reply(shop, state, "identity", line, reply, read_as=got or "no code",
+                   rule=rule if done else f"{rule.removeprefix('failed: ')} → asked again, try {tries} of {CODE_TRIES}")
+        if done:
+            return rule
+        line = CODE_AGAIN
 
 
 def _unverified(shop, listener, rule):

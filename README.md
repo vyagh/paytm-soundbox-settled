@@ -36,7 +36,7 @@ flowchart LR
 
 Before any call, Settled reads the shop's records. A box that was never delivered isn't charged and the shop isn't called. A missing record puts the rent on hold for a person to check.
 
-If the records are in order, it calls and asks first if the call can be recorded. Saying no is fine: the call goes on and no voice clip is saved. Then it asks if it's speaking with the owner by name, and asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe" or "३४५६", and the AI never sees it. If someone else picks up, the code is wrong, or he won't give it, Settled says goodbye politely and nothing about his plan changes.
+If the records are in order, it calls and asks first if the call can be recorded. Saying no is fine: the call goes on and no voice clip is saved. Then it asks if it's speaking with the owner by name, and asks for the 4-digit code that just came on his Paytm app. [`settled/codes.py`](settled/codes.py) reads the code out of his reply, as "3456", "teen chaar paanch chhe", "chauntees chhappan", "३४५६" or the code said twice, and the AI never sees it. Only the exact 4 digits pass. "Ek minute", "ruko, app khol raha hoon" or a pause aren't tries: Settled says it's waiting and listens again, for about 45 seconds in all, and he gets 3 real tries. An unclear answer to the name question gets it asked once more. If someone else picks up, or the code still doesn't match, Settled says goodbye politely and nothing about his plan changes.
 
 Only then comes the plan question, built from his record in [`data/shops.json`](data/shops.json): "Anil gave you the ₹125 a month plan on 23 October, starting 1 November. Is this the plan you took?" A clear haan gets the price read back ("So ₹125 every month from 1 November. Shall I confirm it?"), and only a second haan charges.
 
@@ -54,8 +54,8 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 | Sign-up, delivery or return record missing | Held, a person checks |
 | No to recording | The call goes on, no voice saved |
 | No answer to the first line | Held, a person calls |
-| Someone else answers, or he doesn't say he's the owner | Ends politely, held, plan unchanged |
-| Wrong code, or no code | Ends politely, held, plan unchanged |
+| Someone else answers, or he doesn't say he's the owner when asked twice | Ends politely, held, plan unchanged |
+| Wrong code or no code after 3 tries, or about 45 s of waiting | Ends politely, held, plan unchanged |
 | Haan, then haan again on the read-back | Charged at the signed plan |
 | Haan, then anything else on the read-back | Held, WhatsApp with his choices |
 | Na | Held, manager told, WhatsApp with his choices |
@@ -67,7 +67,7 @@ A few things hold these together:
 - Cancelling, changing a plan or booking a pickup only happens through his own tap (`POST /api/consent/<id>/<choice>`, in [`settled/paytm_mock.py`](settled/paytm_mock.py)). A second tap on the same message is refused.
 - A shop's rent is settled once: one charge or one cancel, checked in the same database write that makes it. After that, Settled won't call the shop again until `try.py reset`. A WhatsApp's choices only work for the call that sent them, while the rent is undecided. Once a later call or tap settles it, or a newer call starts, a tap on the old message gets 409, "this link has expired".
 - If the reply comes from someone else (a son, a worker, the salesman), [`ai/reader.py`](ai/reader.py) turns it into unsure, so a yes from them never counts.
-- A lone "hmm" reads as no answer, never haan. On a live call, a reply that reads as no answer gets the line said once more before it counts.
+- A lone "hmm" reads as no answer, never haan. On a live call, a reply that reads as no answer, or silence, gets the line said once more before it counts.
 - If the AI call fails or returns anything outside the expected JSON, the reply reads as unsure, and unsure holds.
 
 ## It speaks 11 languages, with no translation step

@@ -153,8 +153,8 @@ def play(shop, case, cond):
                 row.setdefault("again", []).append({"heard": heard, "read_as": read_as, "ms": ms})
             else:
                 row.update(heard=heard, read_as=read_as, ms=ms)
-        elif said in typed or said == script.CODE:
-            text = prompt["app_code"] if said == script.CODE else typed[said]
+        elif said in typed or said in script.CODE_LINES:
+            text = prompt["app_code"] if said in script.CODE_LINES else typed[said]
             voice_run.call(f"/api/call/{shop}/reply?seq={seq}", json.dumps({"text": text}).encode("utf-8"),
                            "application/json")
     while voice_run.shop_state(shop)["call"]["active"]:

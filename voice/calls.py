@@ -2,8 +2,9 @@
 
 The listener speaks the line, then waits on the call's queue. A reply from the
 page (audio or typed) is heard and read here, and its Answer goes in the queue.
-Nothing in time means "no answer". A reply that reads as no answer gets the line
-said once more. The code line is never shown to the AI: flow checks it in code.
+Nothing in time means "no answer". A reply that reads as no answer, or none in
+time, gets the line said once more. The code lines are never shown to the AI:
+flow checks them in code, and waits for the code itself.
 """
 import os
 import queue
@@ -75,20 +76,14 @@ class Call:
             return None
         until = time.monotonic() + length + LISTEN
 
-        again = 1
+        # the code step does its own waiting in flow, so its lines are never said again here
+        again = 0 if said in script.CODE_LINES else 1
         while True:
             try:
                 got, answer = self.replies.get(timeout=max(0.2, until - time.monotonic()))
-                if got == seq and answer.kind == "no answer" and again:
-                    again -= 1
-                    log.add(shop.id, "answered", said=english, heard=answer.words, read_as="no answer",
-                            reason="nothing clear, said the line again")
-                    with self.lock:
-                        self.seq += 1
-                        seq = self.seq
-                        self.waiting = True
-                    until = time.monotonic() + length + LISTEN
-                elif got == seq:
+                if got != seq:
+                    continue
+                if answer.kind != "no answer" or not again:
                     break
             except queue.Empty:
                 with self.lock:
@@ -97,8 +92,17 @@ class Call:
                     if time.monotonic() < self.heard_at + LISTEN:
                         until = self.heard_at + LISTEN
                         continue
-                    answer = Answer("no answer")
+                answer = Answer("no answer")
+                if not again:
                     break
+            again -= 1
+            log.add(shop.id, "answered", said=english, heard=answer.words, read_as="no answer",
+                    reason="nothing clear, said the line again")
+            with self.lock:
+                self.seq += 1
+                seq = self.seq
+                self.waiting = True
+            until = time.monotonic() + length + LISTEN
         with self.lock:
             self.waiting = False
         return answer
@@ -118,14 +122,18 @@ class Call:
                 raise ValueError("heard nothing")
             if not text.strip():
                 answer = Answer("no answer", "")
-            elif line == script.CODE:
+            elif line in script.CODE_LINES:
                 answer = Answer("unsure", text)
             else:
                 answer = reader.read(text, said)
             if audio is not None:
                 answer.audio, answer.ctype = audio, ctype
             self.replies.put((seq, answer))
-            read_as = (codes.read(text) or "no code") if line == script.CODE and text.strip() else answer.kind
+            if line in script.CODE_LINES:
+                got, rule = codes.check(text, self.progress.code)
+                read_as = "wait" if rule == "wait" else got or "no code"
+            else:
+                read_as = answer.kind
             return {"heard": text, "read_as": read_as}
         finally:
             with self.lock:

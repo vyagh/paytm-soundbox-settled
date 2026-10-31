@@ -85,7 +85,7 @@ def main(args):
         if not wait:
             return None
         answer = next(queue, Answer("no answer"))
-        return Answer("unsure", state.code) if said == script.CODE else answer
+        return Answer("unsure", state.code) if said in script.CODE_LINES else answer
 
     start = log.last_id()
     decision = flow.run(shop_id, listener, state)

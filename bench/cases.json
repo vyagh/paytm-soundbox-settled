@@ -2587,5 +2587,339 @@
   },
   "old_tap": "keep_plan",
   "note": "two held calls: only the latest call's WhatsApp can be tapped"
+ },
+ {
+  "id": "code-ek-minute",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "ek minute dekhta hoon"
+   },
+   {
+    "text": "ruko, app khol raha hoon"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true,
+  "note": "waits are not tries: he's opening the app"
+ },
+ {
+  "id": "code-pause",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": ""
+   },
+   {
+    "text": "haan aaya hai"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true,
+  "note": "a pause, then a bare 'it came', then the code"
+ },
+ {
+  "id": "code-pairs",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "chauntees chhappan"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "code-pairs-devanagari",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "चौंतीस छप्पन"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "code-twice",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456 3456"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "code-spellings",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "teen chaar pach chheh"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "code-wrong-then-right",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3465"
+   },
+   {
+    "text": "sorry, 3456"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true
+ },
+ {
+  "id": "code-three-wrong",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "1111"
+   },
+   {
+    "text": "ek minute"
+   },
+   {
+    "text": "2222"
+   },
+   {
+    "text": "5678"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: wrong code",
+  "recording": true,
+  "note": "three real tries, a wait between them doesn't count"
+ },
+ {
+  "id": "code-near-miss",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "teen chaar paanch"
+   },
+   {
+    "text": "34 5"
+   },
+   {
+    "text": "chauntees pachpan"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: wrong code",
+  "recording": true,
+  "note": "only the exact 4 digits pass"
+ },
+ {
+  "id": "name-garbled-then-haan",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "हाँ लियाका।",
+    "kind": "unsure",
+    "speaker": "unclear"
+   },
+   {
+    "text": "haan ji, main Ramesh hi hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "haan liya tha",
+    "kind": "haan"
+   },
+   {
+    "text": "haan pakka",
+    "kind": "haan"
+   }
+  ],
+  "expect": "charged",
+  "honest": true,
+  "identity": "verified",
+  "recording": true,
+  "note": "a garbled haan gets the name question once more"
+ },
+ {
+  "id": "name-unclear-twice",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "हाँ लियाका।",
+    "kind": "unsure",
+    "speaker": "unclear"
+   },
+   {
+    "text": "kya? kaun?",
+    "kind": "question"
+   }
+  ],
+  "expect": "held",
+  "identity": "failed: not confirmed",
+  "recording": true
  }
 ]

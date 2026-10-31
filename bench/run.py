@@ -65,7 +65,7 @@ def play(case, read):
         text = "" if turn is None else turn["text"]
         if not text.strip():
             answer = Answer("no answer", "")
-        elif said == script.CODE:
+        elif said in script.CODE_LINES:
             answer = Answer("unsure", text)
         else:
             answer = read(text, script.english(said, shop))
@@ -232,7 +232,7 @@ def main(argv):
             labelled = {t["text"]: t for t in case["turns"] + case.get("again", {}).get("turns", []) if "kind" in t}
             for said, a in heard:
                 t = labelled.get(a.words)
-                if t and said != script.CODE and (t["kind"] != a.kind or t.get("speaker", "shopkeeper") != a.speaker):
+                if t and said not in script.CODE_LINES and (t["kind"] != a.kind or t.get("speaker", "shopkeeper") != a.speaker):
                     misread.append(f"{case['id']}: {a.words!r} labelled {t['kind']}/{t.get('speaker', 'shopkeeper')}, read {a.kind}/{a.speaker}")
             print(f"{case['id']:<26}{case['shop']:<8}{want:<16}{got:<16}{identity or '-':<24}{'' if not wrong else 'MISMATCH'}")
     board.shutdown()

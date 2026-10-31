@@ -16,12 +16,15 @@ def consent(answer):
     return "recording allowed" if answer.kind == "haan" else "no recording"
 
 
-def name(answer):
-    """None when he says he is the owner, else the identity rule that ends the call."""
+def name(answer, first=True):
+    """None when he says he is the owner, "ask again" for an unclear first reply, else
+    the identity rule that ends the call. Only a clear someone else ends it at once."""
     if answer.kind == "haan" and answer.speaker == "shopkeeper":
         return None
     if answer.kind == "na" or answer.speaker == "someone else":
         return "failed: someone else"
+    if first and answer.kind != "no answer":
+        return "ask again"
     return "failed: not confirmed"
 
 
