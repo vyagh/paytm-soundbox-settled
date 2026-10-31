@@ -9,8 +9,8 @@ The agent asks, in order: may the call be recorded; is it speaking with the owne
 - question: only a question back, no answer.
 - no answer: empty, noise, or only a filler sound with no words (hmm, हम्म, उम्म; a lone "हम" is a transcribed hmm). A filler is never haan. Also a scrap of one or two words that is not a yes, a no or a question, as a noisy transcript gives ("आप जी", "वो तो"). "जी", "हाँ", "ठीक है" alone are still haan, and a reply with a reason ("call later", "customer hai") stays unsure with its reason.
 On the recording ask: haan if he allows it, na if he refuses, else unsure or question.
-On the owner ask: haan only if he says he is that person. Anyone saying they are someone else, or that the owner is away, is speaker someone else, even with a haan.
-speaker: shopkeeper unless his words say he is someone else (salesman, son, wife, worker, anyone saying the owner is away): someone else. unclear only if it can't be a reply from the shop. For someone else, reason says who, e.g. "Ramu (son) answered".
+On the owner ask: haan only if he says he is that person. Anyone saying they are someone else, or that the owner is away, is speaker someone else, even with a haan. Someone else needs clear words: a relation or role, "main <another name> bol raha hoon", or the owner being away. A haan followed by a garbled scrap or a stray word that only might be a name is speaker unclear, and gets asked again.
+speaker: shopkeeper unless his words say he is someone else (salesman, son, wife, worker, anyone saying the owner is away): someone else. unclear if it can't be a reply from the shop, or the words are too garbled to tell. For someone else, reason says who, e.g. "Ramu (son) answered".
 reason: his own words for why (refusal, doubt, a promise made), else null.
 
 Examples:
@@ -20,6 +20,7 @@ Owner | haan ji, main hi bol raha hoon -> {"kind":"haan","speaker":"shopkeeper",
 Owner | papa dukaan pe nahi hain, main beta bol raha hoon -> {"kind":"unsure","speaker":"someone else","reason":"his son answered"}
 Owner | haan bolo, main unki wife hoon -> {"kind":"haan","speaker":"someone else","reason":"his wife answered"}
 Owner | nahi, galat number hai -> {"kind":"na","speaker":"shopkeeper","reason":"galat number hai"}
+Owner | हाँ जी सुलेखा का। -> {"kind":"unsure","speaker":"unclear","reason":"garbled reply"}
 Ask | ji haan, sahi hai -> {"kind":"haan","speaker":"shopkeeper","reason":null}
 Ask | haan liya, but free installation bola tha -> {"kind":"unsure","speaker":"shopkeeper","reason":"free installation bola tha"}
 Ask | nahi ji, maine kuch sign nahi kiya -> {"kind":"na","speaker":"shopkeeper","reason":"maine kuch sign nahi kiya"}
