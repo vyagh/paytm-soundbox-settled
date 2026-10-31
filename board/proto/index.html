@@ -117,10 +117,6 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .pill.k-charged{color:var(--charged);background:var(--charged-soft)}
 .pill.k-held{color:var(--held);background:var(--held-soft)}
 .pill.k-not,.pill.k-cancelled{color:var(--not);background:var(--not-soft)}
-.norec{display:flex;align-items:center;gap:.4rem;font-size:.75rem;font-weight:600;color:var(--muted);height:1.75rem;padding:0 .7rem;border-radius:999px;box-shadow:inset 0 0 0 1px var(--hair);white-space:nowrap}
-.norec svg{width:.85rem;height:.85rem}
-.norec:not([hidden])+.pill{margin-left:0}
-.callhead .norec{margin-left:auto}
 .ok{display:inline-flex;align-items:center;gap:.3rem;color:var(--charged);font-weight:600}
 .ok svg{width:.95em;height:.95em}
 
@@ -231,19 +227,6 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
 .hangup:active{transform:scale(.96)}
 .hangup:disabled{opacity:.6;cursor:default}
 
-/* his voice */
-.clip{--p:0;flex:none;display:inline-flex;align-items:center;gap:.45rem;font-size:.8125rem;font-weight:600;color:var(--accent);background:none;border:0;border-radius:999px;cursor:pointer;padding:0}
-.clip .ring{display:grid;place-items:center;width:2.1rem;height:2.1rem;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--p)*1turn),#d9e5f8 0);transition:transform .12s var(--ease)}
-.clip .ring::before{content:"";grid-area:1/1;width:1.7rem;height:1.7rem;border-radius:50%;background:var(--surface)}
-.clip svg{grid-area:1/1;width:.7rem;height:.7rem;position:relative}
-.clip .stop{display:none}
-.clip.playing .play{display:none}
-.clip.playing .stop{display:block}
-.clip:hover .ring{transform:scale(1.06)}
-.clip.small .ring{width:1.6rem;height:1.6rem}
-.clip.small .ring::before{width:1.25rem;height:1.25rem}
-.clip.small svg{width:.55rem;height:.55rem}
-
 /* where his rent goes: AI reads, plain code and his tap move it */
 .money{position:relative;flex:none;height:9.4rem;display:grid;grid-template-columns:6rem minmax(0,1fr) 2.4rem 14rem;align-items:center;
   background:var(--fill);border-radius:1rem;padding:.6rem 1rem .6rem .9rem}
@@ -334,7 +317,6 @@ main{display:grid;grid-template-columns:12.5rem minmax(0,1fr) 25rem;gap:1rem;min
   <section class="panel call" aria-label="The call">
     <div class="callhead">
       <div><h2 id="name"></h2><p class="sub" id="sub"></p></div>
-      <div class="norec" id="norec" hidden><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="1.5" width="5" height="8.5" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5v2M2 2l12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Not recording</div>
       <div class="pill" id="pill"></div>
     </div>
     <ol class="steps" id="steps" aria-label="Steps of the call" hidden></ol>
@@ -390,12 +372,10 @@ const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&': '&amp;', '<': '&
 const cap = s => s ? s[0].toUpperCase() + s.slice(1) : s;
 const clock = at => (at || '').split('T').pop().slice(0, 5);
 const arrows = s => esc(s).replace(/\s*→\s*/g, ' <svg class="arr" viewBox="0 0 16 10" aria-label="then"><path d="M1 5h13M10 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> ');
-const clipUrl = c => typeof c === 'string' && /^\/api\/clip\/\d+$/.test(c) ? c : null;
 const html = (el, str) => { if (el._html !== str) { el._html = str; el.innerHTML = str; return true; } return false; };
 const me = key => live[key] || (live[key] = {});
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const day = s => s.replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g, (_, y, m, d) => `${+d} ${MONTHS[+m - 1]}`);
-const clipBtn = (c, small) => c ? `<button class="clip${small ? ' small' : ''}" type="button" data-clip="${c}" aria-label="Play his voice"><span class="ring"><svg class="play" viewBox="0 0 10 10" aria-hidden="true"><path d="M2.5 1.2v7.6L8.8 5z" fill="currentColor"/></svg><svg class="stop" viewBox="0 0 10 10" aria-hidden="true"><rect x="2" y="2" width="6" height="6" rx="1" fill="currentColor"/></svg></span>${small ? '' : 'His voice'}</button>` : '';
 
 /* "Fresh board" hides earlier rows from view for the next group at the table; the log keeps them */
 const FRESH_KEY = 'settled-fresh-board';
@@ -448,7 +428,7 @@ function runOf(key) {
   let s = null;
   for (const r of view()) {
     if (r.shop !== key) continue;
-    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null, recording: null, identity: null};
+    if (r.step === 'due' || !s) s = {status: 'waiting', settled: false, startAt: r.at, why: null, turns: [], acts: [], charge: null, pick: null, records: null, called: false, rule: null, identity: null};
     if (FINAL[r.outcome]) {
       s.status = FINAL[r.outcome];
       s.settled = true;
@@ -464,7 +444,6 @@ function runOf(key) {
     if (r.step === 'answered' && s.identity?.ok) (s.asked || (s.asked = [])).push(r);
     if (r.step === 'tap' && r.rule) { s.why = r.rule; s.pinned = true; s.tap = {said: (r.heard || '').replace(/^tapped:\s*/, ''), outcome: r.outcome}; }
     if (r.step === 'records checked') s.records = r.reason;
-    if (r.step === 'consent' && r.rule) s.recording = !/no recording/i.test(r.rule);
     if (r.step === 'identity' && /^(verified|failed)/i.test(r.rule || '')) s.identity = {ok: /^verified/i.test(r.rule), why: r.rule.replace(/^failed:\s*/i, '')};
     if (r.step === 'calling') s.called = true;
     if (r.step === 'identity') s.idTried = true;
@@ -476,7 +455,6 @@ function runOf(key) {
   if (s) {
     s.msgs = viewMsgs().filter(m => m.shop === key && m.at >= s.startAt);
     const call = SHOPS[key]?.call;
-    if (call?.active && s.recording === null && call.step && call.step !== 'consent' && typeof call.recording === 'boolean') s.recording = call.recording;
     /* a call that stopped without a decided row still ended: nothing was taken */
     if (!call?.active && s.called && !s.settled) {
       s.settled = true;
@@ -526,7 +504,6 @@ function render() {
   renderConvo(s);
   renderControls(s);
   renderResult(s);
-  syncClips();
   html($('fresh'), fresh ? 'Show all' : 'New demo round');
   html($('fresh-note'), roundNote ? `<span class="warn">${esc(roundNote)}</span>` : fresh ? `New round from ${esc(fresh.t)}. The log keeps every row.` : 'Every call is logged. A new round makes every shop ready to call again.');
 }
@@ -560,16 +537,15 @@ function renderHead(s) {
   const lang = call.active ? shop.language : shop.languages.find(l => l.code === (me(focus).lang || shop.default));
   const who = s.identity?.ok ? `<span class="ok">${ICONS.tick}Verified: ${esc(shop.owner || 'shopkeeper')}</span>` : shop.owner ? `Owner ${esc(shop.owner)}` : 'Shopkeeper';
   html($('sub'), [who, lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
-  $('norec').hidden = s.recording !== false;
   const [kind, text] = statusLine(focus, s);
   const pill = $('pill');
   pill.className = `pill k-${kind}${call.active && call.waiting && !me(focus).speaking ? ' breathe' : ''}`;
   pill.textContent = text;
 }
 
-/* Consent, Identity, Plan question, Read-back, Result */
-const STEPS = [['consent', 'Consent'], ['identity', 'Identity'], ['ask', 'Plan question'], ['readback', 'Read-back'], ['done', 'Result']];
-const STEP_AT = {consent: 0, identity: 1, ask: 2, readback: 3, followup: 4, done: 4};
+/* Identity, Plan question, Read-back, Result */
+const STEPS = [['identity', 'Identity'], ['ask', 'Plan question'], ['readback', 'Read-back'], ['done', 'Result']];
+const STEP_AT = {consent: 0, identity: 0, ask: 1, readback: 2, followup: 3, done: 3};
 const TICK = '<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3l2.3 2.2 4.7-4.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
 const WHY_NOT = {'someone else': 'someone else answered', 'not confirmed': 'no clear answer', 'no code': 'no code given', 'wrong code': 'wrong code'};
@@ -579,20 +555,20 @@ function renderSteps(s) {
   const box = $('steps');
   let at = -1;
   if (call.active && call.step in STEP_AT) at = STEP_AT[call.step];
-  else if (s.settled && (s.recording !== null || s.identity)) at = 4;
+  else if (s.settled && s.called) at = 3;
   if (at < 0 && !(call.active && call.step)) { box.hidden = true; return; }
   box.hidden = false;
   const failed = (s.identity && !s.identity.ok) || s.unverified;
-  const ended = at === 4 && !call.active;
+  const ended = at === 3 && !call.active;
   html(box, STEPS.map(([k, name], i) => {
     let kind = i < at ? 'done' : i === at ? 'now' : '';
-    if (at === 4 && i < 4) {
+    if (at === 3 && i < 3) {
       const asked = s.asked?.length || 0;
-      const reached = [s.recording !== null, !!s.identity?.ok, asked > 0, asked > 1 && s.asked[0].read_as === 'haan'][i];
-      kind = reached ? 'done' : i === 3 && asked === 1 ? 'skip' : '';
+      const reached = [!!s.identity?.ok, asked > 0, asked > 1 && s.asked[0].read_as === 'haan'][i];
+      kind = reached ? 'done' : i === 2 && asked === 1 ? 'skip' : '';
     }
-    if (failed && i === 1) kind = 'stop';
-    if (ended && i === 4) kind = 'done';
+    if (failed && i === 0) kind = 'stop';
+    if (ended && i === 3) kind = 'done';
     const mark = kind === 'done' ? TICK : kind === 'stop' ? '!' : i + 1;
     return `<li class="${kind}"${kind === 'now' ? ' aria-current="step"' : ''}><i>${mark}</i>${name}</li>`;
   }).join(''));
@@ -825,7 +801,7 @@ function renderConvo(s) {
     const old = i < total - 1;
     parts.push(bubbleSettled(r.said, shop, old, false));
     if (r.step === 'said') return;
-    const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q>${s.recording === false ? '' : clipBtn(clipUrl(r.clip), old)}</p>` : `<p class="words"><span class="none">No reply</span></p>`;
+    const inner = r.heard ? `<p class="words"><q>${esc(r.heard)}</q></p>` : `<p class="words"><span class="none">No reply</span></p>`;
     parts.push(bubbleHim(`${who} said`, inner, readAs(r), old));
   });
   if (((s.identity && !s.identity.ok) || s.unverified) && !pending) {
@@ -1091,44 +1067,6 @@ async function sendReply(key, body, type, seconds) {
   return ok;
 }
 
-/* his recorded voice */
-let player = null;
-let playing = null;
-function playClip(url) {
-  const was = playing;
-  stopClip();
-  if (was === url) return;
-  player = new Audio(url);
-  playing = url;
-  player.ontimeupdate = syncClips;
-  player.onended = player.onerror = stopClip;
-  player.play().catch(stopClip);
-  syncClips();
-}
-function stopClip() {
-  if (player) {
-    player.ontimeupdate = player.onended = player.onerror = null;
-    player.pause();
-  }
-  player = null;
-  playing = null;
-  syncClips();
-}
-function syncClips() {
-  const d = player?.duration;
-  const p = player && Number.isFinite(d) && d > 0 ? Math.min(1, player.currentTime / d) : 0;
-  for (const b of document.querySelectorAll('.clip')) {
-    const on = b.dataset.clip === playing;
-    b.classList.toggle('playing', on);
-    b.style.setProperty('--p', on ? p.toFixed(3) : 0);
-    b.setAttribute('aria-pressed', on);
-  }
-}
-document.addEventListener('click', e => {
-  const b = e.target.closest('.clip');
-  if (b) playClip(b.dataset.clip);
-});
-
 /* polling */
 async function refreshShops() {
   const res = await fetch('/api/shops', {cache: 'no-store'});
@@ -1172,8 +1110,6 @@ async function pollLog() {
       try { localStorage.removeItem(FRESH_KEY); } catch (e) {}
     }
   } else {
-    const mine = rows[rows.length - 1];
-    if (got[0].clip && !mine.clip) mine.clip = got[0].clip;
     got = got.slice(1);
   }
   rows = rows.concat(got);
