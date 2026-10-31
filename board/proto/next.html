@@ -526,7 +526,7 @@ function renderHead(s) {
   const call = shop.call || {};
   html($('name'), esc(shop.name));
   const lang = call.active ? shop.language : shop.languages.find(l => l.code === (me(focus).lang || shop.default));
-  html($('sub'), [esc(shop.owner || 'Shopkeeper'), lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
+  html($('sub'), [esc(shop.owner || 'Shopkeeper'), s.callback && s.called ? 'he rang back from the SMS' : '', lang ? `${esc(lang.name)} · ${esc(lang.own)}` : ''].filter(Boolean).join(' · '));
   /* the pill says what the call is doing; the money has its own column */
   const [kind, text] = call.active || me(focus).rec ? statusLine(focus, s) : s.called ? ['not', 'Call ended'] : s.settled ? ['not', 'No call made'] : ['', 'Ready to call'];
   const pill = $('pill');
@@ -843,6 +843,9 @@ function renderResult(s) {
   const plan = onB ? `Plan B at ₹${bPrice}` : `the ${rent} plan`;
   const first = pool[0]?.read_as, second = pool[1]?.read_as;
   const waits = s.settled && s.status === 'held' && (s.why || '').match(/Plan \w+ waits for his tap/)?.[0];
+  /* what he said to his own plan before Plan B was offered stays on the Plan B row */
+  const before = onB && asked.find(r => !isB(r) && !/^question/.test(r.read_as || ''))?.read_as;
+  const tapOnly = waits || (onB && s.settled && first === 'haan' && !second);
 
   const gates = [
     {t: 'Records in order', by: ['code'], state: noCall ? 'fail' : s.records ? 'pass' : call.active ? 'now' : 'todo',
@@ -852,10 +855,11 @@ function renderResult(s) {
       p: s.identity?.ok ? `Said it's him, born ${s.year?.said || 'as on record'}` : failedId ? cap(WHY_NOT[s.identity?.why] || s.identity?.why || 'not confirmed')
         : s.nameOk ? `Said it's him, now his year of birth` : 'His name, then his year of birth'},
     {t: `Haan to ${plan}`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
-      p: (first ? `AI understood ${first}` : onB ? 'Offered when he asked' : 'Asked from his sign-up record')
+      p: (before ? `AI understood ${before} to ${rent}, ${first ? `then ${first}` : 'Plan B offered'}`
+        : first ? `AI understood ${first}` : onB ? 'Offered when he asked' : 'Asked from his sign-up record')
         + (questions ? `, ${questions} question${questions > 1 ? 's' : ''} answered` : '')},
-    {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : (first && first !== 'haan') || waits ? 'skip' : step === 'readback' ? 'now' : 'todo',
-      p: second ? `AI understood ${second}` : waits ? 'Not on the call, only his tap starts Plan B' : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
+    {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : (first && first !== 'haan') || tapOnly ? 'skip' : step === 'readback' ? 'now' : 'todo',
+      p: second ? `AI understood ${second}` : tapOnly ? 'Not on the call, only his tap starts Plan B' : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
   ];
   if (s.tap) gates.push({t: s.tap.said || 'His choice', by: ['tap'], state: 'pass', p: 'His tap in WhatsApp, after the call'});
   for (const g of gates) if (s.settled && g.state === 'todo') { g.state = 'skip'; g.p = noCall ? 'No call made' : 'Not reached'; }
