@@ -830,7 +830,12 @@ function renderResult(s) {
   const asked = s.asked || [];
   const noCall = s.settled && !s.called;
   const failedId = (s.identity && !s.identity.ok) || s.unverified;
-  const first = asked[0]?.read_as, second = asked[1]?.read_as;
+  const replies = asked.filter(r => !/^question/.test(r.read_as || ''));
+  const backs = replies.filter(r => /Shall I confirm it\?$/.test(r.said || ''));
+  const back = backs[backs.length - 1];
+  const plan = replies.slice(0, back ? replies.indexOf(back) : replies.length).filter(r => !backs.includes(r)).pop();
+  const first = plan?.read_as, second = back?.read_as;
+  const offered = ((back || plan)?.said || '').match(/₹\s?\d+/g)?.pop() || rent;
 
   const gates = [
     {t: 'Records in order', by: ['code'], state: noCall ? 'fail' : s.records ? 'pass' : call.active ? 'now' : 'todo',
@@ -839,10 +844,10 @@ function renderResult(s) {
       state: s.identity?.ok ? 'pass' : failedId ? 'fail' : step === 'identity' ? 'now' : 'todo',
       p: s.identity?.ok ? `Said it's him, born ${s.year?.said || 'as on record'}` : failedId ? cap(WHY_NOT[s.identity?.why] || s.identity?.why || 'not confirmed')
         : s.nameOk ? `Said it's him, now his year of birth` : 'His name, then his year of birth'},
-    {t: `Haan to the ${rent} plan`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
+    {t: `Haan to the ${offered} plan`, by: ['ai'], state: first ? (first === 'haan' ? 'pass' : 'fail') : step === 'ask' ? 'now' : 'todo',
       p: first ? `AI understood ${first}` : 'Asked from his sign-up record'},
     {t: 'Haan again on the read-back', by: ['ai'], state: second ? (second === 'haan' ? 'pass' : 'fail') : first && first !== 'haan' ? 'skip' : step === 'readback' ? 'now' : 'todo',
-      p: second ? `AI understood ${second}` : first && first !== 'haan' ? 'Not asked after that' : `${rent} a month, read back to him`}
+      p: second ? `AI understood ${second}` : first && first !== 'haan' ? 'Not asked after that' : `${offered} a month, read back to him`}
   ];
   if (s.tap) gates.push({t: s.tap.said || 'His choice', by: ['tap'], state: 'pass', p: 'His tap in WhatsApp, after the call'});
   for (const g of gates) if (s.settled && g.state === 'todo') { g.state = 'skip'; g.p = noCall ? 'No call made' : 'Not reached'; }
