@@ -147,15 +147,18 @@ def _serial(shop):
     return records.record(shop.id).get("device", {}).get("serial", "no serial")
 
 
+def live(msg):
+    """True while his choices on this message can still be tapped: sent in this round, not
+    tapped yet, and the shop's rent not settled. Only a charge, his tap or a new round ends
+    them. A later call that never verifies him leaves them as they are."""
+    return bool(msg and msg["choices"] and msg["call"] and msg["call"] > log.current_round()[1]
+                and msg["id"] not in log.taps() and not log.settled(msg["shop"]))
+
+
 def live_link(shop_id):
-    """The one message whose choices he can still tap, or None. It is the latest call's,
-    in this round, and only while the shop's rent is undecided: a later call, a settled
-    rent or a new round ends it."""
+    """The latest message whose choices he can still tap, or None."""
     msg = log.last_choices(shop_id)
-    due = log.last_step(shop_id, "due")
-    if not msg or not due or msg["call"] != due["id"] or due["id"] < log.current_round()[1] or log.settled(shop_id):
-        return None
-    return msg["id"]
+    return msg["id"] if live(msg) else None
 
 
 def tap(message_id, choice):
@@ -169,7 +172,7 @@ def tap(message_id, choice):
             raise ValueError(f"not a choice on this message: {choice!r}")
         if message_id in log.taps():
             raise log.Tapped("he already chose on this message")
-        if live_link(msg["shop"]) != message_id:
+        if not live(msg):
             raise Expired("this link has expired")
         shop = records.load(msg["shop"])
         log.tap(message_id, choice)

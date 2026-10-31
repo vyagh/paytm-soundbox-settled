@@ -7,7 +7,7 @@ gets the bench's fixed app code, 3456. A case with "tap" then taps that choice i
 his WhatsApp through POST /api/consent, on a board started in this process. A case
 with "again" calls the shop a second time in the same log, with its own turns and
 expect ("refused" when Settled won't call), and "old_tap" then taps the first
-call's WhatsApp, which should answer 409. "new_round" starts a demo round through
+call's WhatsApp, which should answer 409 unless it gives another "status". "new_round" starts a demo round through
 POST /api/round/new between the first call and the rest.
 """
 import argparse
@@ -221,12 +221,13 @@ def main(argv):
                 if unread2 and decision2 is not None:
                     wrong.append(f"{len(unread2)} turns never read on the second call")
             if case.get("old_tap"):
+                old = case["old_tap"] if isinstance(case["old_tap"], dict) else {"choice": case["old_tap"], "status": 409}
                 if not first:
                     wrong.append("no first-call choices to tap")
                 else:
-                    status, reply = poster(url, first["id"])(case["old_tap"])
+                    status, reply = poster(url, first["id"])(old["choice"])
                     taps += 1
-                    if status != 409 or not reply.get("expired"):
+                    if status != old["status"] or (status == 409 and not reply.get("expired")):
                         wrong.append(f"old tap answered {status}")
             double += doubled(log.rows(), case["shop"])
 

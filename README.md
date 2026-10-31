@@ -65,7 +65,7 @@ The AI's only job is to sort a reply into one of five kinds and say who's speaki
 A few things hold these together:
 
 - Cancelling, changing a plan or booking a pickup only happens through his own tap (`POST /api/consent/<id>/<choice>`, in [`settled/paytm_mock.py`](settled/paytm_mock.py)). A second tap on the same message is refused.
-- A shop's rent is settled once a round: one charge or one cancel, checked in the same database write that makes it. After that, Settled won't call the shop again in that round. A WhatsApp's choices only work for the call that sent them, while the rent is undecided. Once a later call or tap settles it, a newer call starts, or a new round starts, a tap on the old message gets 409, "this link has expired".
+- A shop's rent is settled once a round: one charge or one cancel, checked in the same database write that makes it. After that, Settled won't call the shop again in that round. A WhatsApp's choices keep working while the rent is undecided in that round. A later call that never verifies him (a son, a wrong code, silence) leaves them as they are. Once a charge or his tap settles the rent, or a new round starts, a tap on an old message gets 409, "this link has expired".
 - A demo round stands for a fresh rent cycle, so the next group can see every shop again. `POST /api/round/new` starts one and answers `{"round": n}`. It writes a row to the log and changes nothing before it.
 - If the reply comes from someone else (a son, a worker, the salesman), [`ai/reader.py`](ai/reader.py) turns it into unsure, so a yes from them never counts.
 - A lone "hmm" reads as no answer, never haan. On a live call, a reply that reads as no answer, or silence, gets the line said once more before it counts.

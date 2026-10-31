@@ -75,17 +75,27 @@ def _run(shop, listener, state):
 
     state.step = "ask"
     answers = [_ask(shop, state, ASK, listener)]
-    decision = _decided(shop, rules.decide(shop, answers, verified=True))
+    decision = rules.decide(shop, answers, verified=True)
     if decision.outcome == "ask again":
+        _decided(shop, decision)
         state.step = "readback"
         answers.append(_ask(shop, state, READ_BACK, listener))
-        decision = _decided(shop, rules.decide(shop, answers, verified=True))
+        decision = rules.decide(shop, answers, verified=True)
 
     if decision.outcome == "charged":
-        paytm_mock.charge_rent(shop, decision.plan)
+        try:
+            paytm_mock.charge_rent(shop, decision.plan)
+        except log.AlreadySettled:
+            # his tap on an earlier WhatsApp settled the rent while this call was on
+            decision = _decided(shop, rules.settled_meanwhile())
+            state.step = "done"
+            _say(shop, listener, FOLLOW_UP)
+            return decision
+        _decided(shop, decision)
         state.step = "done"
         _say(shop, listener, CHARGED)
         return decision
+    _decided(shop, decision)
 
     state.step = "followup"
     paytm_mock.hold_rent(shop)

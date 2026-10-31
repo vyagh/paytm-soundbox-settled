@@ -2585,8 +2585,11 @@
    ],
    "expect": "held"
   },
-  "old_tap": "keep_plan",
-  "note": "two held calls: only the latest call's WhatsApp can be tapped"
+  "old_tap": {
+   "choice": "keep_plan",
+   "status": 200
+  },
+  "note": "two held calls: his first WhatsApp still works, only a charge or his tap ends it"
  },
  {
   "id": "code-ek-minute",
@@ -3003,5 +3006,99 @@
   "new_round": true,
   "old_tap": "keep_plan",
   "note": "a round-1 WhatsApp tapped in round 2 has expired"
+ },
+ {
+  "id": "failed-call-keeps-choices",
+  "shop": "gupta",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "nahi",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, theek hai",
+     "kind": "haan"
+    },
+    {
+     "text": "main unka beta hoon",
+     "kind": "unsure",
+     "speaker": "someone else"
+    }
+   ],
+   "expect": "held"
+  },
+  "old_tap": {
+   "choice": "keep_plan",
+   "status": 200
+  },
+  "note": "his son answers the second call: the first call's WhatsApp still works"
+ },
+ {
+  "id": "wrong-code-keeps-choices",
+  "shop": "sharma",
+  "turns": [
+   {
+    "text": "haan ji, theek hai",
+    "kind": "haan"
+   },
+   {
+    "text": "haan ji, main hi bol raha hoon",
+    "kind": "haan"
+   },
+   {
+    "text": "3456"
+   },
+   {
+    "text": "na, 125 bahut zyada hai",
+    "kind": "na"
+   }
+  ],
+  "expect": "held",
+  "identity": "verified",
+  "recording": true,
+  "again": {
+   "turns": [
+    {
+     "text": "haan ji, theek hai",
+     "kind": "haan"
+    },
+    {
+     "text": "haan ji, main hi bol raha hoon",
+     "kind": "haan"
+    },
+    {
+     "text": "1111"
+    },
+    {
+     "text": "2222"
+    },
+    {
+     "text": "5678"
+    }
+   ],
+   "expect": "held"
+  },
+  "old_tap": {
+   "choice": "cheaper_plan",
+   "status": 200
+  },
+  "note": "a second call that fails the code check leaves his choices as they are"
  }
 ]

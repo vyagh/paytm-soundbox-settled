@@ -62,3 +62,7 @@ def held(answer):
     if answer.kind == "na":
         return Decision("held", "na → nothing taken, a person calls with the right offer")
     return Decision("held", f"{answer.kind} → nothing taken, a person follows up")
+
+
+def settled_meanwhile():
+    return Decision("not charged", "his tap settled the rent during the call → nothing more taken")
